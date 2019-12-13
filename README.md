@@ -1,5 +1,5 @@
 # bat-con
-Command line emulator written in Python
+Command line emulator written in Python 3.x
 
 # Current functionalities:
 - create a connection with local or external MS SQL database
