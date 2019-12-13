@@ -5,6 +5,7 @@ Command line emulator written in Python 3.x
 [Introduction](#introduction)<br />
 [Current features](#current-features)<br />
 [Planned features](#planned-features)<br />
+[File structure](#file-structure)<br />
 [List of available commands](#list-of-available-commands)<br />
 [List of commands' aliases](#list-of-commands-aliases)<br />
 [CLI's interactive mode](#clis-interactive-mode)<br />
@@ -31,6 +32,10 @@ Bat-con allows user to interact with MS SQL database and its content. In future 
 - SQL-XML converter and vice-versa
 - system-wide commands
 <br />
+
+## File structure:
+- `main.py` - top layer py script handling user input and calling sub-routines from `commands.py`
+  - `commands.py` - contains implementations of all internal commands used by program
 
 ## List of available commands:
 ```
