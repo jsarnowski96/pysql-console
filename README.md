@@ -7,7 +7,7 @@ Command line emulator written in Python 3.x
 [Planned features](#planned-features)<br />
 [List of available commands](#list-of-available-commands)<br />
 [List of commands' aliases](#list-of-commands-aliases)<br />
-[CLI's interactive mode](#commands-interactive-mode)<br />
+[CLI's interactive mode](#clis-interactive-mode)<br />
 [To do](#to-do)<br />
 [Known issues](#known-issues)<br />
 
@@ -53,7 +53,7 @@ quit: exit command alias
 ```
 <br />
 
-## Command's interactive mode:
+## CLI's interactive mode:
 Commands allowing user to provide the additional parameters treats them only as optional - in case of not providing any of the specified parameters or just a part of them, these commands have implemented user interactive mode for providing the missing data required for performing their basic task and as a way of handling exceptions. For example:
 ```
 js $ connect localhost
