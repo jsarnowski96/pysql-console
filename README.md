@@ -88,12 +88,12 @@ Connection with localhost->test_db has been successfully established.
 
 ## To do:
 - implementation of commands' functionalities:
-  - close
-  - add
-  - delete
-  - edit
-  - drop
-  - file <read>|<write> <file_name>
+  - `close`
+  - `add`
+  - `delete`
+  - `edit`
+  - `drop`
+  - `file <read>|<write> <file_name>`
 - fix the exit command's bug
 - fix the export command's bug
 - better format of table's listed content
