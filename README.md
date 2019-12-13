@@ -37,7 +37,7 @@ quit: exit command alias
 
 
 # Command wizard:
-Commands allowing user to provide the additional parameters treats them only as optional - in case of not providing any of the specified parameters or just a part of them, these commands have implemented internal user prompt for providing the missing data required for performing their basic task and as a way of handling exceptions. For example:
+Commands allowing user to provide the additional parameters treats them only as optional - in case of not providing any of the specified parameters or just a part of them, these commands have implemented user interaction interface for providing the missing data required for performing their basic task and as a way of handling exceptions. For example:
 ```
 js $ connect localhost
 Database: test_db
