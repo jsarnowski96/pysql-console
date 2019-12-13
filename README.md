@@ -1,29 +1,39 @@
-# bat-con
+# bat-con (under development)
 Command line emulator written in Python 3.x
 
+### Table of contents
+[Introduction](#intro)
+[Current features](#current)
+[Planned features](#planned)
+[List of available commands](#commands)
+[List of commands' aliases](#aliases)
+[Commands' interactive mode](#interactive_mode)
+[To do](#todo)
+[Known issues](#issues)
 
-# Introduction
+<a name="intro" />
+## Introduction
 Bat-con is a simple program emulating the command line interface. Due to Python's limitations, some of the features introduced by this program are sort of workarounds (for example user authentication system or multiple `input()` parameters treated as a separate strings kept in `list()` object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development process I'm going to polish some things up.
 
 Bat-con allows user to interact with MS SQL database and its content. In future I'm going to implement other functions such as SQL-XML converter, text editor or even system-wide operations' support.
 
-
-# Current functionalities:
+<a name="current" />
+## Current features:
 - create a connection with local or external MS SQL database
 - display contents of the selected table (currently in raw, unformatted form)
 - export selected table to .csv file
 - implementation of pseudo user authentication mechanism
 - executing commands directly or via aliases
 
-
-# Planned functionalities:
+<a name="planned" />
+## Planned features:
 - full CRUD integration
 - importing data from .csv file into the selected database
 - SQL-XML converter and vice-versa
 - system-wide commands
 
-
-# List of available commands:
+<a name="commands" />
+## List of available commands:
 ```
 exit: exits the program (eventually)
 close: close the active MS SQL connection
@@ -37,24 +47,24 @@ export <table>: exports the selected table to .csv file (otherwise prompt for ta
 logout: releases pseudo user credentials and returns to login screen
 ```
 
-
-# List of commands' aliases:
+<a name="aliases" />
+## List of commands' aliases:
 ```
 exp: export command alias
 quit: exit command alias
 ```
 
-
-# Command wizard:
-Commands allowing user to provide the additional parameters treats them only as optional - in case of not providing any of the specified parameters or just a part of them, these commands have implemented user interaction interface for providing the missing data required for performing their basic task and as a way of handling exceptions. For example:
+<a name="interactive_mode" />
+## Command's interactive mode:
+Commands allowing user to provide the additional parameters treats them only as optional - in case of not providing any of the specified parameters or just a part of them, these commands have implemented user interactive mode for providing the missing data required for performing their basic task and as a way of handling exceptions. For example:
 ```
 js $ connect localhost
 Database: test_db
 Connection with localhost->test_db has been successfully established.
 ```
 
-
-# To do:
+<a name="todo" />
+## To do:
 - implementation of commands' functionalities:
   - close
   - add
@@ -65,8 +75,8 @@ Connection with localhost->test_db has been successfully established.
 - fix the export command's bug
 - better format of table's listed content
 
-
-# Known issues:
+<a name="issues" />
+## Known issues:
 - problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.
 - `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by boolean data type fields.
 - export does its job only partially since it replicates a single row N times instead of processing next rows.
