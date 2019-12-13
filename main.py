@@ -6,6 +6,7 @@ Created on Wed Dec 11 18:07:47 2019
 """
 
 import pyodbc
+import sys
 from getpass import getpass
 
 username = None
@@ -45,7 +46,7 @@ def UserAuthentication():
     global username 
     global password 
     
-    print("\n" * 50)
+    print("\n" * 25)
     drawInitBoard()
     
     username = str(input("Username: "))
@@ -68,33 +69,40 @@ def UserAuthentication():
         print("| User Authentication action has been completed |")
         print("+-----------------------------------------------+")
         if cursor.fetchone():
-            print("Welcome,", username)
             success = True
+            if success == True:        
+                print("Welcome,", username)
+            else:
+                print("Authentication failed. Incorrect username or password.")
         else:
-            print("Authentication failed. Incorrect username or password.")
-            UserAuthentication()
+            print("Could not connect to the database.")
         dbConnection.close()
         dbConnection = None
-        print()
-        if success == True:        
-            MainActivity()
     except pyodbc.Warning as w:
         print(w,": Caution - possible data truncation.")
     except pyodbc.DatabaseError as e:
         print(e,": Could not connect to the database - incorrect server name or database")
+        UserAuthentication()
     except pyodbc.DataError as e:
         print(e,": Illegal operation detected. Exiting.")
+        sys.exit()
     except pyodbc.OperationalError as e:
         print(e,": Could not connect to the database server")
         UserAuthentication()
     except pyodbc.IntegrityError as e:
         print(e,": Relational integrity of the target database is compromised.")
+        UserAuthentication()
     except pyodbc.InternalError as e:
         print(e,": Cursor not valid or transaction out of sync")
+        UserAuthentication()
     except pyodbc.ProgrammingError as e:
         print(e,": Database not found, SQL Syntax error or wrong number of parameters.")
+        UserAuthentication()
     except pyodbc.NotSupportedError as e:
         print(e,": Database does not support provided pyodbc request.")
+        UserAuthentication()
+    except KeyboardInterrupt:
+        print("\nExiting program...")
     except:
         print("Unkown error occured during connecting to the database.")
 
@@ -123,6 +131,8 @@ def InputLoop(userInput):
             commands.Export()
         if userInput[0] == "clear" or userInput[0] == "cls":
             commands.Clear()
+            drawInitBoard()
+            print("\n" * 2)
     else:
         print("Syntax error - " + userInput + " command was not recognized.")
         
@@ -134,6 +144,12 @@ def MainActivity():
     while True:
         userInput = list(map(str,input(username + " $ ").split()))
         InputLoop(userInput)
-    
-UserAuthentication()    
-raise SystemExit
+try:    
+    UserAuthentication()
+    MainActivity()
+except SystemExit:
+    print("\nExiting program...")
+except KeyboardInterrupt:
+    print("\nExiting program...")
+except:
+    print("\nUnknown error occured.")

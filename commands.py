@@ -6,6 +6,8 @@ Created on Thu Dec 12 01:11:41 2019
 """
 
 import pyodbc
+import sys
+import main
 
 commands = {
     "exit": "Exit the program",
@@ -39,26 +41,16 @@ def Exit():
     global server
     global table
     
-    global main
-    import main
-    
-    if main.username != "":
-        main.username = None
-    if main.password != "":
-        main.password = None    
-    if dbConnection != "":
-        if dbConnection:
-            dbConnection.close()
-            dbConnection = None
-        else:
-            dbConnection = None
-    if database != "":
-        database = None
-    if server != "":
-        server = None
-    if table != "":
-        table = None
-    exit(0)
+    main.username = None
+    main.password = None
+    if dbConnection:
+        dbConnection.close()
+    dbConnection = None
+    server = None
+    database = None
+    table = None
+
+    sys.exit()
 
 def Connect(srv = "", db = ""):
     global dbConnection
@@ -99,22 +91,24 @@ def Connect(srv = "", db = ""):
                 print("You did not enter server name.")
         else:
             print("Connection is already establised.")
-    except pyodbc.Warning as w:
-        print(w,": Caution - possible data truncation.")
-    except pyodbc.DatabaseError as e:
-        print(e,": Could not connect to the database - incorrect server name or database")
-    except pyodbc.DataError as e:
-        print(e,": Illegal operation detected. Exiting.")
-    except pyodbc.OperationalError as e:
-        print(e,": Could not connect to the database server")
-    except pyodbc.IntegrityError as e:
-        print(e,": Relational integrity of the target database is compromised.")
-    except pyodbc.InternalError as e:
-        print(e,": Cursor not valid or transaction out of sync")
-    except pyodbc.ProgrammingError as e:
-        print(e,": Database not found, SQL Syntax error or wrong number of parameters.")
-    except pyodbc.NotSupportedError as e:
-        print(e,": Database does not support provided pyodbc request.")
+    except pyodbc.Warning:
+        print("Warning: Caution - possible data truncation.")
+    except pyodbc.DatabaseError:
+        print("DatabaseError: Could not connect to the database - incorrect server name or database")
+    except pyodbc.DataError:
+        print("DataError: Illegal operation detected. Exiting.")
+    except pyodbc.OperationalError:
+        print("OperationalError: Could not connect to the database server")
+    except pyodbc.IntegrityError:
+        print("IntegrityError: Relational integrity of the target database is compromised.")
+    except pyodbc.InternalError:
+        print("InternalError: Cursor not valid or transaction out of sync")
+    except pyodbc.ProgrammingError:
+        print("ProgrammingError: Database not found, SQL Syntax error or wrong number of parameters.")
+    except pyodbc.NotSupportedError:
+        print("NotSupportedError: Database does not support provided pyodbc request.")
+    except KeyboardInterrupt:
+        print("\nExiting program...")
     except:
         print("Unkown error occured during connecting to the database.")
 
@@ -125,6 +119,7 @@ def Close():
         dbConnection.close()
     else:
         print("You have no active connection to any database")
+        print()
         
 def Logout():
     import main
@@ -163,8 +158,10 @@ def Show(tbl = ""):
                     i += 1
         else:
             print("You did not enter table's name.")
+            print()
     else:
         print("There is no active connection to the database.")
+        print()
             
 def Export(tbl = ""):
     global table
@@ -191,13 +188,12 @@ def Export(tbl = ""):
                         writer.writerow(row)
             else:
                 print("You did not select any source table.")
+                print()
     else:
         print("There is no connection established.")
+        print()
         
 def Clear():
-    import main
     print("\n" * 50)
-    main.drawInitBoard()
-    print("\n" * 2)
 
             
