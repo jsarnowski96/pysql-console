@@ -2,14 +2,6 @@
 Command line emulator written in Python 3.x
 
 ### Table of contents
-[Introduction](#intro)
-[Current features](#current)
-[Planned features](#planned)
-[List of available commands](#commands)
-[List of commands' aliases](#aliases)
-[Commands' interactive mode](#interactive_mode)
-[To do](#todo)
-[Known issues](#issues)
 
 <a name="intro" />
 ## Introduction
