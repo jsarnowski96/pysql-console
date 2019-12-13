@@ -35,7 +35,8 @@ Bat-con allows user to interact with MS SQL database and its content. In future 
 
 ## File structure:
 - `main.py` - top layer py script handling user input and calling sub-routines from `commands.py`
-  - `commands.py` - contains implementations of all internal commands used by program
+  - `commands.py` - contains implementations of all internal commands used by the program
+<br />
 
 ## List of available commands:
 ```
