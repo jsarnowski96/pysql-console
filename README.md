@@ -93,16 +93,17 @@ Connection with localhost->test_db has been successfully established.
 <br />
 
 ## To do:
-- implementation of commands' functionalities:
-  - `close`
-  - `add`
-  - `delete`
-  - `edit`
-  - `drop`
-  - `file <read>|<write> <file_name>`
-- fix the exit command's bug
-- fix the export command's bug
-- better format of table's listed content
+- [ ] implementation of commands' functionalities:
+  - [ ] `close`
+  - [ ] `add`
+  - [ ] `delete`
+  - [ ] `edit`
+  - [ ] `drop`
+  - [ ] `file <read>|<write> <file_name>`
+  - [x] `help`
+- [x] fix the exit command's bug
+- [ ] fix the export command's bug
+- [ ] better format of table's listed content
 <br />
 
 ## Known issues:
@@ -116,7 +117,7 @@ Connection with localhost->test_db has been successfully established.
             - Wrapping UserAuthentication() db connection sub-routine in try...except clause<br />
             - ASCII Logo tweaks<br />
 - 14/12/2019 summary:<br />
-            - Fixed Exit() function bug - script is now finishing properly
-            - Introduced new bug - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigations.
-            - Code refactoring in MainActivity() - removed nested loop and wrapped internal code in try...except clause
+            - Fixed `Exit()` function bug - script is now finishing properly<br />
+            - Introduced new bug - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigations.<br />
+            - Code refactoring in `MainActivity()` - removed nested loop and wrapped internal code in try...except clause<br />
 
