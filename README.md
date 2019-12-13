@@ -17,7 +17,7 @@ Bat-con allows user to interact with MS SQL database and its content. In future 
 
 
 # Planned functionalities:
-- CRUD operations
+- full CRUD integration
 - importing data from .csv file into the selected database
 - SQL-XML converter and vice-versa
 - system-wide commands
