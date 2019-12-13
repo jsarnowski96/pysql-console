@@ -50,6 +50,6 @@ Connection with localhost->test_db has been successfully established.
 
 # Known issues:
 - problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.
-- `pyodbc` library's limitations preventing some of the tables from being processed (throws `DataError` exception), most likely caused by boolean data type fields.
+- `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by boolean data type fields.
 - export does its job only partially since it replicates a single row N times instead of processing next rows.
 
