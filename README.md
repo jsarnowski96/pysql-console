@@ -12,6 +12,12 @@
             |       V    V         V          }' `\ /' `{          V         V    V       |
             |       `    `         `               V               '         '    '       |
             +-----------------------------------------------------------------------------+
+            
+                _/_/_/      _/_/    _/_/_/_/_/            _/_/_/    _/_/    _/      _/   
+                _/    _/  _/    _/      _/              _/        _/    _/  _/_/    _/    
+                _/_/_/    _/_/_/_/      _/  _/_/_/_/_/  _/        _/    _/  _/  _/  _/     
+                _/    _/  _/    _/      _/              _/        _/    _/  _/    _/_/      
+                _/_/_/    _/    _/      _/                _/_/_/    _/_/    _/      _/               
 ```
 
 # bat-con (under development)
@@ -105,5 +111,8 @@ Connection with localhost->test_db has been successfully established.
 - export does its job only partially since it replicates a single row N times instead of processing next rows.
 
 ## Release dates:
-- 13/12/2019 - Initial commit + main script's upload
+- 13/12/2019<br />
+            - Initial commit + main script's upload<br />
+            - Wrapping UserAuthentication() db connection sub-routine in try...except clause<br />
+            - ASCII Logo tweaks<br />
 
