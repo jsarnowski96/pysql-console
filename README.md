@@ -28,7 +28,7 @@ quit: exit command alias
 ```
 
 # To do:
-- implementation of commands:
+- implementation of commands' functionalities:
   - close
   - add
   - delete
