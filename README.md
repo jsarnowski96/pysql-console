@@ -2,7 +2,7 @@
 Command line emulator written in Python 3.x
 
 # Introduction
-Bat-con is a simple program emulating the command line interface. Due to Python's limitations, some of the features introduced by this program are a sort o workaround (for example user authentication system or multiple input parameters treated as a separate strings kept in list() object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development I'm going to polish some things up.
+Bat-con is a simple program emulating the command line interface. Due to Python's limitations, some of the features introduced by this program are sort of workarounds (for example user authentication system or multiple `input()` parameters treated as a separate strings kept in `list()` object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development I'm going to polish some things up.
 
 # Current functionalities:
 - create a connection with local or external MS SQL database
