@@ -115,4 +115,8 @@ Connection with localhost->test_db has been successfully established.
             - Initial commit + main script's upload<br />
             - Wrapping UserAuthentication() db connection sub-routine in try...except clause<br />
             - ASCII Logo tweaks<br />
+- 14/12/2019 summary:<br />
+            - Fixed Exit() function bug - script is now finishing properly
+            - Introduced new bug - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigations.
+            - Code refactoring in MainActivity() - removed nested loop and wrapped internal code in try...except clause
 
