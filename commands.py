@@ -106,7 +106,7 @@ def Connect(srv = "", db = ""):
     except pyodbc.DataError as e:
         print(e,": Illegal operation detected. Exiting.")
     except pyodbc.OperationalError as e:
-        print(e,": Server-side error occured - potential connectivity issues, missing data source or problems with memory allocation")
+        print(e,": Could not connect to the database server")
     except pyodbc.IntegrityError as e:
         print(e,": Relational integrity of the target database is compromised.")
     except pyodbc.InternalError as e:
@@ -198,6 +198,6 @@ def Clear():
     import main
     print("\n" * 50)
     main.drawInitBoard()
-    print("\n" * 5)
+    print("\n" * 2)
 
             

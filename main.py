@@ -26,14 +26,20 @@ def drawInitBoard():
 |       V    V         V          }' `\ /' `{          V         V    V       |
 |       `    `         `               V               '         '    '       |
 +-----------------------------------------------------------------------------+
+                                                                                    
+      _/_/_/      _/_/    _/_/_/_/_/            _/_/_/    _/_/    _/      _/   
+     _/    _/  _/    _/      _/              _/        _/    _/  _/_/    _/    
+    _/_/_/    _/_/_/_/      _/  _/_/_/_/_/  _/        _/    _/  _/  _/  _/     
+   _/    _/  _/    _/      _/              _/        _/    _/  _/    _/_/      
+  _/_/_/    _/    _/      _/                _/_/_/    _/_/    _/      _/    
     """)
     
-    print("\t\t\t +----------------------------+")
-    print("\t\t\t |      Welcome to BatCon     |")
-    print("\t\t\t |----------------------------|")
-    print("\t\t\t |   author: Jakub Sarnowski  |")
-    print("\t\t\t |   github.com/jsarnowski96  |")
-    print("\t\t\t +----------------------------+")
+    print("\t\t\t+----------------------------+")
+    print("\t\t\t|      Welcome to BatCon     |")
+    print("\t\t\t|----------------------------|")
+    print("\t\t\t|   author: Jakub Sarnowski  |")
+    print("\t\t\t|   github.com/jsarnowski96  |")
+    print("\t\t\t+----------------------------+")
     
 def UserAuthentication():
     global username 
@@ -41,37 +47,57 @@ def UserAuthentication():
     
     print("\n" * 50)
     drawInitBoard()
-    print("\n" * 5)
+    print("\n" * 2)
     
     username = str(input("Username: "))
     password = getpass()
     dbConnection = ""
     success = False
     
-    if dbConnection:
-        pass
-    else:
-        dbConnection = pyodbc.connect('Driver={SQL Server Native Client 11.0};'
-                                      'Server=localhost;'
-                                      'Database=AdventureWorks2012;'
-                                      'Trusted_Connection=yes;')    
-    #pwdHash = hashlib.sha512(password.encode('utf-8')).hexdigest()
-    cursor = dbConnection.cursor()
-    cursor.execute("select username, password from AuthUsers where username = ? and password = ?", username, password)            
-    print("+-----------------------------------------------+")
-    print("| User Authentication action has been completed |")
-    print("+-----------------------------------------------+")
-    if cursor.fetchone():
-        print("Welcome,", username)
-        success = True
-    else:
-        print("Authentication failed. Incorrect username or password.")
+    try:
+        if dbConnection:
+            pass
+        else:
+            dbConnection = pyodbc.connect('Driver={SQL Server Native Client 11.0};'
+                                          'Server=localhost;'
+                                          'Database=AdventureWorks2012;'
+                                          'Trusted_Connection=yes;')    
+        #pwdHash = hashlib.sha512(password.encode('utf-8')).hexdigest()
+        cursor = dbConnection.cursor()
+        cursor.execute("select username, password from AuthUsers where username = ? and password = ?", username, password)            
+        print("+-----------------------------------------------+")
+        print("| User Authentication action has been completed |")
+        print("+-----------------------------------------------+")
+        if cursor.fetchone():
+            print("Welcome,", username)
+            success = True
+        else:
+            print("Authentication failed. Incorrect username or password.")
+            UserAuthentication()
+        dbConnection.close()
+        dbConnection = None
+        print()
+        if success == True:        
+            MainActivity()
+    except pyodbc.Warning as w:
+        print(w,": Caution - possible data truncation.")
+    except pyodbc.DatabaseError as e:
+        print(e,": Could not connect to the database - incorrect server name or database")
+    except pyodbc.DataError as e:
+        print(e,": Illegal operation detected. Exiting.")
+    except pyodbc.OperationalError as e:
+        print(e,": Could not connect to the database server")
         UserAuthentication()
-    dbConnection.close()
-    dbConnection = None
-    print()
-    if success == True:        
-        MainActivity()
+    except pyodbc.IntegrityError as e:
+        print(e,": Relational integrity of the target database is compromised.")
+    except pyodbc.InternalError as e:
+        print(e,": Cursor not valid or transaction out of sync")
+    except pyodbc.ProgrammingError as e:
+        print(e,": Database not found, SQL Syntax error or wrong number of parameters.")
+    except pyodbc.NotSupportedError as e:
+        print(e,": Database does not support provided pyodbc request.")
+    except:
+        print("Unkown error occured during connecting to the database.")
 
 def InputLoop(userInput):
     global commands
