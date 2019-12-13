@@ -16,6 +16,13 @@ Bat-con allows user to interact with MS SQL database and its content. In future 
 - executing commands directly or via aliases
 
 
+# Planned functionalities:
+- CRUD operations
+- importing data from .csv file into the selected database
+- SQL-XML converter and vice-versa
+- system-wide commands
+
+
 # List of available commands:
 ```
 exit: exits the program (eventually)
