@@ -53,9 +53,6 @@ def Exit():
     sys.exit()
 
 def Connect(srv = "", db = ""):
-    global dbConnection
-    global server
-    global database
    # import main
     
     #kwargs = {}
@@ -66,6 +63,10 @@ def Connect(srv = "", db = ""):
         
     
     try:
+        global dbConnection
+        global server
+        global database
+        
         if dbConnection == "":
             if srv == "":
                 srv = str(input("Server name: "))
@@ -110,7 +111,8 @@ def Connect(srv = "", db = ""):
     except KeyboardInterrupt:
         print("\nExiting program...")
     except:
-        print("Unkown error occured during connecting to the database.")
+        print("Connect: Unkown error occured during connecting to the database.")
+    return
 
 
 def Close():
@@ -118,14 +120,15 @@ def Close():
     if dbConnection:
         dbConnection.close()
     else:
-        print("You have no active connection to any database")
-        print()
+        print("There is no active connection to any database\n")
+    return
         
 def Logout():
     import main
     main.username = None
     main.password = None
     Clear()
+    return
         
 def Show(tbl = ""):
     global dbConnection
@@ -157,11 +160,10 @@ def Show(tbl = ""):
                     print(str(i), r, "\t")
                     i += 1
         else:
-            print("You did not enter table's name.")
-            print()
+            print("You did not enter table's name.\n")
     else:
-        print("There is no active connection to the database.")
-        print()
+        print("There is no active connection to the database.\n")
+    return
             
 def Export(tbl = ""):
     global table
@@ -187,13 +189,24 @@ def Export(tbl = ""):
                     for r in row:
                         writer.writerow(row)
             else:
-                print("You did not select any source table.")
-                print()
+                print("You did not select any source table.\n")
     else:
-        print("There is no connection established.")
-        print()
+        print("There is no connection established.\n")
+    return
         
 def Clear():
     print("\n" * 50)
+    return
+    
+def Help():
+    print("\nList of available commands:")
+    for k, v in commands.items():
+        if k != "aliases":
+            print(k,":", v)
+    print("\nList of aliases:")
+    for k, v in commands["aliases"].items():
+        print(k,":", v)
+    return
+        
 
             

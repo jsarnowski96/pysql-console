@@ -11,6 +11,8 @@ from getpass import getpass
 
 username = None
 password = None
+success = False
+
 
 def drawInitBoard():
     print(r"""      
@@ -42,27 +44,27 @@ _/_/_/      _/_/_/      _/_/                _/_/_/    _/_/    _/    _/  _/_/_/  
                                        +---------------------------------+
     """)
     
-def UserAuthentication():
+def UserAuthentication():    
     global username 
     global password 
-    
-    print("\n" * 25)
-    drawInitBoard()
-    
-    username = str(input("Username: "))
-    password = getpass()
-    dbConnection = ""
-    success = False
-    
+    global success   
     try:
+        if username != "" or username != None:
+            username = None
+        if password != "" or password != None:
+            password = None
+        while username == "" or username == None:
+            username = str(input("Username: "))
+        while password == "" or password == None:
+            password = getpass()
+        dbConnection = ""
         if dbConnection:
-            pass
+            dbConnection.close()
         else:
             dbConnection = pyodbc.connect('Driver={SQL Server Native Client 11.0};'
                                           'Server=localhost;'
                                           'Database=AdventureWorks2012;'
                                           'Trusted_Connection=yes;')    
-        #pwdHash = hashlib.sha512(password.encode('utf-8')).hexdigest()
         cursor = dbConnection.cursor()
         cursor.execute("select username, password from AuthUsers where username = ? and password = ?", username, password)            
         print("+-----------------------------------------------+")
@@ -70,86 +72,86 @@ def UserAuthentication():
         print("+-----------------------------------------------+")
         if cursor.fetchone():
             success = True
-            if success == True:        
-                print("Welcome,", username)
-            else:
-                print("Authentication failed. Incorrect username or password.")
+            if success is True:        
+                print("Welcome back,", username,"\n")
         else:
-            print("Could not connect to the database.")
-        dbConnection.close()
-        dbConnection = None
+            print("Authentication failed. Incorrect username or password.\n")
     except pyodbc.Warning as w:
         print(w,": Caution - possible data truncation.")
     except pyodbc.DatabaseError as e:
         print(e,": Could not connect to the database - incorrect server name or database")
-        UserAuthentication()
     except pyodbc.DataError as e:
-        print(e,": Illegal operation detected. Exiting.")
-        sys.exit()
+        print(e,": Illegal operation detected.")
     except pyodbc.OperationalError as e:
         print(e,": Could not connect to the database server")
-        UserAuthentication()
     except pyodbc.IntegrityError as e:
         print(e,": Relational integrity of the target database is compromised.")
-        UserAuthentication()
     except pyodbc.InternalError as e:
         print(e,": Cursor not valid or transaction out of sync")
-        UserAuthentication()
     except pyodbc.ProgrammingError as e:
         print(e,": Database not found, SQL Syntax error or wrong number of parameters.")
-        UserAuthentication()
     except pyodbc.NotSupportedError as e:
         print(e,": Database does not support provided pyodbc request.")
-        UserAuthentication()
     except KeyboardInterrupt:
         print("\nExiting program...")
+        sys.exit()
+    except SystemExit:
+        pass
     except:
-        print("Unkown error occured during connecting to the database.")
+        print("UserAuthentication: Unknown error occured during connecting to the database.")
 
 def InputLoop(userInput):
-    global commands
-    import commands
-    if userInput[0] in commands.commands or userInput in commands.commands["aliases"].keys():
-        if userInput[0] == "exit" or userInput == "quit":
-            commands.Exit()
-        if  userInput[0] == "connect":
-            try:
-                if userInput[1] and userInput[2]:
-                    commands.Connect(userInput[1], userInput[2])
-                elif userInput[1]:
-                    commands.Connect(userInput[1])
-            except IndexError:
-                commands.Connect()
-        if userInput[0] == "close":
-            commands.Close()
-        if userInput[0] == "logout":
-            commands.Logout()
-            UserAuthentication()
-        if userInput[0] == "show":
-            commands.Show()
-        if userInput[0] == "export" or userInput[0] == "exp":
-            commands.Export()
-        if userInput[0] == "clear" or userInput[0] == "cls":
-            commands.Clear()
-            drawInitBoard()
-            print("\n" * 2)
-    else:
-        print("Syntax error - " + userInput + " command was not recognized.")
+    try:
+        import commands
+        if userInput[0] in commands.commands or userInput in commands.commands["aliases"].keys():
+            if userInput[0] == "exit" or userInput == "quit":
+                commands.Exit()
+            if  userInput[0] == "connect":
+                try:
+                    if userInput[1] and userInput[2]:
+                        commands.Connect(userInput[1], userInput[2])
+                    elif userInput[1]:
+                        commands.Connect(userInput[1])
+                except IndexError:
+                    commands.Connect()
+            elif userInput[0] == "close":
+                commands.Close()
+            elif userInput[0] == "logout":
+                commands.Logout()
+            elif userInput[0] == "show":
+                commands.Show()
+            elif userInput[0] == "help":
+                commands.Help()
+            elif userInput[0] == "export" or userInput[0] == "exp":
+                commands.Export()
+            elif userInput[0] == "clear" or userInput[0] == "cls":
+                commands.Clear()
+                drawInitBoard()
+                print("\n" * 2)
+        else:
+            print("Syntax error - " + userInput + " command was not recognized.")
+    except AttributeError:
+        pass
+    except TypeError:
+        pass
         
 # Startup script execution
 
-def MainActivity():  
-    global username
-    
-    while True:
+def MainActivity():
+    try:
         userInput = list(map(str,input(username + " $ ").split()))
         InputLoop(userInput)
-try:    
-    UserAuthentication()
-    MainActivity()
-except SystemExit:
-    print("\nExiting program...")
+    except KeyboardInterrupt:
+        print("\nExiting program...")
+        sys.exit()
+
+try:
+    print("\n" * 25)
+    drawInitBoard()
+    while True:
+        if success == False:
+            UserAuthentication()
+        elif success == True:
+            MainActivity()
 except KeyboardInterrupt:
-    print("\nExiting program...")
-except:
-    print("\nUnknown error occured.")
+    sys.exit()
