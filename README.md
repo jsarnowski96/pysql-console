@@ -7,7 +7,7 @@ Command line emulator written in Python 3.x
 [Planned features](#planned-features)<br />
 [List of available commands](#list-of-available-commands)<br />
 [List of commands' aliases](#list-of-commands-aliases)<br />
-[Commands' interactive mode](#commands-interactive-mode)<br />
+[CLI's interactive mode](#commands-interactive-mode)<br />
 [To do](#to-do)<br />
 [Known issues](#known-issues)<br />
 
