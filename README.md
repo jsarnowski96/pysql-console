@@ -8,7 +8,7 @@ Bat-con is a simple program emulating the command line interface. Due to Python'
 
 # Current functionalities:
 - create a connection with local or external MS SQL database
-- display contents of the selected table
+- display contents of the selected table (currently in raw, unformatted form)
 - export selected table to .csv file
 - implementation of pseudo user authentication mechanism
 - executing commands directly or via aliases
