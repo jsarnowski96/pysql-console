@@ -3,13 +3,13 @@ Command line emulator written in Python 3.x
 
 ### Table of contents
 
-<a name="intro" />
+
 ## Introduction
 Bat-con is a simple program emulating the command line interface. Due to Python's limitations, some of the features introduced by this program are sort of workarounds (for example user authentication system or multiple `input()` parameters treated as a separate strings kept in `list()` object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development process I'm going to polish some things up.
 
 Bat-con allows user to interact with MS SQL database and its content. In future I'm going to implement other functions such as SQL-XML converter, text editor or even system-wide operations' support.
 
-<a name="current" />
+
 ## Current features:
 - create a connection with local or external MS SQL database
 - display contents of the selected table (currently in raw, unformatted form)
@@ -17,14 +17,14 @@ Bat-con allows user to interact with MS SQL database and its content. In future 
 - implementation of pseudo user authentication mechanism
 - executing commands directly or via aliases
 
-<a name="planned" />
+
 ## Planned features:
 - full CRUD integration
 - importing data from .csv file into the selected database
 - SQL-XML converter and vice-versa
 - system-wide commands
 
-<a name="commands" />
+
 ## List of available commands:
 ```
 exit: exits the program (eventually)
@@ -39,14 +39,14 @@ export <table>: exports the selected table to .csv file (otherwise prompt for ta
 logout: releases pseudo user credentials and returns to login screen
 ```
 
-<a name="aliases" />
+
 ## List of commands' aliases:
 ```
 exp: export command alias
 quit: exit command alias
 ```
 
-<a name="interactive_mode" />
+
 ## Command's interactive mode:
 Commands allowing user to provide the additional parameters treats them only as optional - in case of not providing any of the specified parameters or just a part of them, these commands have implemented user interactive mode for providing the missing data required for performing their basic task and as a way of handling exceptions. For example:
 ```
@@ -55,7 +55,7 @@ Database: test_db
 Connection with localhost->test_db has been successfully established.
 ```
 
-<a name="todo" />
+
 ## To do:
 - implementation of commands' functionalities:
   - close
@@ -67,7 +67,7 @@ Connection with localhost->test_db has been successfully established.
 - fix the export command's bug
 - better format of table's listed content
 
-<a name="issues" />
+
 ## Known issues:
 - problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.
 - `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by boolean data type fields.
