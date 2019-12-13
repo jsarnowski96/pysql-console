@@ -1,3 +1,19 @@
+```
+            +-----------------------------------------------------------------------------+
+            |                     _..-'(                       )`-.._                     |
+            |                  ./'. '||\\.       (\_/)       .//||` .`\.                  |
+            |               ./'.|'.'||||\\|..    )O O(    ..|//||||`.`|.`\.               |
+            |            ./'..|'.|| |||||\`````` '`"'` ''''''/||||| ||.`|..`\.            |
+            |          ./'.||'.|||| ||||||||||||.     .|||||||||||| |||||.`||.`\.         |
+            |         /'|||'.|||||| ||||||||||||{     }|||||||||||| ||||||.`|||`\         |
+            |        '.|||'.||||||| ||||||||||||{     }|||||||||||| |||||||.`|||.`        |
+            |       '.||| ||||||||| |/'   ``\||``     ''||/''   `\| ||||||||| |||.`       |
+            |       |/' \./'     `\./         \!|\   /|!/         \./'     `\./ `\|       |
+            |       V    V         V          }' `\ /' `{          V         V    V       |
+            |       `    `         `               V               '         '    '       |
+            +-----------------------------------------------------------------------------+
+```
+
 # bat-con (under development)
 Command line emulator written in Python 3.x
 
@@ -5,6 +21,7 @@ Command line emulator written in Python 3.x
 [Introduction](#introduction)<br />
 [Current features](#current-features)<br />
 [Planned features](#planned-features)<br />
+[File structure](#file-structure)<br />
 [List of available commands](#list-of-available-commands)<br />
 [List of commands' aliases](#list-of-commands-aliases)<br />
 [CLI's interactive mode](#clis-interactive-mode)<br />
@@ -13,7 +30,7 @@ Command line emulator written in Python 3.x
 [Release dates](#release-dates)<br />
 
 ## Introduction
-Bat-con is a simple program emulating the command line interface. Due to Python's limitations, some of the features introduced by this program are sort of workarounds (for example user authentication system or multiple `input()` parameters treated as a separate strings kept in `list()` object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development process I'm going to polish some things up.
+Bat-con is a simple program emulating the command line interface, designed to interact mostly with MS SQL environment. Due to Python's limitations, some of the features introduced by this program are sort of workarounds (for example user authentication system or multiple `input()` parameters treated as a separate strings kept in `list()` object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development process I'm going to polish some things up.
 
 Bat-con allows user to interact with MS SQL database and its content. In future I'm going to implement other functions such as SQL-XML converter, text editor or even system-wide operations' support.<br /><br />
 
@@ -27,9 +44,15 @@ Bat-con allows user to interact with MS SQL database and its content. In future 
 
 ## Planned features:
 - full CRUD integration
+- read data from .csv file and display it on the screen
 - importing data from .csv file into the selected database
 - SQL-XML converter and vice-versa
 - system-wide commands
+<br />
+
+## File structure:
+- `main.py` - top layer py script handling user input and calling sub-routines from `commands.py`
+  - `commands.py` - contains implementations of all internal commands used by the program
 <br />
 
 ## List of available commands:
@@ -38,10 +61,10 @@ exit: exits the program (eventually)
 close: close the active MS SQL connection
 connect <server> <database>: create an active connection to the target MS SQL database
 show <table>: displays the content of the selected table
-add <value 1> <value 2> ... <value n>: append new row to the selected table
-edit <row_id>: modify the specified row in the selected table
-delete <row_id>: delete the specified row ID in the selected table
-drop <table>|<database>: drop the target table or database (destructive)
+add <value 1> <value 2> ... <value n>: append new row to the selected table - in development
+edit <row_id>: modify the specified row in the selected table - in development
+delete <row_id>: delete the specified row ID in the selected table - in development
+drop <table>|<database>: drop the target table or database (destructive) - in development
 export <table>: exports the selected table to .csv file (otherwise prompt for table's name)
 logout: releases pseudo user credentials and returns to login screen
 ```
@@ -65,11 +88,12 @@ Connection with localhost->test_db has been successfully established.
 
 ## To do:
 - implementation of commands' functionalities:
-  - close
-  - add
-  - delete
-  - edit
-  - drop
+  - `close`
+  - `add`
+  - `delete`
+  - `edit`
+  - `drop`
+  - `file <read>|<write> <file_name>`
 - fix the exit command's bug
 - fix the export command's bug
 - better format of table's listed content
