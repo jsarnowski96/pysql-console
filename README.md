@@ -28,7 +28,12 @@ quit: exit command alias
 ```
 
 # Command wizard:
-Commands allowing user to provide the additional parameters treats them only as optional - in case of not providing any of the specified parameters or just a part of them, for example `connect localhost`, `connect` command has implemented internal user prompt for providing the missing data required for establishing a successfull connection.
+Commands allowing user to provide the additional parameters treats them only as optional - in case of not providing any of the specified parameters or just a part of them, these commands have implemented internal user prompt for providing the missing data required for performing their basic task. For example:
+```
+js $ connect localhost
+Database: test_db
+Connection with localhost->test_db has been successfully established.
+```
 
 # To do:
 - implementation of commands' functionalities:
