@@ -10,6 +10,7 @@ Command line emulator written in Python 3.x
 [CLI's interactive mode](#clis-interactive-mode)<br />
 [To do](#to-do)<br />
 [Known issues](#known-issues)<br />
+[Release dates](#release-dates)<br />
 
 ## Introduction
 Bat-con is a simple program emulating the command line interface. Due to Python's limitations, some of the features introduced by this program are sort of workarounds (for example user authentication system or multiple `input()` parameters treated as a separate strings kept in `list()` object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development process I'm going to polish some things up.
@@ -78,4 +79,7 @@ Connection with localhost->test_db has been successfully established.
 - problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.
 - `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by boolean data type fields.
 - export does its job only partially since it replicates a single row N times instead of processing next rows.
+
+## Release dates:
+- 13/12/2019 - Initial commit + main script's upload
 
