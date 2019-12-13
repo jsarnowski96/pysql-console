@@ -5,7 +5,7 @@ Command line emulator written in Python 3.x
 - create a connection with local or external MS SQL database
 - display contents of the selected table
 - export selected table to .csv file
-- implementation of pseudo user authentication mechanism based on Users or AuthUsers tables (depending on the config)
+- implementation of pseudo user authentication mechanism
 - executing commands directly or via aliases
 
 # List of available commands:
