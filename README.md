@@ -119,6 +119,6 @@ Connection with localhost->test_db has been successfully established.
             - ASCII Logo tweaks<br />
 - 14/12/2019 summary:<br />
             - Fixed bug in `Exit()` method - script is now finishing properly<br />
-            - Introduced new bug in `UserAuthentication()` method - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigation.<br />
+            - Introduced new bug in close proximity of `UserAuthentication()` and `InputLoop()` methods - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigation.<br />
             - Code refactoring in `MainActivity()` - removed nested loop and wrapped internal code in try...except clause<br />
 
