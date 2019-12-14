@@ -143,9 +143,7 @@ def InputLoop(userInput):
                 drawInitBoard()
                 print("\n" * 2)
     except KeyError:
-        print("Syntax error - " + userInput[0] + " command was not recognized.\n")        
-        
-# Startup script execution
+        print("Syntax error - " + userInput[0] + " command was not recognized.\n")       
 
 def MainActivity():
     try:
@@ -155,6 +153,8 @@ def MainActivity():
         print("\nExiting program...")
         sys.exit()
 
+# Startup execution        
+        
 try:
     settings.init()
     print("\n" * 25)
