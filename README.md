@@ -95,7 +95,7 @@ Connection with localhost->test_db has been successfully established.
 
 ## To do:
 - [ ] implementation of commands' functionalities:
-  - [ ] `close`
+  - [x] `close`
   - [ ] `add`
   - [ ] `delete`
   - [ ] `edit`
