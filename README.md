@@ -120,6 +120,7 @@ Connection with localhost->test_db has been successfully established.
   - [ ] `drop`
   - [ ] `file <read>|<write> <file_name>`
   - [x] `help`
+- expansion of existing `commands` dictionary and migration of `commands.py` methods calls to the nested dictionaries, removing direct method calls from `batconsole.py` entirely.
 - [x] fix bug in `Exit()` method
 - [ ] fix bug in `Export()` method
 - [x] better format of table's listed content
