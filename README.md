@@ -36,7 +36,7 @@ Command line emulator written in Python 3.x
 [Release dates](#release-dates)<br />
 
 ## Introduction
-Bat-Console is a simple program emulating the command line interface, designed to interact mostly with MS SQL environment. Due to Python's limitations, some of the features introduced by this program are sort of workarounds (for example user authentication system or multiple `input()` parameters treated as a separate strings kept in `list()` object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development process I'm going to polish some things up.
+Bat-Console is a simple program emulating the command line interface, designed to interact mostly with MS SQL environment. Due to Python's limitations related to internal command execution, some of the features introduced by this program are sort of workarounds (for example user authentication system or multiple `input()` parameters treated as a separate strings kept in `list()` object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development process I'm going to polish some things up.
 
 Bat-Console allows user to interact with MS SQL database and its content. In future I'm going to implement other features like SQL-XML converter, text editor or even system-wide operations' support.<br /><br />
 
