@@ -96,10 +96,9 @@ logout: releases pseudo user credentials and returns to login screen
 <br />
 
 ## List of commands' aliases:
-```
-exp: export command alias
-quit: exit command alias
-```
+~~exp: export command alias
+quit: exit command alias~~
+
 <br />
 
 ## CLI's interactive mode:
