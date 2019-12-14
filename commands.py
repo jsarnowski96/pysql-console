@@ -167,7 +167,7 @@ def Show(table = ""):
         print("\nTerminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
-        if sqlstate == '42000':
+        if sqlstate == "42S02":
             print("Table",table," does not exist in the",settings.global_config_array["database"],"database.\n")
         else: print(e)
             
