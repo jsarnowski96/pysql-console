@@ -6,10 +6,9 @@ Created on Thu Dec 12 01:11:41 2019
 """
 
 import pyodbc
-import sys
 
 commands = {
-    "exit": "Exit the program",
+    "exit": "Exit the program" ,
     "connect": "Make a connection to the target database",
     "close": "Close active connection to the database",
     "logout": "Return to splash screen",
@@ -91,6 +90,7 @@ def Connect(srv = "", db = ""):
     except pyodbc.NotSupportedError:
         print("NotSupportedError: Database does not support provided pyodbc request.")
     except KeyboardInterrupt:
+        dbConnection.close()
         print("\nTerminating command...\n")
     except:
         print("Connect: Unkown error occured during connecting to the database.")
@@ -134,21 +134,28 @@ def Show(tbl = ""):
                 cursor = dbConnection.cursor()
                 result = cursor.execute(query)
                 #print(str(result.count()) + " records detected")
-                print("Contents of table " + table + ":")
-                for i in result.description:
-                    print(i[0] + "\t")
-                print()
-                i = 0
-                row = result.fetchall()
-                for r in row:
-                    if i <= len(row):
-                        print(str(i), r, "\t")
-                        i += 1
+                columns = [column[0] for column in result.description]
+                print("\nContents of table " + table + ":")
+                print("-" * sum(len(i) for i in columns) * 2)
+                for i, c in enumerate(columns):
+                    if i == 0 :
+                        print(c,"\t|\t", end = '')
+                    elif i == len(columns) - 1:
+                        print(c,"\t|")
+                    else:
+                        print(c,"\t|\t", end = '')
+                print("-" * sum(len(i) for i in columns) * 2)
+                rows = result.fetchall()
+                for row in rows:
+                    print("-" * 100)
+                    print(row)
+                    print("-" * 100)
             else:
                 print("You did not enter table's name.\n")
         else:
             print("There is no active connection to the database.\n")
     except KeyboardInterrupt:
+        dbConnection.close()
         print("\nTerminating command...\n")
             
 def Export(tbl = ""):

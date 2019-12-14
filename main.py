@@ -103,7 +103,7 @@ def UserAuthentication():
 
 def InputLoop(userInput):
     try:
-        if userInput[0] in commands.commands or userInput in commands.commands["aliases"].keys():
+        if userInput[0] in commands.commands or commands.commands["aliases"].has_key(userInput[0]):
             if userInput[0] == "exit" or userInput == "quit":
                 commands.Exit()
                 global username
@@ -134,10 +134,8 @@ def InputLoop(userInput):
                 drawInitBoard()
                 print("\n" * 2)
         else:
-            print("Syntax error - " + userInput + " command was not recognized.")
+            print("Syntax error - " + userInput[0] + " command was not recognized.\n")
     except AttributeError:
-        pass
-    except TypeError:
         pass
         
 # Startup script execution
