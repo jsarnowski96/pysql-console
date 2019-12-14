@@ -6,6 +6,7 @@ Created on Thu Dec 12 01:11:41 2019
 """
 
 import pyodbc
+import settings
 
 commands = {
     "exit": "Exit the program" ,
@@ -27,52 +28,50 @@ commands = {
     }
 }
 
-dbConnection = None
-database = None
-server = None
-table = None
-
 def Exit():
-    global dbConnection
-    global database
-    global server
-    global table
+    if settings.global_config_array["server"] != None:
+        settings.global_config_array["server"] = None
+    if settings.global_config_array["database"] != None:
+        settings.global_config_array["database"] = None
+    if settings.global_config_array["table"] != None:
+        settings.global_config_array["table"] = None
+    if settings.global_config_array["active_sql_connection"] != None:
+        if settings.global_config_array["active_sql_connection"]:
+            settings.global_config_array["active_sql_connection"].close()
+            settings.global_config_array["active_sql_connection"] = None
 
-    if dbConnection:
-        dbConnection.close()
-    dbConnection = None
-    server = None
-    database = None
-    table = None
-
-def Connect(srv = "", db = ""):
-    try:
-        global dbConnection
-        global server
-        global database
+def Connect(server = "", database = ""):
+    try:                
+        username = settings.global_config_array["username"]
+        password = settings.global_config_array["password"]
         
-        if dbConnection == None:
-            if srv == "" or srv == None:
-                srv = str(input("Server name: "))
-            if db == "":
-                db = str(input("Database: "))
-
-            server = srv
-            database = db
-                        
-            if server:
-                if database:
-                    dbConnection = pyodbc.connect('Driver={SQL Server Native Client 11.0};'
+        if settings.global_config_array["active_sql_connection"] == None:
+            dbConnection = None
+            if dbConnection == None:
+                if server == "":
+                    server = str(input("Server name: "))
+                if database == "":
+                    database = str(input("Database: "))
+    
+                settings.global_config_array["server"] = server
+                settings.global_config_array["database"] = database
+                            
+                if server:
+                    if database:
+                        dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
                                               'Server='+server+';'
                                               'Database='+database+';'
-                                              'Trusted_Connection=yes;')
-                    print("Successfully connected to the %s->%s.\n" % (server, database))
+                                              'uid='+username+';'
+                                              'pwd='+password+';'
+                                              'Trusted_Connection=no;') 
+                        print("Successfully connected to the %s->%s.\n" % (server, database))
+                    else:
+                        print("You did not enter database name.")
                 else:
-                    print("You did not enter database name.")
-            else:
-                print("You did not enter server name.")
-        elif dbConnection:
-            print("Connection is already establised.")
+                    print("You did not enter server name.")
+            settings.global_config_array["active_sql_connection"] = dbConnection
+        elif settings.global_config_array["active_sql_connection"]:
+            print("Connection is already established.\n")
     except pyodbc.Warning:
         print("Warning: Caution - possible data truncation.")
     except pyodbc.DatabaseError:
@@ -93,99 +92,101 @@ def Connect(srv = "", db = ""):
         dbConnection.close()
         print("\nTerminating command...\n")
     except:
-        print("Connect: Unkown error occured during connecting to the database.")
+        print("Connect: Unknown error occured during connecting to the database.")
 
 def Close():
-    global dbConnection
-    global server
-    global database
-    if dbConnection:
-        dbConnection.close()
-        dbConnection = None
-        print("Connection to %s->%s closed.\n" % (server, database))
-        server = None
-        database = None
+    if settings.global_config_array["table"] != None:
+        settings.global_config_array["table"] = None
+    if settings.global_config_array["active_sql_connection"] != None:
+        if settings.global_config_array["active_sql_connection"]:
+            settings.global_config_array["active_sql_connection"].close()
+            settings.global_config_array["active_sql_connection"] = None
+            print("Connection to %s->%s closed.\n" % (settings.global_config_array["server"], settings.global_config_array["database"]))
+        if settings.global_config_array["server"] != None:
+            settings.global_config_array["server"] = None
+        if settings.global_config_array["database"] != None:
+            settings.global_config_array["database"] = None
     else:
         print("There is no active connection to any database\n")
         
 def Logout():
-    import main
-    main.username = None
-    main.password = None
-    Clear()
+    if settings.global_config_array["secure_sql_user_session"] != None:
+        if settings.global_config_array["secure_sql_user_session"]:
+            settings.global_config_array["secure_sql_user_session"].close()
+            settings.global_config_array["secure_sql_user_session"] = None
+    if settings.global_config_array["username"] != None:
+        settings.global_config_array["username"] = None
+    if settings.global_config_array["password"] != None:
+        settings.global_config_array["password"] = None
+    print("\nUser logged out...\n")
         
-def Show(tbl = ""):
-    global dbConnection
-    global database
-    global table
+def Show(table = ""):
     result = ""
     
     try:
+        if settings.global_config_array["active_sql_connection"]:
+            dbConnection = settings.global_config_array["active_sql_connection"]
+            if table == "":
+                table = str(input("Table name: "))                
+            if settings.global_config_array["table"] != None:
+                table = settings.global_config_array["table"]
+            queryAppend = list("select * from ")
+            for t in table:
+                queryAppend.append(t)
+            query = ''.join(queryAppend)
+            cursor = dbConnection.cursor()
+            result = cursor.execute(query)
+            #print(str(result.count()) + " records detected")
+            columns = [column[0] for column in result.description]
+            print("\nContents of table " + table + ":")
+            print("-" * sum(len(i) for i in columns) * 2)
+            for i, c in enumerate(columns):
+                if i == 0 :
+                    print(c,"\t|\t", end = '')
+                elif i == len(columns) - 1:
+                    print(c,"\t|")
+                else:
+                    print(c,"\t|\t", end = '')
+            print("-" * sum(len(i) for i in columns) * 2)
+            rows = result.fetchall()
+            for row in rows:
+                print("-" * 100)
+                print(row)
+                print("-" * 100)
+        else:
+            print("There is no active connection to the database. Redirecting to connect action...\n")
+            Connect()
+    except KeyboardInterrupt:
         if dbConnection:
-            if tbl == "":
-                tbl = str(input("Table name: "))
-            table = tbl
+            dbConnection.close()
+        print("\nTerminating command...\n")
             
-            if table != "" and table:
+def Export(table = ""):
+    try:
+        if settings.global_config_array["active_sql_connection"]:
+            dbConnection = settings.global_config_array["active_sql_connection"]
+            if table == "":
+                table = str(input("Table name: "))
+            if settings.global_config_array["table"] != None:
+                table = settings.global_config_array["table"]
+                fileBase = table
+                fileName = fileBase + ".csv"
                 queryAppend = list("select * from ")
                 for t in table:
                     queryAppend.append(t)
                 query = ''.join(queryAppend)
                 cursor = dbConnection.cursor()
                 result = cursor.execute(query)
-                #print(str(result.count()) + " records detected")
-                columns = [column[0] for column in result.description]
-                print("\nContents of table " + table + ":")
-                print("-" * sum(len(i) for i in columns) * 2)
-                for i, c in enumerate(columns):
-                    if i == 0 :
-                        print(c,"\t|\t", end = '')
-                    elif i == len(columns) - 1:
-                        print(c,"\t|")
-                    else:
-                        print(c,"\t|\t", end = '')
-                print("-" * sum(len(i) for i in columns) * 2)
-                rows = result.fetchall()
-                for row in rows:
-                    print("-" * 100)
-                    print(row)
-                    print("-" * 100)
-            else:
-                print("You did not enter table's name.\n")
+                with open(fileName, "a+", newline='') as csvfile:
+                    import csv
+                    writer = csv.writer(csvfile)
+                    writer.writerow([x[0] for x in result.description])  # column headers
+                    row = result.fetchall()
+                    for r in row:
+                        writer.writerow(row)
         else:
-            print("There is no active connection to the database.\n")
-    except KeyboardInterrupt:
-        dbConnection.close()
-        print("\nTerminating command...\n")
-            
-def Export(tbl = ""):
-    global table
-    global dbConnection
-    try:
-        if dbConnection != "" or dbConnection:
-            if tbl == "":
-                if table == "":
-                    tbl = str(input("Table name: "))
-                if table != "" or table:
-                    fileBase = table
-                    fileName = fileBase + ".csv"
-                    queryAppend = list("select * from ")
-                    for t in table:
-                        queryAppend.append(t)
-                    query = ''.join(queryAppend)
-                    cursor = dbConnection.cursor()
-                    result = cursor.execute(query)
-                    with open(fileName, "a+", newline='') as csvfile:
-                        import csv
-                        writer = csv.writer(csvfile)
-                        writer.writerow([x[0] for x in result.description])  # column headers
-                        row = result.fetchall()
-                        for r in row:
-                            writer.writerow(row)
-                else:
-                    print("You did not select any source table.\n")
-        else:
-            print("There is no connection established.\n")
+            print("There is no connection established. Redirecting to connect action...\n")
+            Connect()
     except KeyboardInterrupt:
         print("\nTerminating command...\n")
         
@@ -201,3 +202,6 @@ def Help():
     print("\nList of aliases:")
     for k, v in commands["aliases"].items():
         print(k,":", v)
+
+if KeyboardInterrupt:
+    print("\nTerminating command...\n")

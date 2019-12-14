@@ -9,11 +9,9 @@ import pyodbc
 import sys
 from getpass import getpass
 import commands as commands
+import settings
 
-username = None
-password = None
 success = False
-
 
 def drawInitBoard():
     print(r"""      
@@ -46,39 +44,44 @@ _/_/_/      _/_/_/      _/_/                _/_/_/    _/_/    _/    _/  _/_/_/  
     """)
     
 def UserAuthentication():    
-    global username 
-    global password 
     global success   
     try:
-        if username != "" or username != None:
-            username = None
-        if password != "" or password != None:
-            password = None
-        while username == "" or username == None:
-            username = str(input("Username: "))
-        while password == "" or password == None:
-            password = getpass()
+        if settings.global_config_array["username"] != None:
+            settings.global_config_array["username"] = None
+        if settings.global_config_array["password"] != None:
+            settings.global_config_array["password"] = None
+            
+        username = str(input("Username: "))
+        password = getpass()
+        settings.global_config_array["username"] = username
+        settings.global_config_array["password"] = password
         dbConnection = ""
-        if dbConnection:
-            dbConnection.close()
-        else:
-            dbConnection = pyodbc.connect('Driver={SQL Server Native Client 11.0};'
+        
+        if settings.global_config_array["secure_sql_user_session"] != None:
+            settings.global_config_array["secure_sql_user_session"].close()
+            settings.global_config_array["secure_sql_user_session"] = None
+
+        dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
                                           'Server=localhost;'
                                           'Database=master;'
                                           'uid='+username+';'
                                           'pwd='+password+';'
-                                          'Trusted_Connection=yes;')    
-        cursor = dbConnection.cursor()
-        cursor.execute("select username, password from AuthUsers where username = ? and password = ?", username, password)            
+                                          'Trusted_Connection=no;')   
+        #cursor = dbConnection.cursor()
+        #cursor.execute("select username, password from AuthUsers where username = ? and password = ?", username, password)            
         print("+-----------------------------------------------+")
         print("| User Authentication action has been completed |")
         print("+-----------------------------------------------+")
-        if cursor.fetchone():
+        #if cursor.fetchone():
+        #    success = True
+        #    if success is True:        
+        #        print("Welcome back,", username,"\n")
+        #else:
+        #    print("Authentication failed. Incorrect username or password.\n")
+        if dbConnection:
             success = True
-            if success is True:        
-                print("Welcome back,", username,"\n")
-        else:
-            print("Authentication failed. Incorrect username or password.\n")
+            settings.global_config_array["secure_sql_user_session"] = dbConnection
+            print("Welcome back,", username,"\n")
     except pyodbc.Warning as w:
         print(w,": Caution - possible data truncation.")
     except pyodbc.DatabaseError as e:
@@ -98,33 +101,37 @@ def UserAuthentication():
     except KeyboardInterrupt:
         print("\nExiting program...")
         sys.exit()
-    except SystemExit:
-        pass
-    except:
-        print("UserAuthentication: Unknown error occured during connecting to the database.")
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        print("+-----------------------------------------------+")
+        print("| User Authentication action has been completed |")
+        print("+-----------------------------------------------+")
+        if sqlstate == '28000':
+            print("Authentication failed. Incorrect username or password.\n")
+        else:
+            print("UserAuthentication: Unknown error occured during connecting to the database.\n")
 
 def InputLoop(userInput):
     try:
         if userInput[0] in commands.commands or commands.commands["aliases"].has_key(userInput[0]):
             if userInput[0] == "exit" or userInput == "quit":
                 commands.Exit()
-                global username
-                global password
-                username = None
-                password = None
                 sys.exit()
             if  userInput[0] == "connect":
                 try:
                     if userInput[1] and userInput[2]:
-                        commands.Connect(srv = userInput[1], db = userInput[2])
+                        commands.Connect(server = userInput[1], database = userInput[2])
                     elif userInput[1]:
-                        commands.Connect(srv = userInput[1])
+                        commands.Connect(server = userInput[1])
                 except IndexError:
                     commands.Connect()
             elif userInput[0] == "close":
                 commands.Close()
             elif userInput[0] == "logout":
+                global success 
+                success = False
                 commands.Logout()
+                drawInitBoard()
             elif userInput[0] == "show":
                 commands.Show()
             elif userInput[0] == "help":
@@ -135,28 +142,27 @@ def InputLoop(userInput):
                 commands.Clear()
                 drawInitBoard()
                 print("\n" * 2)
-        else:
-            print("Syntax error - " + userInput[0] + " command was not recognized.\n")
-    except AttributeError:
-        pass
+    except KeyError:
+        print("Syntax error - " + userInput[0] + " command was not recognized.\n")        
         
 # Startup script execution
 
 def MainActivity():
     try:
-        userInput = list(map(str,input(username + " $ ").split()))
+        userInput = list(map(str,input(settings.global_config_array["username"] + " $ ").split()))
         InputLoop(userInput)
     except KeyboardInterrupt:
         print("\nExiting program...")
         sys.exit()
 
 try:
+    settings.init()
     print("\n" * 25)
     drawInitBoard()
     while True:
-        if success == False:
+        if settings.global_config_array["secure_sql_user_session"] == None and success == False:
             UserAuthentication()
-        elif success == True:
+        elif settings.global_config_array["secure_sql_user_session"] and success == True:
             MainActivity()
 except KeyboardInterrupt:
     sys.exit()
