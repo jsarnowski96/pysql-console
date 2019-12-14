@@ -28,6 +28,7 @@ Command line emulator written in Python 3.x
 [Current features](#current-features)<br />
 [Planned features](#planned-features)<br />
 [File structure](#file-structure)<br />
+[Requirements](#requirements)<br />
 [List of available commands](#list-of-available-commands)<br />
 [List of commands' aliases](#list-of-commands-aliases)<br />
 [CLI's interactive mode](#clis-interactive-mode)<br />
@@ -75,6 +76,7 @@ dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
                               'pwd='+password+';'
                               'Trusted_Connection=no;')  
 ```
+<br />
 
 
 ## List of available commands:
