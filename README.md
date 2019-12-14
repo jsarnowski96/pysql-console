@@ -69,6 +69,7 @@ connect <server> <database>: create an active connection to the target MS SQL da
 show <table>: displays the content of the selected table
 add <value 1> <value 2> ... <value n>: append new row to the selected table - in development
 edit <row_id>: modify the specified row in the selected table - in development
+help: displays the list of available commands and aliases
 delete <row_id>: delete the specified row ID in the selected table - in development
 drop <table>|<database>: drop the target table or database (destructive) - in development
 export <table>: exports the selected table to .csv file (otherwise prompt for table's name)
@@ -101,8 +102,8 @@ Connection with localhost->test_db has been successfully established.
   - [ ] `drop`
   - [ ] `file <read>|<write> <file_name>`
   - [x] `help`
-- [x] fix the exit command's bug
-- [ ] fix the export command's bug
+- [x] fix bug in `Exit()` method
+- [ ] fix bug in `Export()` method
 - [ ] better format of table's listed content
 <br />
 
@@ -117,7 +118,7 @@ Connection with localhost->test_db has been successfully established.
             - Wrapping UserAuthentication() db connection sub-routine in try...except clause<br />
             - ASCII Logo tweaks<br />
 - 14/12/2019 summary:<br />
-            - Fixed `Exit()` function bug - script is now finishing properly<br />
-            - Introduced new bug - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigations.<br />
+            - Fixed bug in `Exit()` method - script is now finishing properly<br />
+            - Introduced new bug in `UserAuthentication()` method - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigation.<br />
             - Code refactoring in `MainActivity()` - removed nested loop and wrapped internal code in try...except clause<br />
 
