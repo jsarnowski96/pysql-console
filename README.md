@@ -62,6 +62,21 @@ Bat-Console allows user to interact with MS SQL database and its content. In fut
 - `settings.py` - global configuration file feeding requested data to both `batconsole.py` and `commands.py`
 <br />
 
+## Requirements:
+- Python 3.x
+- `pydobc` library
+- configured account on local/remote MS SQL server with `SQL Server and Windows Authentication mode` enabled
+- before you can use the program, you have to adjust server's name/IP and default database in `UserAuthentication()` method to your personal needs. Use below template as a reference:
+```
+dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
+                              'Server=;'
+                              'Database=;'
+                              'uid='+username+';'
+                              'pwd='+password+';'
+                              'Trusted_Connection=no;')  
+```
+
+
 ## List of available commands:
 ```
 exit: exits the program (eventually)
