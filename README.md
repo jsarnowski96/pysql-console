@@ -132,11 +132,11 @@ Connection with localhost->test_db has been successfully established.
 - export does its job only partially since it replicates a single row N times instead of processing next rows.
 
 ## Release notes:
-- <b>13/12/2019 summary:</b><br />
+- <b>13/12/2019 changelog:</b><br />
             - Initial commit + main script's upload<br />
             - Wrapping `UserAuthentication()` database connection sub-routine in try...except clause<br />
             - ASCII Logo tweaks<br />
-- <b>14/12/2019 summary:</b><br />
+- <b>14/12/2019 changelog:</b><br />
             - Fixed bug in `Exit()` method - script is now finishing properly<br />
             - ~~Introduced new bug in close proximity to `UserAuthentication()` and `InputLoop()` methods - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigation~~ - fixed<br />
             - Code refactoring in `MainActivity()` - removed redundant nested execution loop and wrapped internal code in try...except clause<br />
