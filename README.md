@@ -67,7 +67,7 @@ Bat-Console allows user to interact with MS SQL database and its content. In fut
 - Python 3.x
 - `pyodbc` library
 - configured account on local/remote MS SQL server with `SQL Server and Windows Authentication mode` enabled
-- before you can use the program, you have to adjust server's name/IP and default database in `UserAuthentication()` method to your personal needs. Although using `master` as a default database might be sufficient, I highly recommend testing some of these settings beforehand. Use below template as a reference point:
+- before you can use the program, you have to adjust server's name/IP and default database in `UserAuthentication()` method to your personal needs. Although using `master` as a default database might be sufficient, I highly recommend testing some of these settings beforehand. If you wish to connect with a certain server instance or you are using a non-standard port, you can alternatively use `Server=server_name\instance_name` or `Server=server_name,port_number`. Use below template as a general reference point:
 ```
 dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
                               'Server=;'
