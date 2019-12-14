@@ -64,7 +64,9 @@ def UserAuthentication():
         else:
             dbConnection = pyodbc.connect('Driver={SQL Server Native Client 11.0};'
                                           'Server=localhost;'
-                                          'Database=AdventureWorks2012;'
+                                          'Database=master;'
+                                          'uid='+username+';'
+                                          'pwd='+password+';'
                                           'Trusted_Connection=yes;')    
         cursor = dbConnection.cursor()
         cursor.execute("select username, password from AuthUsers where username = ? and password = ?", username, password)            
