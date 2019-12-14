@@ -144,6 +144,6 @@ Connection with localhost->test_db has been successfully established.
             - Code refactoring in `MainActivity()` - removed redundant nested execution loop and wrapped internal code in try...except clause<br />
             - Better formatted table's content after `show` command's call. Still needs a bit of tinkering.<br />
             - Fixed the `UserAuthentication()`/`InputLoop()` bug causing user to land on login page after first command's execution.<br />
-            - Refactored `UserAuthentication()` method - switched `pyodbc` driver to `ODBC Driver 17 for SQL Server` which allowed for reliable server-side user validation. The same driver change applies to all other methods establishing active connection with the database<br />
+            - Refactored `UserAuthentication()` method - switched `pyodbc` driver to `ODBC Driver 17 for SQL Server` which allows for more reliable server-side user validation. The same driver change applies to all other methods establishing active connection with the database<br />
             - New `settings.py` global configuration file storing the globally-accessible DB connection data, user's active credentials, etc.<br />
 
