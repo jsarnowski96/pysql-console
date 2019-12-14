@@ -113,7 +113,7 @@ Connection with localhost->test_db has been successfully established.
 - `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by boolean data type fields.
 - export does its job only partially since it replicates a single row N times instead of processing next rows.
 
-## Release dates:
+## Release notes:
 - 13/12/2019 summary:<br />
             - Initial commit + main script's upload<br />
             - Wrapping UserAuthentication() db connection sub-routine in try...except clause<br />
