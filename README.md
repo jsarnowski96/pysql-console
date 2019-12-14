@@ -146,4 +146,6 @@ Connection with localhost->test_db has been successfully established.
             - Fixed the `UserAuthentication()`/`InputLoop()` bug causing user to land on login page after first command's execution.<br />
             - Refactored `UserAuthentication()` method - switched `pyodbc` driver to `ODBC Driver 17 for SQL Server` which allows for more reliable server-side user validation. The same driver change applies to all other methods establishing active connection with the database<br />
             - New `settings.py` global configuration file storing the globally-accessible DB connection data, user's active credentials, etc.<br />
+            - New exception handlers for `pyodbc.Error` returning code `28000` for incorrect table/database name.
+            - New command `status` displaying content of `global_config_array`, including non-set key-value pairs.
 
