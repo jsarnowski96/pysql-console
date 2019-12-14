@@ -116,14 +116,14 @@ Connection with localhost->test_db has been successfully established.
 ## Release notes:
 - <b>13/12/2019 summary:</b><br />
             - Initial commit + main script's upload<br />
-            - Wrapping UserAuthentication() db connection sub-routine in try...except clause<br />
+            - Wrapping `UserAuthentication()` database connection sub-routine in try...except clause<br />
             - ASCII Logo tweaks<br />
 - <b>14/12/2019 summary:</b><br />
             - Fixed bug in `Exit()` method - script is now finishing properly<br />
-            - Introduced new bug in close proximity to `UserAuthentication()` and `InputLoop()` methods - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigation.<br />
+            - ~~Introduced new bug in close proximity to `UserAuthentication()` and `InputLoop()` methods - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigation.<br />~~
             - Code refactoring in `MainActivity()` - removed redundant nested execution loop and wrapped internal code in try...except clause<br />
-            - Better formatted table's content after `show` command's call.<br />
-            - Fixed the `UserAuthentication()`/`InputLoop()` bug causing user to land on login page after first command's insertion.<br />
-            - Refactored user authentication method - switched `pyodbc` driver to `ODBC Driver 17 for SQL Server` which allowed for reliable server-side user validation.<br />
+            - Better formatted table's content after `show` command's call. Still needs a bit of tinkering.<br />
+            - Fixed the `UserAuthentication()`/`InputLoop()` bug causing user to land on login page after first command's execution.<br />
+            - Refactored `UserAuthentication()` method - switched `pyodbc` driver to `ODBC Driver 17 for SQL Server` which allowed for reliable server-side user validation. The same driver change applies to all other methods establishing active connection with the database<br />
             - New `settings.py` global configuration file storing the globally-accessible DB connection data, user's active credentials, etc.<br />
 
