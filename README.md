@@ -57,8 +57,9 @@ Bat-Console allows user to interact with MS SQL database and its content. In fut
 <br />
 
 ## File structure:
-- `main.py` - top layer py script handling user input and calling sub-routines from `commands.py`
+- `batconsole.py` - top layer py script handling user input and calling sub-routines from `commands.py`
   - `commands.py` - contains implementations of all internal commands used by the program
+- `settings.py` - global configuration file feeding requested data to both `batconsole.py` and `commands.py`
 <br />
 
 ## List of available commands:
@@ -108,7 +109,7 @@ Connection with localhost->test_db has been successfully established.
 <br />
 
 ## Known issues:
-- problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.
+- ~~problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.~~
 - `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by boolean data type fields.
 - export does its job only partially since it replicates a single row N times instead of processing next rows.
 
@@ -121,6 +122,8 @@ Connection with localhost->test_db has been successfully established.
             - Fixed bug in `Exit()` method - script is now finishing properly<br />
             - Introduced new bug in close proximity to `UserAuthentication()` and `InputLoop()` methods - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigation.<br />
             - Code refactoring in `MainActivity()` - removed redundant nested execution loop and wrapped internal code in try...except clause<br />
-            - Better formatted table's content after `show` command's call.
-            - Fixed the `UserAuthentication()`/`InputLoop()` bug causing user to land on login page after first command's insertion.
+            - Better formatted table's content after `show` command's call.<br />
+            - Fixed the `UserAuthentication()`/`InputLoop()` bug causing user to land on login page after first command's insertion.<br />
+            - Refactored user authentication method - switched `pyodbc` driver to `ODBC Driver 17 for SQL Server` which allowed for reliable server-side user validation.<br />
+            - New `settings.py` global configuration file storing the globally-accessible DB connection data, user's active credentials, etc.<br />
 
