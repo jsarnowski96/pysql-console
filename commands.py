@@ -20,6 +20,7 @@ commands = {
     "help": "Displays all available commands",
     "export": "Exports currently selected table to .csv file",
     "clear": "This command clears the console window",
+    "status": "Displays current session's data",
     "aliases": {
         "cls": "This command clears the console window",
         "exp": "Exports currently selected table to .csv file",
@@ -73,26 +74,30 @@ def Connect(server = "", database = ""):
         elif settings.global_config_array["active_sql_connection"]:
             print("Connection is already established.\n")
     except pyodbc.Warning:
-        print("Warning: Caution - possible data truncation.")
+        print("Warning: Caution - possible data truncation.\n")
     except pyodbc.DatabaseError:
-        print("DatabaseError: Could not connect to the database - incorrect server name or database")
+        print("DatabaseError: Could not connect to the database - incorrect server name or database\n")
     except pyodbc.DataError:
-        print("DataError: Illegal operation detected. Exiting.")
+        print("DataError: Illegal operation detected. Exiting.\n")
     except pyodbc.OperationalError:
-        print("OperationalError: Could not connect to the database server")
+        print("OperationalError: Could not connect to the database server.\n")
     except pyodbc.IntegrityError:
-        print("IntegrityError: Relational integrity of the target database is compromised.")
+        print("IntegrityError: Relational integrity of the target database is compromised.\n")
     except pyodbc.InternalError:
-        print("InternalError: Cursor not valid or transaction out of sync")
+        print("InternalError: Cursor not valid or transaction out of sync\n")
     except pyodbc.ProgrammingError:
-        print("ProgrammingError: Database not found, SQL Syntax error or wrong number of parameters.")
+        print("ProgrammingError: Database not found, SQL Syntax error or wrong number of parameters.\n")
     except pyodbc.NotSupportedError:
-        print("NotSupportedError: Database does not support provided pyodbc request.")
+        print("NotSupportedError: Database does not support provided pyodbc request.\n")
     except KeyboardInterrupt:
         dbConnection.close()
         print("\nTerminating command...\n")
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        if sqlstate == '28000':
+            print("Database",database,"not found.\n")
     except:
-        print("Connect: Unknown error occured during connecting to the database.")
+        print("Connect: Unknown error occured during connecting to the database.\n")
 
 def Close():
     if settings.global_config_array["table"] != None:
@@ -160,6 +165,11 @@ def Show(table = ""):
         if dbConnection:
             dbConnection.close()
         print("\nTerminating command...\n")
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        if sqlstate == '42000':
+            print("Table",table," does not exist in the",settings.global_config_array["database"],"database.\n")
+        else: print(e)
             
 def Export(table = ""):
     try:
@@ -196,12 +206,20 @@ def Clear():
     
 def Help():
     print("\nList of available commands:")
+    print("---------------------------")
     for k, v in commands.items():
         if k != "aliases":
             print(k,":", v)
     print("\nList of aliases:")
+    print("----------------")
     for k, v in commands["aliases"].items():
         print(k,":", v)
+        
+def Status():
+    print("+--------------------------------------------------------+")
+    for k, v in settings.global_config_array.items():
+        print("|",k,"|",v,"|")
+    print("+--------------------------------------------------------+")
 
 if KeyboardInterrupt:
     print("\nTerminating command...\n")

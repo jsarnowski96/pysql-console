@@ -132,6 +132,8 @@ def InputLoop(userInput):
                 success = False
                 commands.Logout()
                 drawInitBoard()
+            elif userInput[0] == "status":
+                commands.Status()
             elif userInput[0] == "show":
                 commands.Show()
             elif userInput[0] == "help":
@@ -143,7 +145,9 @@ def InputLoop(userInput):
                 drawInitBoard()
                 print("\n" * 2)
     except KeyError:
-        print("Syntax error - " + userInput[0] + " command was not recognized.\n")       
+        print("Syntax error - " + userInput[0] + " command was not recognized.\n")
+    except AttributeError:
+        print("Syntax error - " + userInput[0] + " command was not recognized.\n")
 
 def MainActivity():
     try:
