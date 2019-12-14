@@ -85,7 +85,7 @@ quit: exit command alias
 <br />
 
 ## CLI's interactive mode:
-Commands allowing user to provide the additional parameters treats them only as optional - in case of not providing any of the specified parameters or just a part of them, these commands have implemented user interactive mode for providing the missing data required for performing their basic task and as a way of handling exceptions. For example:
+Commands with implemented interactive mode allows user to provide the additional parameters "on the run" - in case of not providing any of the specified parameters or just a part of them. For example:
 ```
 js $ connect localhost
 Database: test_db
@@ -104,7 +104,7 @@ Connection with localhost->test_db has been successfully established.
   - [x] `help`
 - [x] fix bug in `Exit()` method
 - [ ] fix bug in `Export()` method
-- [ ] better format of table's listed content
+- [x] better format of table's listed content
 <br />
 
 ## Known issues:
@@ -121,4 +121,6 @@ Connection with localhost->test_db has been successfully established.
             - Fixed bug in `Exit()` method - script is now finishing properly<br />
             - Introduced new bug in close proximity to `UserAuthentication()` and `InputLoop()` methods - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigation.<br />
             - Code refactoring in `MainActivity()` - removed redundant nested execution loop and wrapped internal code in try...except clause<br />
+            - Better formatted table's content after `show` command's call.
+            - Fixed the `UserAuthentication()`/`InputLoop()` bug causing user to land on login page after first command's insertion.
 
