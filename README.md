@@ -120,5 +120,5 @@ Connection with localhost->test_db has been successfully established.
 - 14/12/2019 summary:<br />
             - Fixed bug in `Exit()` method - script is now finishing properly<br />
             - Introduced new bug in close proximity to `UserAuthentication()` and `InputLoop()` methods - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigation.<br />
-            - Code refactoring in `MainActivity()` - removed nested loop and wrapped internal code in try...except clause<br />
+            - Code refactoring in `MainActivity()` - removed redundant nested execution loop and wrapped internal code in try...except clause<br />
 
