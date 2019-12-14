@@ -109,7 +109,7 @@ Connection with localhost->test_db has been successfully established.
 <br />
 
 ## Known issues:
-- ~~problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.~~ <- problem applied exclusively to Spyder environment and IPython console.
+- ~~problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.~~ <- <i>problem applied exclusively to Spyder environment and IPython console.</i>
 - `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by boolean data type fields.
 - export does its job only partially since it replicates a single row N times instead of processing next rows.
 
@@ -120,7 +120,7 @@ Connection with localhost->test_db has been successfully established.
             - ASCII Logo tweaks<br />
 - <b>14/12/2019 summary:</b><br />
             - Fixed bug in `Exit()` method - script is now finishing properly<br />
-            - ~~Introduced new bug in close proximity to `UserAuthentication()` and `InputLoop()` methods - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigation.<br />~~ <- fixed
+            - ~~Introduced new bug in close proximity to `UserAuthentication()` and `InputLoop()` methods - first execution of any command leads to login screen. After inserting credentials for the second time, all commands seem to work correctly. Currently under investigation~~ - fixed<br />
             - Code refactoring in `MainActivity()` - removed redundant nested execution loop and wrapped internal code in try...except clause<br />
             - Better formatted table's content after `show` command's call. Still needs a bit of tinkering.<br />
             - Fixed the `UserAuthentication()`/`InputLoop()` bug causing user to land on login page after first command's execution.<br />
