@@ -65,7 +65,7 @@ Bat-Console allows user to interact with MS SQL database and its content. In fut
 
 ## Requirements:
 - Python 3.x
-- `pydobc` library
+- `pyodbc` library
 - configured account on local/remote MS SQL server with `SQL Server and Windows Authentication mode` enabled
 - before you can use the program, you have to adjust server's name/IP and default database in `UserAuthentication()` method to your personal needs. Use below template as a reference:
 ```
