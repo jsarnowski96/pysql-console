@@ -74,7 +74,7 @@ def Connect(server = "", database = ""):
         elif settings.global_config_array["active_sql_connection"]:
             print("Connection is already established.\n")
     except pyodbc.Warning:
-        print("Warning: Caution - possible data truncation.\n")
+        print("Warning: possible data truncation.\n")
     except pyodbc.DatabaseError:
         print("DatabaseError: Could not connect to the database - incorrect server name or database\n")
     except pyodbc.DataError:
