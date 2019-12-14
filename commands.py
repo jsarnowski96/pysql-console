@@ -53,15 +53,6 @@ def Exit():
     sys.exit()
 
 def Connect(srv = "", db = ""):
-   # import main
-    
-    #kwargs = {}
-    #if srv != "":
-   #     kwargs[main.userInput[1]] = srv
-  #  if db != "":
-     #   kwargs[main.userINput[2]] = db
-        
-    
     try:
         global dbConnection
         global server
@@ -109,11 +100,9 @@ def Connect(srv = "", db = ""):
     except pyodbc.NotSupportedError:
         print("NotSupportedError: Database does not support provided pyodbc request.")
     except KeyboardInterrupt:
-        print("\nExiting program...")
+        print("\nTerminating command...\n")
     except:
         print("Connect: Unkown error occured during connecting to the database.")
-    return
-
 
 def Close():
     global dbConnection
@@ -121,14 +110,12 @@ def Close():
         dbConnection.close()
     else:
         print("There is no active connection to any database\n")
-    return
         
 def Logout():
     import main
     main.username = None
     main.password = None
     Clear()
-    return
         
 def Show(tbl = ""):
     global dbConnection
@@ -136,63 +123,67 @@ def Show(tbl = ""):
     global table
     global result
     
-    if dbConnection:
-        if tbl == "":
-            tbl = str(input("Table name: "))
-        table = tbl
-        
-        if table != "" and table:
-            queryAppend = list("select * from ")
-            for t in table:
-                queryAppend.append(t)
-            query = ''.join(queryAppend)
-            cursor = dbConnection.cursor()
-            result = cursor.execute(query)
-            #print(str(result.count()) + " records detected")
-            print("Contents of table " + table + ":")
-            for i in result.description:
-                print(i[0] + "\t")
-            print()
-            i = 0
-            row = result.fetchall()
-            for r in row:
-                if i <= len(row):
-                    print(str(i), r, "\t")
-                    i += 1
-        else:
-            print("You did not enter table's name.\n")
-    else:
-        print("There is no active connection to the database.\n")
-    return
-            
-def Export(tbl = ""):
-    global table
-    global dbConnection
-    if dbConnection != "" or dbConnection:
-        if tbl == "":
-            if table == "":
+    try:
+        if dbConnection:
+            if tbl == "":
                 tbl = str(input("Table name: "))
-            if table != "" or table:
-                fileBase = table
-                fileName = fileBase + ".csv"
+            table = tbl
+            
+            if table != "" and table:
                 queryAppend = list("select * from ")
                 for t in table:
                     queryAppend.append(t)
                 query = ''.join(queryAppend)
                 cursor = dbConnection.cursor()
                 result = cursor.execute(query)
-                with open(fileName, "a+", newline='') as csvfile:
-                    import csv
-                    writer = csv.writer(csvfile)
-                    writer.writerow([x[0] for x in result.description])  # column headers
-                    row = result.fetchall()
-                    for r in row:
-                        writer.writerow(row)
+                #print(str(result.count()) + " records detected")
+                print("Contents of table " + table + ":")
+                for i in result.description:
+                    print(i[0] + "\t")
+                print()
+                i = 0
+                row = result.fetchall()
+                for r in row:
+                    if i <= len(row):
+                        print(str(i), r, "\t")
+                        i += 1
             else:
-                print("You did not select any source table.\n")
-    else:
-        print("There is no connection established.\n")
-    return
+                print("You did not enter table's name.\n")
+        else:
+            print("There is no active connection to the database.\n")
+    except KeyboardInterrupt:
+        print("\nTerminating command...\n")
+            
+def Export(tbl = ""):
+    global table
+    global dbConnection
+    try:
+        if dbConnection != "" or dbConnection:
+            if tbl == "":
+                if table == "":
+                    tbl = str(input("Table name: "))
+                if table != "" or table:
+                    fileBase = table
+                    fileName = fileBase + ".csv"
+                    queryAppend = list("select * from ")
+                    for t in table:
+                        queryAppend.append(t)
+                    query = ''.join(queryAppend)
+                    cursor = dbConnection.cursor()
+                    result = cursor.execute(query)
+                    with open(fileName, "a+", newline='') as csvfile:
+                        import csv
+                        writer = csv.writer(csvfile)
+                        writer.writerow([x[0] for x in result.description])  # column headers
+                        row = result.fetchall()
+                        for r in row:
+                            writer.writerow(row)
+                else:
+                    print("You did not select any source table.\n")
+        else:
+            print("There is no connection established.\n")
+    except KeyboardInterrupt:
+        print("\nTerminating command...\n")
         
 def Clear():
     print("\n" * 50)
@@ -206,7 +197,3 @@ def Help():
     print("\nList of aliases:")
     for k, v in commands["aliases"].items():
         print(k,":", v)
-    return
-        
-
-            
