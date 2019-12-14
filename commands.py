@@ -7,7 +7,6 @@ Created on Thu Dec 12 01:11:41 2019
 
 import pyodbc
 import sys
-import main
 
 commands = {
     "exit": "Exit the program",
@@ -29,20 +28,17 @@ commands = {
     }
 }
 
-dbConnection = ""
-database = ""
-server = ""
-table = ""
-result = ""
+dbConnection = None
+database = None
+server = None
+table = None
 
 def Exit():
     global dbConnection
     global database
     global server
     global table
-    
-    main.username = None
-    main.password = None
+
     if dbConnection:
         dbConnection.close()
     dbConnection = None
@@ -50,38 +46,33 @@ def Exit():
     database = None
     table = None
 
-    sys.exit()
-
 def Connect(srv = "", db = ""):
     try:
         global dbConnection
         global server
         global database
         
-        if dbConnection == "":
-            if srv == "":
+        if dbConnection == None:
+            if srv == "" or srv == None:
                 srv = str(input("Server name: "))
-                server = srv
-            else:
-                server = srv    
             if db == "":
                 db = str(input("Database: "))
-                database = db
-            else:
-                database = db
-            
+
+            server = srv
+            database = db
+                        
             if server:
                 if database:
                     dbConnection = pyodbc.connect('Driver={SQL Server Native Client 11.0};'
                                               'Server='+server+';'
                                               'Database='+database+';'
                                               'Trusted_Connection=yes;')
-                    print("Successfully connected to the ",server,"->",database)
+                    print("Successfully connected to the %s->%s.\n" % (server, database))
                 else:
                     print("You did not enter database name.")
             else:
                 print("You did not enter server name.")
-        else:
+        elif dbConnection:
             print("Connection is already establised.")
     except pyodbc.Warning:
         print("Warning: Caution - possible data truncation.")
@@ -106,8 +97,14 @@ def Connect(srv = "", db = ""):
 
 def Close():
     global dbConnection
+    global server
+    global database
     if dbConnection:
         dbConnection.close()
+        dbConnection = None
+        print("Connection to %s->%s closed.\n" % (server, database))
+        server = None
+        database = None
     else:
         print("There is no active connection to any database\n")
         
@@ -121,7 +118,7 @@ def Show(tbl = ""):
     global dbConnection
     global database
     global table
-    global result
+    result = ""
     
     try:
         if dbConnection:

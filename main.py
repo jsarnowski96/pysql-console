@@ -8,6 +8,7 @@ Created on Wed Dec 11 18:07:47 2019
 import pyodbc
 import sys
 from getpass import getpass
+import commands as commands
 
 username = None
 password = None
@@ -102,16 +103,20 @@ def UserAuthentication():
 
 def InputLoop(userInput):
     try:
-        import commands
         if userInput[0] in commands.commands or userInput in commands.commands["aliases"].keys():
             if userInput[0] == "exit" or userInput == "quit":
                 commands.Exit()
+                global username
+                global password
+                username = None
+                password = None
+                sys.exit()
             if  userInput[0] == "connect":
                 try:
                     if userInput[1] and userInput[2]:
-                        commands.Connect(userInput[1], userInput[2])
+                        commands.Connect(srv = userInput[1], db = userInput[2])
                     elif userInput[1]:
-                        commands.Connect(userInput[1])
+                        commands.Connect(srv = userInput[1])
                 except IndexError:
                     commands.Connect()
             elif userInput[0] == "close":
