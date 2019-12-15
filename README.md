@@ -88,6 +88,7 @@ show <table>: displays the content of the selected table
 add <value 1> <value 2> ... <value n>: append new row to the selected table - in development
 edit <row_id>: modify the specified row in the selected table - in development
 status: returns the current user's session data.
+change: removes focus from the selected table.
 help: displays the list of available commands and aliases
 delete <row_id>: delete the specified row ID in the selected table - in development
 drop <table>|<database>: drop the target table or database (destructive) - in development
@@ -148,7 +149,9 @@ Connection with localhost->test_db has been successfully established.
             - Fixed the `UserAuthentication()`/`InputLoop()` bug causing user to land on login page after first command's execution.<br />
             - Refactored `UserAuthentication()` method - switched `pyodbc` driver to `ODBC Driver 17 for SQL Server` which allows for more reliable server-side user validation. The same driver change applies to all other methods establishing active connection with the database<br />
             - New `settings.py` global configuration file storing the globally-accessible DB connection data, user's active credentials, etc.<br />
+- <b>15/12/2019 changelog</b><br />
             - New exception handlers for `pyodbc.Error` returning codes `28000` and `42S02` for incorrect table/database name.<br />
             - New command `status` displaying content of `global_config_array`, including non-set key-value pairs.<br />
             - Visual adjustments of `status` output<br />
+            - New command `change` allows for lifting focus off the currently selected table.<br />
 
