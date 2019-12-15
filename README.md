@@ -74,7 +74,7 @@ show <table>: displays the content of the selected table
 add <value 1> <value 2> ... <value n>: append new row to the selected table - in development
 edit <row_id>: modify the specified row in the selected table - in development
 status: returns the current user's session data.
-change: removes focus from the selected table.
+switch <table>: switches current focus to another table.
 help: displays the list of available commands and aliases
 delete <row_id>: delete the specified row ID in the selected table - in development
 drop <table>|<database>: drop the target table or database (destructive) - in development
