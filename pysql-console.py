@@ -95,7 +95,7 @@ def UserAuthentication():
         else:
             print("UserAuthentication: Unknown error occured during connecting to the database.\n")
 
-def InputLoop(userInput):
+def InputHandler(userInput):
     try:
         if userInput[0] in commands.commands or commands.commands["aliases"].has_key(userInput[0]):
             if userInput[0] == "exit" or userInput == "quit":
@@ -146,7 +146,7 @@ def InputLoop(userInput):
 def MainActivity():
     try:
         userInput = list(map(str,input(settings.global_config_array["username"] + " $ ").split()))
-        InputLoop(userInput)
+        InputHandler(userInput)
     except KeyboardInterrupt:
         print("\nExiting program...")
         sys.exit()
