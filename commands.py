@@ -193,20 +193,20 @@ def Export(table = ""):
             if table == "":
                 table = str(input("Table name: "))    
             
-            fileBase = table
-            fileName = fileBase + ".csv"
+            fileName = table + ".csv"
+            filePath = Path(fileName)
             queryAppend = list("select * from ")
             for t in table:
                 queryAppend.append(t)
             query = ''.join(queryAppend)
             cursor = dbConnection.cursor()
             result = cursor.execute(query)
-            exportFilePath = Path.joinpath(exportPath, fileName)
-            if exportFilePath.exists():
+            finalFilePath = Path.joinpath(exportPath, filePath)
+            if not finalFilePath.exists():
                 print("\nFile",fileName,"already exists. Do you want to overwrite it? [Y/n]", end='')
                 confirmAction = str(input())
                 if confirmAction == "Y" or confirmAction == "y":
-                    with open(exportFilePath, "a+", newline='') as csvfile:
+                    with open(finalFilePath, "a+", newline='') as csvfile:
                         import csv
                         csvfile.truncate()
                         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -219,7 +219,7 @@ def Export(table = ""):
                 elif confirmAction == "N" or confirmAction == "n":
                     print("Aborting...\n")
             else:
-                with open(exportFilePath, "a+", newline='') as csvfile:
+                with open(finalFilePath, "a+", newline='') as csvfile:
                     import csv
                     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                     writer.writerow([x[0] for x in result.description])  # column headers
