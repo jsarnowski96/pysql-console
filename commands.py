@@ -216,10 +216,22 @@ def Help():
         print(k,":", v)
         
 def Status():
-    print("+--------------------------------------------------------+")
+    i = 0
+    print("+" + "-" * 100 + "+")
     for k, v in settings.global_config_array.items():
-        print("|",k,"|",v,"|")
-    print("+--------------------------------------------------------+")
+        if v != None and i < len(settings.global_config_array) - 2:
+            print("|",k,"\t\t\t|",v,"\t\t\t\t\t\t\t     |")
+        elif v == None and i < len(settings.global_config_array) - 2:
+            print("|",k,"\t\t\t|",v,"\t\t\t\t\t\t\t\t     |")
+        if k == "secure_sql_user_session" or k == "active_sql_connection":
+            if v == None:
+                print("|",k,"\t|",v,"\t\t\t\t\t\t\t\t     |")
+            else:
+                print("|",k,"\t|",v,"\t\t     |")
+        if i < len(settings.global_config_array) - 1:
+            print("|" + "-" * 100 + "|")
+        i += 1
+    print("+" + "-" * 100 + "+")
 
 if KeyboardInterrupt:
     print("\nTerminating command...\n")
