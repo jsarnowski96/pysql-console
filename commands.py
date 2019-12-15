@@ -124,7 +124,8 @@ def Logout():
         settings.global_config_array["username"] = None
     if settings.global_config_array["password"] != None:
         settings.global_config_array["password"] = None
-    print("\nUser logged out...\n")
+    print("User logged out...\n")
+    Clear()
         
 def Show(table = ""):
     result = ""

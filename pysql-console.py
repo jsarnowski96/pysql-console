@@ -19,6 +19,7 @@ def drawInitBoard():
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___| 
+                                                                             v.0.1.16
 
                                      +-----------------------------------+
                                      |      Welcome to PySQL Console     |
@@ -122,7 +123,11 @@ def InputLoop(userInput):
             elif userInput[0] == "status":
                 commands.Status()
             elif userInput[0] == "show":
-                commands.Show()
+                try:
+                    if userInput[1]:
+                        commands.Show(table = userInput[1])
+                except IndexError:
+                    commands.Show()                    
             elif userInput[0] == "help":
                 commands.Help()
             elif userInput[0] == "export" or userInput[0] == "exp":
