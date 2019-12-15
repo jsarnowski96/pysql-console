@@ -36,7 +36,6 @@ def UserAuthentication():
             settings.global_config_array["username"] = None
         if settings.global_config_array["password"] != None:
             settings.global_config_array["password"] = None
-            
         username = str(input("Username: "))
         password = getpass()
         settings.global_config_array["username"] = username
@@ -46,7 +45,6 @@ def UserAuthentication():
         if settings.global_config_array["secure_sql_user_session"] != None:
             settings.global_config_array["secure_sql_user_session"].close()
             settings.global_config_array["secure_sql_user_session"] = None
-
         dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
                                           'Server=localhost;'
                                           'Database=master;'
