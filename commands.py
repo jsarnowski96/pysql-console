@@ -49,7 +49,6 @@ def Connect(server = "", database = ""):
     try:                
         username = settings.global_config_array["username"]
         password = settings.global_config_array["password"]
-        
         if settings.global_config_array["active_sql_connection"] == None:
             dbConnection = None
             if dbConnection == None:
@@ -57,10 +56,8 @@ def Connect(server = "", database = ""):
                     server = str(input("Server name: "))
                 if database == "":
                     database = str(input("Database: "))
-    
                 settings.global_config_array["server"] = server
                 settings.global_config_array["database"] = database
-                            
                 if server:
                     if database:
                         dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
@@ -131,9 +128,8 @@ def Logout():
     Clear()
         
 def Show(table = ""):
-    result = ""
-    
     try:
+        result = ""
         if settings.global_config_array["active_sql_connection"]:
             dbConnection = settings.global_config_array["active_sql_connection"]
             if settings.global_config_array["table"] != None:
@@ -192,7 +188,6 @@ def Export(table = ""):
                 table = settings.global_config_array["table"]
             if table == "":
                 table = str(input("Table name: "))    
-            
             fileName = table + ".csv"
             queryAppend = list("select * from ")
             for t in table:
