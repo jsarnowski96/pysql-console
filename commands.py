@@ -231,7 +231,7 @@ def Status():
         if i < len(settings.global_config_array) - 1:
             print("|" + "-" * 100 + "|")
         i += 1
-    print("+" + "-" * 100 + "+")
+    print("+" + "-" * 100 + "+\n")
 
 if KeyboardInterrupt:
     print("\nTerminating command...\n")
