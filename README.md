@@ -97,6 +97,7 @@ js $ connect localhost
 Database: test_db
 Connection with localhost->test_db has been successfully established.
 ```
+Similiar thing happens when you try to use `export` command without active database connection - in this case you will be redirected to `connect` action to fill the necessary data.
 <br />
 
 ## To do:
