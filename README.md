@@ -13,7 +13,7 @@ Command line emulator written in Python 3.x
 [Introduction](#introduction)<br />
 [Current features](#current-features)<br />
 [Planned features](#planned-features)<br />
-[File structure](#file-structure)<br />
+[File structure](#file-structure-and-dependant-methods-listing)<br />
 [Requirements](#requirements)<br />
 [List of available commands](#list-of-available-commands)<br />
 [List of commands' aliases](#list-of-commands-aliases)<br />
@@ -44,7 +44,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 - system-wide commands
 <br />
 
-## File structure and dependant method listing:
+## File structure and dependant methods listing:
 - `pysql-console.py` - top layer py script handling user input and calling sub-routines from `commands.py`
   - `drawInitBoard()` - renders the program's logo screen<br />
   - `UserAuthentication()` - method responsible for performing user authentication. It keeps the main user identity connection opened during whole runtime<br />
