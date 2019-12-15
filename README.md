@@ -110,7 +110,7 @@ Similiar thing happens when you try to use `export` command without active datab
   - [x] `status`
   - [ ] `file <read>|<write> <file_name>`
   - [x] `help`
-- [ ] expansion of existing `commands` dictionary and migration of `commands.py` method calls to the nested dictionaries, entirely removing direct calls coming from `pysql-console.py`.
+- [ ] migration of `commands.py` method calls coming from `pysql-console.py` to the nested dictionaries binded with command's keys.<br />
 - [ ] all SQL-related commands binded with one specific command as optional parameters<br />
 (for example `sql connect`, `sql show`, `sql export`, `sql edit`, etc.)
 - [x] fix bug in `Exit()` method
