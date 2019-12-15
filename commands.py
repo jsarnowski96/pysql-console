@@ -209,7 +209,7 @@ def Export(table = ""):
                         for row in rows:
                             writer.writerow(row)
                         csvfile.close()
-                        print("Exporting of file",fileName,"finished successfully.\n")
+                        print("Export of file",fileName,"finished successfully.\n")
                 elif confirmAction == "N" or confirmAction == "n":
                     print("Aborting...\n")
             else:
@@ -221,7 +221,7 @@ def Export(table = ""):
                     for row in rows:
                         writer.writerow(row)
                 csvfile.close()
-                print("Exporting of file",fileName,"finished successfully.\n")
+                print(fileName,"export task finished successfully.\n")
         else:
             print("There is no connection established. Redirecting to connect action...\n")
             Connect()
