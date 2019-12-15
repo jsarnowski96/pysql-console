@@ -142,4 +142,5 @@ Similiar thing happens when you try to use `export` command without active datab
             - New command `status` displaying content of `global_config_array`, including non-set key-value pairs.<br />
             - Visual adjustments of `status` output<br />
             - New command `switch` allows users to lift their focus off the currently selected table or move it to another table.<br />
+            - `Export()` method: fix of issue related with file validation sub-routine.<br />
 
