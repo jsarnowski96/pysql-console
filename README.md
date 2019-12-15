@@ -153,5 +153,5 @@ Connection with localhost->test_db has been successfully established.
             - New exception handlers for `pyodbc.Error` returning codes `28000` and `42S02` for incorrect table/database name.<br />
             - New command `status` displaying content of `global_config_array`, including non-set key-value pairs.<br />
             - Visual adjustments of `status` output<br />
-            - New command `change` allows for lifting focus off the currently selected table.<br />
+            - New command `change` allows users to lift their focus off the currently selected table.<br />
 
