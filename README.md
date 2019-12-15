@@ -44,11 +44,25 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 - system-wide commands
 <br />
 
-## File structure:
+## File structure and dependant method listing:
 - `pysql-console.py` - top layer py script handling user input and calling sub-routines from `commands.py`
-  - `commands.py` - contains implementations of all internal commands used by the program
-- `settings.py` - global configuration file feeding requested data to both `pysql-console.py` and `commands.py`
-<br />
+  - `drawInitBoard()` - renders the program's logo screen<br />
+  - `UserAuthentication()` - method responsible for performing user authentication. It keeps the main user identity connection opened during whole runtime<br />
+  - `InputHandler()` - method processesing user input received from `MainActivity()` and executing calls to `commands.py` stored methods<br />
+  - `MainaActivity()` - methods responsible for acquiring user input and calling `InputHandler()` method<br />
+  - `Startup()` - core `pysql-console` method invoking all dependant methods in a strict, predetermined order<br />
+- `commands.py` - contains implementations of all internal commands used by the program<br />
+  - `Exit()` - exits the program<br />
+  - `Connect()`- create a connection to the database<br />
+  - `Close()` - close the existing connection to the database<br />
+  - `Logout()` - releases user credentials and clears `global_config_array`. Returns to login screen<br />
+  - `Show()` - display content of the selected table<br />
+  - `Export()` - export selected table to CSV file<br />
+  - `Clear()` - clears the console screen<br />
+  - `Status()` - display content of the `global_config_array`<br />
+  - `Switch()` - if no parameter was provided, sets `global_config_array["table"]` value to `None`. Otherwise, switches focus to the provided table<br />
+  - `Help()` - display list of the available commands<br />
+- `settings.py` - global configuration file feeding requested data to both `pysql-console.py` and `commands.py`<br />
 
 ## Requirements:
 - Python 3.x
