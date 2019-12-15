@@ -152,15 +152,17 @@ def MainActivity():
         sys.exit()
 
 # Startup execution        
+def Startup():   
+    try:
+        settings.init()
+        print("\n" * 25)
+        drawInitBoard()
+        while True:
+            if settings.global_config_array["secure_sql_user_session"] == None and success == False:
+                UserAuthentication()
+            elif settings.global_config_array["secure_sql_user_session"] and success == True:
+                MainActivity()
+    except KeyboardInterrupt:
+        sys.exit()
         
-try:
-    settings.init()
-    print("\n" * 25)
-    drawInitBoard()
-    while True:
-        if settings.global_config_array["secure_sql_user_session"] == None and success == False:
-            UserAuthentication()
-        elif settings.global_config_array["secure_sql_user_session"] and success == True:
-            MainActivity()
-except KeyboardInterrupt:
-    sys.exit()
+Startup()
