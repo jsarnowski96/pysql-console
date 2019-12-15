@@ -32,7 +32,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 - display contents of the selected table (currently in raw, unformatted form)
 - export selected table to .csv file
 - implementation of user authentication mechanism based on Windows SQL Server Authentication
-- ~~executing commands directly or via aliases~~
+- ~~executing commands directly or via aliases~~ need fix
 <br />
 
 ## Planned features:
