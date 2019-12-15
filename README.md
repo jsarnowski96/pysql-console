@@ -13,14 +13,14 @@ Command line emulator written in Python 3.x
 [Introduction](#introduction)<br />
 [Current features](#current-features)<br />
 [Planned features](#planned-features)<br />
-[File structure](#file-structure-and-dependant-methods-listing)<br />
+[File structure and dependant methods listing](#file-structure-and-dependant-methods-listing)<br />
 [Requirements](#requirements)<br />
 [List of available commands](#list-of-available-commands)<br />
 [List of commands' aliases](#list-of-commands-aliases)<br />
 [CLI's interactive mode](#clis-interactive-mode)<br />
 [To do](#to-do)<br />
 [Known issues](#known-issues)<br />
-[Release dates](#release-dates)<br />
+[Release notes](#release-notes)<br />
 
 ## Introduction
 PySql-Console is a simple program emulating the command line interface, designed to interact mostly with MS SQL environment. Due to Python's limitations related to internal command execution, some of the features introduced in this program are a sort of workarounds (for example user authentication system or multiple `input()` parameters treated as a separate strings kept in `list()` object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development process I'm going to polish some things up.
