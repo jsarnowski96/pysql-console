@@ -127,6 +127,8 @@ def InputLoop(userInput):
                     commands.Connect()
             elif userInput[0] == "close":
                 commands.Close()
+            elif userInput[0] == "change":
+                commands.Change()
             elif userInput[0] == "logout":
                 global success 
                 success = False

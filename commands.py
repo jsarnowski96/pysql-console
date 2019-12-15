@@ -17,6 +17,7 @@ commands = {
     "add": "Add new record to the selected table",
     "delete": "Remove the existing record from the selected table",
     "edit": "Modify the existing record in the selected table",
+    "change": "Removes focus from the currently selected table",
     "help": "Displays all available commands",
     "export": "Exports currently selected table to .csv file",
     "clear": "This command clears the console window",
@@ -131,10 +132,10 @@ def Show(table = ""):
     try:
         if settings.global_config_array["active_sql_connection"]:
             dbConnection = settings.global_config_array["active_sql_connection"]
-            if table == "":
-                table = str(input("Table name: "))                
             if settings.global_config_array["table"] != None:
                 table = settings.global_config_array["table"]
+            if table == "":
+                    table = str(input("Table name: "))
             queryAppend = list("select * from ")
             for t in table:
                 queryAppend.append(t)
@@ -158,6 +159,8 @@ def Show(table = ""):
                 print("-" * 100)
                 print(row)
                 print("-" * 100)
+            print()
+            settings.global_config_array["table"] = table
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
             Connect()
@@ -232,6 +235,11 @@ def Status():
             print("|" + "-" * 100 + "|")
         i += 1
     print("+" + "-" * 100 + "+\n")
+    
+def Change():
+    print("Removed focus from the",settings.global_config_array["table"],"table.\n")
+    if settings.global_config_array["table"] != None:
+        settings.global_config_array["table"] = None
 
 if KeyboardInterrupt:
     print("\nTerminating command...\n")
