@@ -121,7 +121,7 @@ Similiar thing happens when you try to use `export` command without active datab
 ## Known issues:
 - ~~problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.~~ <- <i>problem applied exclusively to Spyder environment and IPython console.</i>
 - `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by boolean data type fields.
-- export does its job only partially since it replicates a single row N times instead of processing next rows.
+- ~~export does its job only partially since it replicates a single row N times instead of processing next rows.
 - problem with using aliases
 
 ## Release notes:
