@@ -19,7 +19,7 @@ def drawInitBoard():
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___| 
-                                                                             v.0.1.16
+                                                                             v.0.1.29
 
                                      +-----------------------------------+
                                      |      Welcome to PySQL Console     |
@@ -131,15 +131,19 @@ def InputLoop(userInput):
             elif userInput[0] == "help":
                 commands.Help()
             elif userInput[0] == "export" or userInput[0] == "exp":
-                commands.Export()
+                try:
+                    if userInput[1]:
+                        commands.Export(table = userInput[1])
+                except IndexError:
+                    commands.Export()
             elif userInput[0] == "clear" or userInput[0] == "cls":
                 commands.Clear()
                 drawInitBoard()
                 print("\n" * 2)
     except KeyError:
-        print("Syntax error - " + userInput[0] + " command was not recognized.\n")
+        print("\nSyntax error - " + userInput[0] + " command was not recognized.\n")
     except AttributeError:
-        print("Syntax error - " + userInput[0] + " command was not recognized.\n")
+        print("\nSyntax error - " + userInput[0] + " command was not recognized.\n")
 
 def MainActivity():
     try:

@@ -6,6 +6,8 @@ Created on Thu Dec 12 01:11:41 2019
 """
 
 import pyodbc
+import os
+from pathlib import Path, PurePath
 import settings
 
 commands = {
@@ -177,32 +179,66 @@ def Show(table = ""):
             
 def Export(table = ""):
     try:
+        exportPath = Path("/exports")
+        if exportPath.exists():
+            pass
+        else:
+            os.mkdir(exportPath)
+            print("Created /exports sub-directory for .csv files.\n")
         if settings.global_config_array["active_sql_connection"]:
             dbConnection = settings.global_config_array["active_sql_connection"]
-            if table == "":
-                table = str(input("Table name: "))
+            
             if settings.global_config_array["table"] != None:
                 table = settings.global_config_array["table"]
-                fileBase = table
-                fileName = fileBase + ".csv"
-                queryAppend = list("select * from ")
-                for t in table:
-                    queryAppend.append(t)
-                query = ''.join(queryAppend)
-                cursor = dbConnection.cursor()
-                result = cursor.execute(query)
-                with open(fileName, "a+", newline='') as csvfile:
+            if table == "":
+                table = str(input("Table name: "))    
+            
+            fileBase = table
+            fileName = fileBase + ".csv"
+            queryAppend = list("select * from ")
+            for t in table:
+                queryAppend.append(t)
+            query = ''.join(queryAppend)
+            cursor = dbConnection.cursor()
+            result = cursor.execute(query)
+            exportFilePath = Path.joinpath(exportPath, fileName)
+            if exportFilePath.exists():
+                print("\nFile",fileName,"already exists. Do you want to overwrite it? [Y/n]", end='')
+                confirmAction = str(input())
+                if confirmAction == "Y" or confirmAction == "y":
+                    with open(exportFilePath, "a+", newline='') as csvfile:
+                        import csv
+                        csvfile.truncate()
+                        writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                        writer.writerow([x[0] for x in result.description])  # column headers
+                        rows = result.fetchall()
+                        for row in rows:
+                            writer.writerow(row)
+                    csvfile.close()
+                    print("Exporting of file",fileName,"finished successfully.\n")
+                elif confirmAction == "N" or confirmAction == "n":
+                    print("Aborting...\n")
+            else:
+                with open(exportFilePath, "a+", newline='') as csvfile:
                     import csv
-                    writer = csv.writer(csvfile)
+                    writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                     writer.writerow([x[0] for x in result.description])  # column headers
-                    row = result.fetchall()
-                    for r in row:
+                    rows = result.fetchall()
+                    for row in rows:
                         writer.writerow(row)
+                csvfile.close()
+                print("Exporting of file",fileName,"finished successfully.\n")
         else:
             print("There is no connection established. Redirecting to connect action...\n")
             Connect()
     except KeyboardInterrupt:
         print("\nTerminating command...\n")
+    except AttributeError as e:
+        print(e)
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        if sqlstate == '42S02':
+            print("Table",table,"not found.\n")
         
 def Clear():
     print("\n" * 50)
@@ -241,6 +277,17 @@ def Change():
     print("Removed focus from the",settings.global_config_array["table"],"table.\n")
     if settings.global_config_array["table"] != None:
         settings.global_config_array["table"] = None
+
+def Add():
+    try:
+        if settings.global_config_array["active_sql_connection"] != None:
+            if settings.global_config_array["table"] != None:
+                pass
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        if sqlstate == '42S02':
+            print("No active connection to the database detected. Redirecting to connect action...\n")
+            Connect()
 
 if KeyboardInterrupt:
     print("\nTerminating command...\n")
