@@ -112,7 +112,7 @@ Connection with localhost->test_db has been successfully established.
 - [ ] all SQL-related commands binded with one specific command as optional parameters<br />
 (for example `sql connect`, `sql show`, `sql export`, `sql edit`, etc.)
 - [x] fix bug in `Exit()` method
-- [ ] fix bug in `Export()` method
+- [x] fix bug in `Export()` method
 - [x] better format of table's listed content
 <br />
 
