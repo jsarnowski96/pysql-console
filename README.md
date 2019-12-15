@@ -43,9 +43,9 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 <br />
 
 ## File structure:
-- `batconsole.py` - top layer py script handling user input and calling sub-routines from `commands.py`
+- `pysql-console.py` - top layer py script handling user input and calling sub-routines from `commands.py`
   - `commands.py` - contains implementations of all internal commands used by the program
-- `settings.py` - global configuration file feeding requested data to both `batconsole.py` and `commands.py`
+- `settings.py` - global configuration file feeding requested data to both `pysql-console.py` and `commands.py`
 <br />
 
 ## Requirements:
