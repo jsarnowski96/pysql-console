@@ -5,6 +5,8 @@ Created on Sat Dec 14 20:56:04 2019
 @author: Jakub Sarnowski
 """
 
+import os
+
 def init():
     global global_config_array
     global_config_array = {
@@ -13,6 +15,7 @@ def init():
             "database": None,
             "server": None,
             "table": None,
+            "exportPath": "exports",
             "secure_sql_user_session": None,
             "active_sql_connection": None
     }

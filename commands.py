@@ -7,8 +7,9 @@ Created on Thu Dec 12 01:11:41 2019
 
 import pyodbc
 import os
-from pathlib import Path, PurePath
 import settings
+
+path = os.getcwd()
 
 commands = {
     "exit": "Exit the program" ,
@@ -19,7 +20,7 @@ commands = {
     "add": "Add new record to the selected table",
     "delete": "Remove the existing record from the selected table",
     "edit": "Modify the existing record in the selected table",
-    "change": "Removes focus from the currently selected table",
+    "switch": "Modify the current table's focus. If no new table name is provided, it removes focus entirely. Otherwise the focus is placed on the another table.",
     "help": "Displays all available commands",
     "export": "Exports currently selected table to .csv file",
     "clear": "This command clears the console window",
@@ -179,47 +180,45 @@ def Show(table = ""):
             
 def Export(table = ""):
     try:
-        exportPath = Path("/exports")
-        if exportPath.exists():
-            pass
-        else:
-            os.mkdir(exportPath)
-            print("Created /exports sub-directory for .csv files.\n")
         if settings.global_config_array["active_sql_connection"]:
             dbConnection = settings.global_config_array["active_sql_connection"]
-            
+            exportPath = settings.global_config_array["exportPath"]
+            if os.path.exists(exportPath):
+                pass
+            else:
+                os.mkdir(exportPath)
+                print("Creating /exports directory.\n")
             if settings.global_config_array["table"] != None:
                 table = settings.global_config_array["table"]
             if table == "":
                 table = str(input("Table name: "))    
             
             fileName = table + ".csv"
-            filePath = Path(fileName)
             queryAppend = list("select * from ")
             for t in table:
                 queryAppend.append(t)
             query = ''.join(queryAppend)
             cursor = dbConnection.cursor()
             result = cursor.execute(query)
-            finalFilePath = Path.joinpath(exportPath, filePath)
-            if not finalFilePath.exists():
-                print("\nFile",fileName,"already exists. Do you want to overwrite it? [Y/n]", end='')
+            finalPath = os.path.join(path, exportPath, fileName)
+            if os.path.exists(finalPath):
+                print("File",fileName,"already exists. Do you want to overwrite it? [Y/n]", end='')
                 confirmAction = str(input())
                 if confirmAction == "Y" or confirmAction == "y":
-                    with open(finalFilePath, "a+", newline='') as csvfile:
+                    with open(finalPath, "a+", newline='') as csvfile:
                         import csv
-                        csvfile.truncate()
+                        csvfile.truncate(0)
                         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                         writer.writerow([x[0] for x in result.description])  # column headers
                         rows = result.fetchall()
                         for row in rows:
                             writer.writerow(row)
-                    csvfile.close()
-                    print("Exporting of file",fileName,"finished successfully.\n")
+                        csvfile.close()
+                        print("Exporting of file",fileName,"finished successfully.\n")
                 elif confirmAction == "N" or confirmAction == "n":
                     print("Aborting...\n")
             else:
-                with open(finalFilePath, "a+", newline='') as csvfile:
+                with open(finalPath, "a+", newline='') as csvfile:
                     import csv
                     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                     writer.writerow([x[0] for x in result.description])  # column headers
@@ -239,6 +238,7 @@ def Export(table = ""):
         sqlstate = e.args[0]
         if sqlstate == '42S02':
             print("Table",table,"not found.\n")
+    except: print("Could not save file",fileName,"to specified location.\n")
         
 def Clear():
     print("\n" * 50)
@@ -273,10 +273,14 @@ def Status():
         i += 1
     print("+" + "-" * 100 + "+\n")
     
-def Change():
-    print("Removed focus from the",settings.global_config_array["table"],"table.\n")
+def Switch(table = ""):
+    if table == "":
+        print("Removed focus from the",settings.global_config_array["table"],"table.\n")
     if settings.global_config_array["table"] != None:
         settings.global_config_array["table"] = None
+    if table != "":
+        settings.global_config_array["table"] = table
+        
 
 def Add():
     try:
