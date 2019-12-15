@@ -93,12 +93,20 @@ quit: exit command alias~~
 ## CLI's interactive mode:
 Commands with implemented interactive mode allows user to provide the additional parameters "on the run" - in case of not providing any of the specified parameters or just a part of them. For example:
 ```
-js $ connect localhost
+js $ export users
+There is no connection established. Redirecting to connect action...
+
+Server name: localhost
 Database: test_db
-Connection with localhost->test_db has been successfully established.
+Successfully connected to the localhost->test_db
+
+js $ export users
+users.csv export task finished successfully.
+
+js $
 ```
-Similiar thing happens when you try to use `export` command without active database connection - in this case you will be redirected to `connect` action to fill the necessary data.
-<br />
+Result:
+<img src="https://jsarnowski.pl/wp-content/uploads/2019/12/Przechwytywanie-1.png" /><br />
 
 ## To do:
 - [ ] implementation of commands' functionalities:
