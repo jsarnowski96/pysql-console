@@ -105,7 +105,7 @@ users.csv export task finished successfully.
 
 js $
 ```
-Result:
+Result:<br />
 <img src="https://jsarnowski.pl/wp-content/uploads/2019/12/Przechwytywanie-1.png" /><br />
 
 ## To do:
