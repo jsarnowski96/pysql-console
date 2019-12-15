@@ -13,7 +13,7 @@ path = os.getcwd()
 
 commands = {
     "exit": "Exit the program" ,
-    "connect": "Make a connection to the target database",
+    "connect": "Open new connection to the target database",
     "close": "Close active connection to the database",
     "logout": "Return to splash screen",
     "show": "List all rows in the selected table",
