@@ -31,15 +31,16 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 - create a connection with local or external MS SQL database
 - display contents of the selected table (currently in raw, unformatted form)
 - export selected table to .csv file
-- implementation of pseudo user authentication mechanism
-- executing commands directly or via aliases
+- implementation of user authentication mechanism based on Windows SQL Server Authentication
+- ~~executing commands directly or via aliases~~
 <br />
 
 ## Planned features:
 - full CRUD integration
 - read data from .csv file and display it on the screen
-- importing data from .csv file into the selected database
+- importing data from .csv file into the selected database/table
 - SQL-XML converter and vice-versa
+- integration with other database engines, such as MariaDB, mySQL, PostgreSQL etc.
 - system-wide commands
 <br />
 
