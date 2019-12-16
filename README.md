@@ -40,7 +40,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 - read data from .csv file and display it on the screen
 - importing data from .csv file into the selected database/table
 - SQL-XML converter and vice-versa
-- integration with other database engines, such as MariaDB, mySQL, PostgreSQL etc.
+- integration with other database engines, such as MariaDB, MySQL, PostgreSQL etc.
 - system-wide commands
 <br />
 
