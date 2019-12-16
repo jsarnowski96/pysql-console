@@ -108,7 +108,6 @@ def Close():
         print("There is no active connection to any database\n")
         
 def Logout():
-    from pysqlconsole import drawInitBoard, success
     global success
     if settings.global_config_array["secure_sql_user_session"] != None:
         if settings.global_config_array["secure_sql_user_session"]:
@@ -118,10 +117,8 @@ def Logout():
         settings.global_config_array["username"] = None
     if settings.global_config_array["password"] != None:
         settings.global_config_array["password"] = None
-    success = False
     print("User logged out...\n")
     Clear()
-    drawInitBoard()
         
 def Show(table = ""):
     try:
@@ -245,10 +242,7 @@ def Export(table = ""):
     except: print("Could not save file",fileName,"to specified location.\n")
         
 def Clear():
-    from pysqlconsole import drawInitBoard
     print("\n" * 50)
-    drawInitBoard()
-    print("\n" * 2)
     
 def Help():
     print("\nList of available commands:")

@@ -106,8 +106,8 @@ def UserAuthentication():
 
 def InputHandler(userInput):
     try:
-        if userInput[0] in commands.commands or commands.commands["aliases"].has_key(userInput[0]):
-            if userInput[0] == "exit" or userInput == "quit":
+        if userInput[0] in commands.commands:
+            if userInput[0] == "exit":
                 commands.commands[userInput[0]]["exec"]
                 sys.exit()
             elif  userInput[0] == "connect":
@@ -124,14 +124,44 @@ def InputHandler(userInput):
                         commands.commands[userInput[0]]["exec"](table = userInput[1])
                 except IndexError:
                     commands.commands[userInput[0]]["exec"] ()
-            elif userInput[0] == "export" or userInput[0] == "exp":
+            elif userInput[0] == "export":
                 try:
                     if userInput[1]:
                         commands.commands[userInput[0]]["exec"](table = userInput[1])
+                    else:
+                        commands.commands[userInput[0]]["exec"]()
                 except IndexError:
                     commands.commands[userInput[0]]["exec"]()
+            elif userInput[0] == "clear":
+                commands.commands[userInput[0]]["exec"]()
+                drawInitBoard()
+                print("\n" * 2)
+            elif userInput[0] == "logout":
+                commands.commands[userInput[0]]["exec"]()
+                global success
+                success = False
+                drawInitBoard()
             else:
                 commands.commands[userInput[0]]["exec"]()
+        if userInput[0] in commands.commands["aliases"]:
+            if userInput[0] == "quit":
+                commands.commands["aliases"][userInput[0]]["exec"]()
+                sys.exit()
+            elif userInput[0] == "exp":
+                try:
+                    if userInput[1]:
+                        commands.commands["aliases"][userInput[0]]["exec"](table = userInput[1])
+                    else:
+                        commands.commands["aliases"][userINput[0]]["exec"]()
+                except IndexError:
+                    commands.commands["aliases"][userInput[0]]["exec"]()
+            elif userInput[0] == "cls":
+                commands.commands["aliases"][userInput[0]]["exec"]()
+                drawInitBoard()
+                print("\n" * 2)
+            else:
+                commands.commands["aliases"][userInput[0]]["exec"]()
+            
     except KeyError:
         print("\nSyntax error - " + userInput[0] + " command was not recognized.\n")
     except AttributeError as e:
