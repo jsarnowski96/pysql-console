@@ -57,6 +57,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
   - `Close()` - close the existing connection to the database<br />
   - `Logout()` - releases user credentials and clears `global_config_array`. Returns to login screen<br />
   - `Show()` - display content of the selected table<br />
+  - `Query()` - allows for SQL select statement's execution<br />
   - `Export()` - export selected table to CSV file<br />
   - `Clear()` - clears the console screen<br />
   - `Status()` - display content of the `global_config_array`<br />
