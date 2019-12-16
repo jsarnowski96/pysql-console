@@ -52,17 +52,17 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
   - `MainaActivity()` - methods responsible for acquiring user input and calling `InputHandler()` method<br />
   - `Startup()` - core `pysql-console` method invoking all dependant methods in a strict, predetermined order<br />
 - `commands.py` - contains implementations of all internal commands used by the program<br />
-  - `Exit()` - exits the program<br />
-  - `Connect()`- create a connection to the database<br />
-  - `Close()` - close the existing connection to the database<br />
-  - `Logout()` - releases user credentials and clears `global_config_array`. Returns to login screen<br />
-  - `Show()` - display content of the selected table<br />
-  - `Query()` - allows for SQL select statement's execution<br />
-  - `Export()` - export selected table to CSV file<br />
-  - `Clear()` - clears the console screen<br />
-  - `Status()` - display content of the `global_config_array`<br />
+  - `Exit()`<br />
+  - `Connect()`<br />
+  - `Close()`<br />
+  - `Logout()`<br />
+  - `Show()`<br />
+  - `Query()`<br />
+  - `Export()`<br />
+  - `Clear()`<br />
+  - `Status()`<br />
   - `Switch()` - if no parameter was provided, sets `global_config_array["table"]` value to `None`. Otherwise, switches focus to the provided table<br />
-  - `Help()` - display list of the available commands<br />
+  - `Help()`<br />
 - `settings.py` - global configuration file feeding requested data to both `pysql-console.py` and `commands.py`<br />
 
 ## Requirements:
