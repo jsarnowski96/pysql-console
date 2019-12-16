@@ -45,7 +45,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 <br />
 
 ## File structure and dependant methods listing:
-- `pysql-console.py` - top layer py script handling user input and calling sub-routines from `commands.py`
+- `pysqlconsole.py` - top layer py script handling user input and calling sub-routines from `commands.py`
   - `drawInitBoard()` - renders the program's logo screen<br />
   - `UserAuthentication()` - method responsible for performing user authentication. It keeps the main user identity connection opened during whole runtime<br />
   - `InputHandler()` - method processesing user input received from `MainActivity()` and executing calls to `commands.py` stored methods<br />
@@ -63,7 +63,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
   - `Status()`<br />
   - `Switch()`<br />
   - `Help()`<br />
-- `settings.py` - global configuration file feeding requested data to both `pysql-console.py` and `commands.py`<br />
+- `settings.py` - global configuration file feeding requested data to both `pysqlconsole.py` and `commands.py`<br />
 
 ## Requirements:
 - Python 3.x
@@ -135,7 +135,7 @@ Result:<br />
   - [x] `query`
   - [ ] `file <read>|<write> <file_name>`
   - [x] `help`
-- [x] migration of `commands.py` method calls coming from `pysql-console.py` to the nested dictionaries binded with command's keys.<br />
+- [x] migration of `commands.py` method calls coming from `pysqlconsole.py` to the nested dictionaries binded with command's keys.<br />
 - [ ] all SQL-related commands binded with one specific command as optional parameters<br />
 (for example `sql connect`, `sql show`, `sql export`, `sql edit`, etc.)
 - [x] fix bug in `Exit()` method
