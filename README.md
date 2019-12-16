@@ -49,7 +49,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
   - `drawInitBoard()` - renders the program's logo screen<br />
   - `UserAuthentication()` - method responsible for performing user authentication. It keeps the main user identity connection opened during whole runtime<br />
   - `InputHandler()` - method processesing user input received from `MainActivity()` and executing calls to `commands.py` stored methods<br />
-  - `MainaActivity()` - methods responsible for acquiring user input and calling `InputHandler()` method<br />
+  - `MainaActivity()` - method responsible for acquiring user input and calling `InputHandler()` method<br />
   - `Startup()` - core `pysql-console` method invoking all dependant methods in a strict, predetermined order<br />
 - `commands.py` - contains implementations of all internal commands used by the program<br />
   - `Exit()`<br />
@@ -61,7 +61,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
   - `Export()`<br />
   - `Clear()`<br />
   - `Status()`<br />
-  - `Switch()` - if no parameter was provided, sets `global_config_array["table"]` value to `None`. Otherwise, switches focus to the provided table<br />
+  - `Switch()`<br />
   - `Help()`<br />
 - `settings.py` - global configuration file feeding requested data to both `pysql-console.py` and `commands.py`<br />
 
