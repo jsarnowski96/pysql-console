@@ -88,6 +88,7 @@ connect <server> <database>: create an active connection to the target MS SQL da
 show <table>: displays the content of the selected table
 add <value 1> <value 2> ... <value n>: append new row to the selected table - in development
 edit <row_id>: modify the specified row in the selected table - in development
+query: allows for direct SQL select statement's execution
 status: returns the current user's session data.
 switch <table>: switches current focus to another table.
 help: displays the list of available commands and aliases
@@ -130,9 +131,10 @@ Result:<br />
   - [ ] `edit`
   - [ ] `drop`
   - [x] `status`
+  - [x] `query`
   - [ ] `file <read>|<write> <file_name>`
   - [x] `help`
-- [ ] migration of `commands.py` method calls coming from `pysql-console.py` to the nested dictionaries binded with command's keys.<br />
+- [x] migration of `commands.py` method calls coming from `pysql-console.py` to the nested dictionaries binded with command's keys.<br />
 - [ ] all SQL-related commands binded with one specific command as optional parameters<br />
 (for example `sql connect`, `sql show`, `sql export`, `sql edit`, etc.)
 - [x] fix bug in `Exit()` method
@@ -168,4 +170,4 @@ Result:<br />
 - <b>16/12/2019 changelog:</b><br />
             - Changes in exception handling mechanism - now it is more accurate, specific and covers a wider range of errors.<br />
             - Added new exception handle for error `08001` in case of connection failure to non-existing or not DNS-mapped SQL server.<br />
-            - Major changes in `commands` dictionary - migrated method calls from `pysqlconsole.py` directly into nested command's dictionaries with `exec` key. Added new `query` command which allows for writing a specific SQL select statement. Command's fallback is similar to export or show commands - in case of no active DB connection, user is redirected to Connect() action.<br />
+            - Major changes in `commands` dictionary - migrated method calls from `pysqlconsole.py` directly into nested command's dictionaries with `exec` key. Added new `query` command which allows for writing a specific SQL select statement. Command's fallback is similar to export or show commands - in case of no active DB connection, user is redirected to `Connect()` action.<br />
