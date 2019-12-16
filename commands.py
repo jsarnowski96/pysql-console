@@ -11,28 +11,6 @@ import settings
 
 path = os.getcwd()
 
-commands = {
-    "exit": "Exit the program" ,
-    "connect": "Open new connection to the target database",
-    "close": "Close active connection to the database",
-    "logout": "Return to splash screen",
-    "show": "List all rows in the selected table",
-    "add": "Add new record to the selected table",
-    "delete": "Remove the existing record from the selected table",
-    "edit": "Modify the existing record in the selected table",
-    "switch": "Modify the current table's focus. If no new table name is provided, it removes focus entirely. Otherwise the focus is placed on the another table.",
-    "help": "Displays all available commands",
-    "export": "Exports currently selected table to .csv file",
-    "clear": "This command clears the console window",
-    "status": "Displays current session's data",
-    "aliases": {
-        "cls": "This command clears the console window",
-        "exp": "Exports currently selected table to .csv file",
-        "quit": "Exit the program",
-        "del": "Remove the existing record from the selected table"
-    }
-}
-
 def Exit():
     if settings.global_config_array["server"] != None:
         settings.global_config_array["server"] = None
@@ -130,6 +108,8 @@ def Close():
         print("There is no active connection to any database\n")
         
 def Logout():
+    from pysqlconsole import drawInitBoard, success
+    global success
     if settings.global_config_array["secure_sql_user_session"] != None:
         if settings.global_config_array["secure_sql_user_session"]:
             settings.global_config_array["secure_sql_user_session"].close()
@@ -138,8 +118,10 @@ def Logout():
         settings.global_config_array["username"] = None
     if settings.global_config_array["password"] != None:
         settings.global_config_array["password"] = None
+    success = False
     print("User logged out...\n")
     Clear()
+    drawInitBoard()
         
 def Show(table = ""):
     try:
@@ -203,9 +185,13 @@ def Export(table = ""):
                 os.mkdir(exportPath)
                 print("Creating /exports directory.\n")
             if settings.global_config_array["table"] != None:
-                table = settings.global_config_array["table"]
-            if table == "":
-                table = str(input("Table name: "))    
+                if table == "":
+                    table = settings.global_config_array["table"]
+                else: pass
+            else:
+                if table == "":
+                    table = str(input("Table name: "))
+                else: pass
             fileName = table + ".csv"
             queryAppend = list("select * from ")
             for t in table:
@@ -259,8 +245,10 @@ def Export(table = ""):
     except: print("Could not save file",fileName,"to specified location.\n")
         
 def Clear():
+    from pysqlconsole import drawInitBoard
     print("\n" * 50)
-    return
+    drawInitBoard()
+    print("\n" * 2)
     
 def Help():
     print("\nList of available commands:")
@@ -314,12 +302,84 @@ def Add():
             print("Error:",e.args[0],"\n",e)
     except Exception as e:
         print("Error:",e.args[0],"\n",e)
-            
+    
+def Delete():
+    pass
+
+def Edit():
+    pass
+
+def Query():
+    try:
+            if settings.global_config_array["active_sql_connection"]:
+                dbConnection = settings.global_config_array["active_sql_connection"]
+                print("Insert your query statement:")
+                query = str(input())
+                result = ""
+                if "select" in query:
+                    cursor = dbConnection.cursor()
+                    result = cursor.execute(query)
+                    #dbConnection.add_output_converter(-155, handle_datetimeoffset)
+                    #print(str(result.count()) + " records detected")
+                    columns = [column[0] for column in result.description]
+                    print("-" * sum(len(i) for i in columns) * 2)
+                    for i, c in enumerate(columns):
+                        if i == 0 :
+                            print(c,"\t|\t", end = '')
+                        elif i == len(columns) - 1:
+                            print(c,"\t|")
+                        else:
+                            print(c,"\t|\t", end = '')
+                    print("-" * sum(len(i) for i in columns) * 2)
+                    rows = result.fetchall()
+                    for row in rows:
+                        print("-" * 100)
+                        print(row)
+                        print("-" * 100)
+                    print()
+                else:
+                    print("query command allows only for select statement. Use add, delete or edit for other CRUD operations.\n")
+            else:
+                print("There is no active connection to the database. Redirecting to connect action...\n")
+                Connect()                        
+    except KeyboardInterrupt:
+        if dbConnection:
+            dbConnection.close()
+        print("\nTerminating command...\n")
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        if sqlstate == "42S02":
+            print("Table",table," does not exist in the",settings.global_config_array["database"],"database.\n")
+        else:
+            print("Error:",e.args[0],"\n",e,"\n")
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e,"\n")
+
 def handle_datetimeoffset(dto_value):
     # ref: https://github.com/mkleehammer/pyodbc/issues/134#issuecomment-281739794
     tup = struct.unpack("<6hI2h", dto_value)  # e.g., (2017, 3, 16, 10, 35, 18, 0, -6, 0)
     tweaked = [tup[i] // 100 if i == 6 else tup[i] for i in range(len(tup))]
     return "{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}.{:07d} {:+03d}:{:02d}".format(*tweaked)
 
-if KeyboardInterrupt:
-    print("\nTerminating command...\n")
+commands = {
+    "exit": { "exec": Exit, "descr": "Exit the program" },
+    "connect": { "exec": Connect, "descr": "Open new connection to the target database" },
+    "close": { "exec": Close, "descr": "Close active connection to the database" },
+    "logout": { "exec": Logout, "descr": "Return to splash screen" },
+    "show": { "exec": Show, "descr": "List all rows in the selected table" },
+    "add": { "exec": Add, "descr": "Add new record to the selected table" },
+    "delete": { "exec": Delete, "descr": "Remove the existing record from the selected table" },
+    "edit": { "exec": Edit, "descr": "Modify the existing record in the selected table" },
+    "switch": { "exec": Switch, "descr": "Modify the current table's focus. If no new table name is provided, it removes focus entirely. Otherwise the focus is placed on the another table." },
+    "help": { "exec": Help, "descr": "Displays all available commands" },
+    "export": { "exec": Export, "descr": "Exports currently selected table to .csv file" },
+    "clear": { "exec": Clear, "descr": "This command clears the console window" },
+    "status": { "exec": Status, "descr": "Displays current session's data" },
+    "query": { "exec": Query, "descr": "Run a specific query in the database" },
+    "aliases": {
+        "cls": { "exec": Clear, "descr": "This command clears the console window" },
+        "exp": { "exec": Export, "descr": "Exports currently selected table to .csv file" },
+        "quit": { "exec": Exit, "descr": "Exit the program" },
+        "del": { "exec": Delete, "descr": "Remove the existing record from the selected table" }
+    }
+}

@@ -3,7 +3,7 @@
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___|
-                                                                             v.0.1.58
+                                                                             v.0.2.0
 ```
 
 # PySql-Console (under development)
@@ -168,4 +168,4 @@ Result:<br />
 - <b>16/12/2019 changelog:</b><br />
             - Changes in exception handling mechanism - now it is more accurate, specific and covers a wider range of errors.<br />
             - Added new exception handle for error `08001` in case of connection failure to non-existing or not DNS-mapped SQL server.<br />
-
+            - Major changes in `commands` dictionary - migrated method calls from `pysqlconsole.py` directly into nested command's dictionaries with `exec` key. Added new `query` command which allows for writing a specific SQL select statement. Command's fallback is similar to export or show commands - in case of no active DB connection, user is redirected to Connect() action.<br />
