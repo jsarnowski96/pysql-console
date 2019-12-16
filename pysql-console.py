@@ -19,7 +19,7 @@ def drawInitBoard():
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___| 
-                                                                             v.0.1.40
+                                                                             v.0.1.45
 
                                      +-----------------------------------+
                                      |      Welcome to PySQL Console     |
@@ -67,21 +67,29 @@ def UserAuthentication():
             settings.global_config_array["secure_sql_user_session"] = dbConnection
             print("Welcome back,", username,"\n")
     except pyodbc.Warning as w:
-        print(w,": Caution - possible data truncation.")
+        print("Warning:",w.args[0],"\n",w,"\n")
+        print("Warning: - possible data truncation.\n")
     except pyodbc.DatabaseError as e:
-        print(e,": Could not connect to the database - incorrect server name or database")
+        print("Error:",e.args[0],"\n",e,"\n")
+        print("Could not connect to the database - incorrect server name or database.\n")
     except pyodbc.DataError as e:
-        print(e,": Illegal operation detected.")
+        print("Error:",e.args[0],"\n",e,"\n")
+        print("Illegal operation detected.\n")
     except pyodbc.OperationalError as e:
-        print(e,": Could not connect to the database server")
+        print("Error:",e.args[0],"\n",e,"\n")
+        print("Could not connect to the database server.\n")
     except pyodbc.IntegrityError as e:
-        print(e,": Relational integrity of the target database is compromised.")
+        print("Error:",e.args[0],"\n",e,"\n")
+        print("Relational integrity of the target database is compromised.\n")
     except pyodbc.InternalError as e:
-        print(e,": Cursor not valid or transaction out of sync")
+        print("Error:",e.args[0],"\n",e,"\n")
+        print("Cursor not valid or transaction out of sync.\n")
     except pyodbc.ProgrammingError as e:
-        print(e,": Database not found, SQL Syntax error or wrong number of parameters.")
+        print("Error:",e.args[0],"\n",e,"\n")
+        print("Database not found, SQL Syntax error or wrong number of parameters.\n")
     except pyodbc.NotSupportedError as e:
-        print(e,": Database does not support provided pyodbc request.")
+        print("Error:",e.args[0],"\n",e,"\n")
+        print("Database does not support provided pyodbc request.\n")
     except KeyboardInterrupt:
         print("\nExiting program...")
         sys.exit()
@@ -93,7 +101,8 @@ def UserAuthentication():
         if sqlstate == '28000':
             print("Authentication failed. Incorrect username or password.\n")
         else:
-            print("UserAuthentication: Unknown error occured during connecting to the database.\n")
+            print("Error:",e.args[0],"\n",e,"\n")
+    except: print("UserAuthentication(): Unknown error occured during connecting to the database.\n")
 
 def InputHandler(userInput):
     try:
@@ -140,8 +149,10 @@ def InputHandler(userInput):
                 print("\n" * 2)
     except KeyError:
         print("\nSyntax error - " + userInput[0] + " command was not recognized.\n")
-    except AttributeError:
-        print("\nSyntax error - " + userInput[0] + " command was not recognized.\n")
+    except AttributeError as e:
+        print("Error:",e.args[0],"\n",e,"\n")
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e,"\n")
 
 def MainActivity():
     try:
@@ -164,5 +175,5 @@ def Startup():
                 MainActivity()
     except KeyboardInterrupt:
         sys.exit()
-        
+    except Exception as e: print("Error:",e.args[0],"\n",e,"\n")
 Startup()

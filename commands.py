@@ -65,7 +65,7 @@ def Connect(server = "", database = ""):
                                               'Database='+database+';'
                                               'uid='+username+';'
                                               'pwd='+password+';'
-                                              'Trusted_Connection=no;') 
+                                              'Trusted_Connection=no;', timeout = 1) 
                         print("Successfully connected to the %s->%s.\n" % (server, database))
                     else:
                         print("You did not enter database name.")
@@ -74,21 +74,32 @@ def Connect(server = "", database = ""):
             settings.global_config_array["active_sql_connection"] = dbConnection
         elif settings.global_config_array["active_sql_connection"]:
             print("Connection is already established.\n")
-    except pyodbc.Warning:
+    except pyodbc.Warning as w:
+        print("Warning:",w.args[0],"\n",w,"\n")
         print("Warning: possible data truncation.\n")
-    except pyodbc.DatabaseError:
-        print("DatabaseError: Could not connect to the database - incorrect server name or database\n")
-    except pyodbc.DataError:
+    except pyodbc.DatabaseError as e:
+        sqlstate = e.args[0]
+        if sqlstate == '08001':
+            print("Error:",e.args[0],"Connection timeout - could not connect to the SQL server.\n")
+        else:
+            print("Error:",e.args[0],"\n",e,"\n")
+    except pyodbc.DataError as e:
+        print("Error:",e.args[0],"\n",e,"\n")
         print("DataError: Illegal operation detected. Exiting.\n")
-    except pyodbc.OperationalError:
+    except pyodbc.OperationalError as e:
+        print("Error:",e.args[0],"\n",e,"\n")
         print("OperationalError: Could not connect to the database server.\n")
-    except pyodbc.IntegrityError:
+    except pyodbc.IntegrityError as e:
+        print("Error:",e.args[0],"\n",e,"\n")
         print("IntegrityError: Relational integrity of the target database is compromised.\n")
-    except pyodbc.InternalError:
+    except pyodbc.InternalError as e:
+        print("Error:",e.args[0],"\n",e,"\n")
         print("InternalError: Cursor not valid or transaction out of sync\n")
-    except pyodbc.ProgrammingError:
+    except pyodbc.ProgrammingError as e:
+        print("Error:",e.args[0],"\n",e,"\n")
         print("ProgrammingError: Database not found, SQL Syntax error or wrong number of parameters.\n")
-    except pyodbc.NotSupportedError:
+    except pyodbc.NotSupportedError as e:
+        print("Error:",e.args[0],"\n",e,"\n")
         print("NotSupportedError: Database does not support provided pyodbc request.\n")
     except KeyboardInterrupt:
         dbConnection.close()
@@ -97,6 +108,9 @@ def Connect(server = "", database = ""):
         sqlstate = e.args[0]
         if sqlstate == '28000':
             print("Database",database,"not found.\n")
+        else: print("Error:",e.args[0],"\n",e,"\n")
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e,"\n")
     except:
         print("Connect: Unknown error occured during connecting to the database.\n")
 
@@ -142,6 +156,7 @@ def Show(table = ""):
             query = ''.join(queryAppend)
             cursor = dbConnection.cursor()
             result = cursor.execute(query)
+            dbConnection.add_output_converter(-155, handle_datetimeoffset)
             #print(str(result.count()) + " records detected")
             columns = [column[0] for column in result.description]
             print("\nContents of table " + table + ":")
@@ -172,7 +187,10 @@ def Show(table = ""):
         sqlstate = e.args[0]
         if sqlstate == "42S02":
             print("Table",table," does not exist in the",settings.global_config_array["database"],"database.\n")
-        else: print(e)
+        else:
+            print("Error:",e.args[0],"\n",e,"\n")
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e,"\n")
             
 def Export(table = ""):
     try:
@@ -228,11 +246,14 @@ def Export(table = ""):
     except KeyboardInterrupt:
         print("\nTerminating command...\n")
     except AttributeError as e:
-        print(e)
+        print("Error:",e.args[0],"\n",e,"\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == '42S02':
             print("Table",table,"not found.\n")
+        else: print("Error:",e.args[0],"\n",e)
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e)
     except: print("Could not save file",fileName,"to specified location.\n")
         
 def Clear():
@@ -287,6 +308,16 @@ def Add():
         if sqlstate == '42S02':
             print("No active connection to the database detected. Redirecting to connect action...\n")
             Connect()
+        else:
+            print("Error:",e.args[0],"\n",e)
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e)
+            
+def handle_datetimeoffset(dto_value):
+    # ref: https://github.com/mkleehammer/pyodbc/issues/134#issuecomment-281739794
+    tup = struct.unpack("<6hI2h", dto_value)  # e.g., (2017, 3, 16, 10, 35, 18, 0, -6, 0)
+    tweaked = [tup[i] // 100 if i == 6 else tup[i] for i in range(len(tup))]
+    return "{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}.{:07d} {:+03d}:{:02d}".format(*tweaked)
 
 if KeyboardInterrupt:
     print("\nTerminating command...\n")
