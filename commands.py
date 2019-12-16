@@ -251,9 +251,9 @@ def Export(table = ""):
         sqlstate = e.args[0]
         if sqlstate == '42S02':
             print("Table",table,"not found.\n")
-        else: print("Error:",e.args[0],"\n",e)
+        else: print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
-        print("Error:",e.args[0],"\n",e)
+        print("Error:",e.args[0],"\n",e,"\n")
     except: print("Could not save file",fileName,"to specified location.\n")
         
 def Clear():
