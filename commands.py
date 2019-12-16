@@ -248,11 +248,7 @@ def Export(table = ""):
     except AttributeError as e:
         print("Error:",e.args[0],"\n",e,"\n")
     except pyodbc.DataError as e:
-        sqlstate = e.args[0]
-        if sqlstate == 'HY106':
-            print("Conversion error occured - not supported data type field detected. Cannot display content of the table",table,"\n")
-        else:
-            print("Error:",e.args[0],"\n",e,"\n")
+        print("Error:",e.args[0],"\n",e,"\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == '42S02':
