@@ -167,5 +167,5 @@ Result:<br />
             - `Export()` method: fix of issue related with file validation sub-routine.<br />
 - <b>16/12/2019 changelog:</b><br />
             - Changes in exception handling mechanism - now it is more accurate, specific and covers a wider range of errors.<br />
-            - Added new exception for error `08001` in case of connection failure to non-existing SQL server.<br />
+            - Added new exception for error `08001` in case of connection failure to non-existing or not DNS-mapped SQL server.<br />
 
