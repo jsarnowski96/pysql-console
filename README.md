@@ -101,9 +101,11 @@ logout: releases pseudo user credentials and returns to login screen
 <br />
 
 ## List of commands' aliases:
-~~exp: export command alias
-quit: exit command alias~~
-
+```
+exp: export command alias
+quit: exit command alias
+del: delete command alias
+```
 <br />
 
 ## CLI's interactive mode:
@@ -145,7 +147,7 @@ Result:<br />
 
 ## Known issues:
 - ~~problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.~~ <- <i>problem applied exclusively to Spyder environment and IPython console.</i>
-- `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by boolean data type fields.
+- `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by `datetime` type fields. The problem lies mostly in Microsoft's way of data types' implementation, so unfortunately there is no easy fix for it.<br />
 - ~~export does its job only partially since it replicates a single row N times instead of processing next rows.~~ fixed
 - ~~problem with using aliases~~ - fixed<br />
 - problem with multiline cells' formatting which breaks whole table's view<br/>
@@ -176,6 +178,6 @@ Result:<br />
             - Major changes in `commands` dictionary - migrated method calls from `pysqlconsole.py` directly into nested command's dictionaries with `exec` key. Added new `query` command which allows for writing and executing a personalized SQL select statement. Command's fallback is similar to `export` or `show` commands - in case of no active DB connection, user is redirected to `Connect()` action.<br />
 - <b>17/12/2019 changelog:</b><br />
             - Greatly improved table's output data format thanks to the application of `tabulate` library. Now tables' output is much more readable and organized.<br />
-            - Change in specific commands' fallback behaviour - upon filling the missing data in connect action, user is redirected back to the initial command while all previously obtained optional parameters were stored for later use and are fully accessible.<br />
+            - Change in specific commands' fallback behaviour - upon filling the missing data in `connect` action, user is redirected back to the initial command while all previously obtained optional parameters were stored for later use and are fully accessible.<br />
             - Added `KeyboardInterrupt` exception handle for `Delete()` method.<br />
             - Fixed bug in `Logout()` method related to `active_sql_session` field not being set to `None` upon method's callback.<br />
