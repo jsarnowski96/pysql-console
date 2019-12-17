@@ -314,7 +314,7 @@ def Add():
     '''
     pass
 
-def Delete(table = "", quantity = 1):
+def Delete(table = ""):
     try:
         if settings.global_config_array["active_sql_connection"] != None:
             dbConnection = settings.global_config_array["active_sql_connection"]
@@ -326,20 +326,19 @@ def Delete(table = "", quantity = 1):
                 pass
             elif settings.global_config_array["table"] == None and table == "":
                 table = str(input("Please insert the table's name: "))
-            for i in range(quantity):
-                recordId = int(input("Record ID: "))
-                cursor = dbConnection.cursor()
-                queryAppend = list("delete from " + table + " where id = ?")
-                query = ''.join(queryAppend)
-                print("Are you sure you want to delete the following record? [Y/n]: ", end='')
-                confirmation = str(input())
-                if confirmation == 'Y' or confirmation == 'y':
-                    delete = cursor.execute(query, str(recordId))
-                    dbConnection.commit()
-                    print("Record ID " + str(recordId) + " removed from the table " + table + ".\n")
-                elif confirmation == "N" or confirmation == "n":
-                    dbConnection.rollback()
-                    print("Transaction cancelled.\n")
+            recordId = int(input("Record ID: "))
+            cursor = dbConnection.cursor()
+            queryAppend = list("delete from " + table + " where id = ?")
+            query = ''.join(queryAppend)
+            print("Are you sure you want to delete the following record? [Y/n]: ", end='')
+            confirmation = str(input())
+            if confirmation == 'Y' or confirmation == 'y':
+                delete = cursor.execute(query, str(recordId))
+                dbConnection.commit()
+                print("Record ID " + str(recordId) + " removed from the table " + table + ".\n")
+            elif confirmation == "N" or confirmation == "n":
+                dbConnection.rollback()
+                print("Transaction cancelled.\n")
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
             Connect()
