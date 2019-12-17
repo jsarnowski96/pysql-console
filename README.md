@@ -96,7 +96,7 @@ status: returns the current user's session data.
 list: display all tables in the selected database.
 switch <table>: switches current focus to another table.
 help: displays the list of available commands and aliases
-delete <row_id>: delete the specified row ID in the selected table
+delete <source_table>: delete a single row in the selected table
 drop <table>|<database>: drop the target table or database (destructive) - in development
 export <table>: exports the selected table to .csv file (otherwise prompt for table's name)
 logout: releases pseudo user credentials and returns to login screen
