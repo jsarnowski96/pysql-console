@@ -164,6 +164,11 @@ def InputHandler(userInput):
                     commands.commands["aliases"][userInput[0]]["exec"]()
                     drawInitBoard()
                     print("\n" * 2)
+                elif userInput[0] == "del":
+                    try:
+                        commands.commands["aliases"][userInput[0]]["exec"](table = userInput[1])
+                    except IndexError:
+                        commands.commands["aliases"][userInput[0]]["exec"]()
                 else:
                     commands.commands["aliases"][userInput[0]]["exec"]()
         else:
