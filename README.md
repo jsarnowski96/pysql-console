@@ -172,5 +172,5 @@ Result:<br />
             - Changes in exception handling mechanism - now it is more accurate, specific and covers a wider range of errors.<br />
             - Added new exception handle for error `08001` in case of connection failure to non-existing or not DNS-mapped SQL server.<br />
             - Major changes in `commands` dictionary - migrated method calls from `pysqlconsole.py` directly into nested command's dictionaries with `exec` key. Added new `query` command which allows for writing and executing a personalized SQL select statement. Command's fallback is similar to `export` or `show` commands - in case of no active DB connection, user is redirected to `Connect()` action.<br />
-- <b>17/12/2019 changelog:</><br />
+- <b>17/12/2019 changelog:</b><br />
             - Greatly improved table's output data format thanks to the application of `tabulate` library. Now tables' output is much more readable and organized.<br />
