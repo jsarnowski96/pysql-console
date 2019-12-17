@@ -86,8 +86,9 @@ def Connect(server = "", database = ""):
         print("Error:",e.args[0],"\n",e,"\n")
         print("NotSupportedError: Database does not support provided pyodbc request.\n")
     except KeyboardInterrupt:
-        dbConnection.close()
-        print("\nTerminating command...\n")
+        if dbConnection:
+            dbConnection.close()
+        print("Terminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == '28000':
@@ -161,7 +162,7 @@ def Show(table = ""):
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
-        print("\nTerminating command...\n")
+        print("Terminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == "42S02":
@@ -231,7 +232,9 @@ def Export(table = ""):
             else:
                 Export()
     except KeyboardInterrupt:
-        print("\nTerminating command...\n")
+        if dbConnection:
+            dbConnection.close()
+        print("Terminating command...\n")
     except AttributeError as e:
         print("Error:",e.args[0],"\n",e,"\n")
     except pyodbc.DataError as e:
@@ -352,6 +355,10 @@ def Delete(table = ""):
             Connect()
         else:
             print("Error:",e.args[0],"\n",e)
+    except KeyboardInterrupt:
+        if dbConnection:
+            dbConnection.close()
+        print("Terminating command...\n")
     except Exception as e:
         print("Error:",e.args[0],"\n",e)
 
@@ -380,14 +387,14 @@ def Query():
                         content.append(row)
                     print(tabulate(content, headers, tablefmt="psql"),"\n")
                 else:
-                    print("query command allows only for select statement. Use add, delete or edit for other CRUD operations.\n")
+                    print("Notification: query command allows only for select statements. Use add, delete or edit command for other CRUD operations.\n")
             else:
                 print("There is no active connection to the database. Redirecting to connect action...\n")
                 Connect()                        
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
-        print("\nTerminating command...\n")
+        print("Terminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == "42S02":
