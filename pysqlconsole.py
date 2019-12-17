@@ -132,7 +132,7 @@ def InputHandler(userInput):
                 elif cmd == "cls":
                     drawInitBoard()
                     print("\n" * 2)
-            except:
+            except IndexError:
                 commands.commands["aliases"][cmd]["exec"]()
         else:
             print("Syntax error - " + userInput[0] + " command was not recognized.\n")
