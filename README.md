@@ -147,7 +147,7 @@ Result:<br />
 - ~~problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.~~ <- <i>problem applied exclusively to Spyder environment and IPython console.</i>
 - `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by boolean data type fields.
 - ~~export does its job only partially since it replicates a single row N times instead of processing next rows.~~ fixed
-- ~~ problem with using aliases~~<br />
+- ~~problem with using aliases~~ - fixed<br />
 - problem with multiline cells' formatting which breaks whole table's view<br/>
 - MS SQL Server throws error `23000` upon inserting a foreign key ID into the selected table. Implementation of `Add()` method postponed until further notice<br />
 
