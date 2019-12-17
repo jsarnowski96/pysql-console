@@ -67,7 +67,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 
 ## Requirements:
 - Python 3.x
-- `pyodbc` and `tabulate` libraries
+- non standard-issue `pyodbc` and `tabulate` libraries
 - configured account on local/remote MS SQL server with `SQL Server and Windows Authentication mode` enabled
 - before you can use the program, you have to adjust server's name/IP and default database in `UserAuthentication()` method to your personal needs. Although using `master` as a default database might be sufficient, I highly recommend testing some of these settings beforehand. If you wish to connect with a certain server instance or you are using a non-standard port, you can use `Server=server_name\instance_name`<br />or `Server=server_name,port_number`, respectively. Use below template as a general reference point:
 ```
