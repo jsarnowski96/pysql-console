@@ -287,8 +287,11 @@ def Add():
                 table = str(input("Please insert the table's name: "))
             cursor = dbConnection.cursor()
             #column_data = cursor.columns(table=settings.global_config_array["table"], catalog=settings.global_config_array["database"], schema='dbo').fetchall()
-            columns = cursor.execute("SELECT COLUMN_NAME,* FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = " + "'"+ table + "'").fetchall()
-            queryAppend = list("insert into " + table + " values(")
+            cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = " + "'"+ table + "'").fetchall()
+            columns = [c for c in cursor.fetchall()]
+            query = list("insert into " + table + "(")
+            query.extend(str(columns))
+            query.append(") values(")
             values = []
             for i, col in enumerate(columns):
                 if i < len(columns) - 1:
@@ -367,30 +370,31 @@ def Edit():
 
 def Query():
     try:
-            if settings.global_config_array["active_sql_connection"]:
-                dbConnection = settings.global_config_array["active_sql_connection"]
-                print("Insert your query statement:")
-                query = str(input())
-                result = ""
-                if "select" in query:
-                    cursor = dbConnection.cursor()
-                    result = cursor.execute(query)
-                    #dbConnection.add_output_converter(-155, handle_datetimeoffset)
-                    columns = [column[0] for column in result.description]
-                    headers = []
-                    for c in columns:
-                        headers.append(c)
-                    rows = result.fetchall()
-                    content = []
-                    for row in rows:
-                        r = None
-                        content.append(row)
-                    print(tabulate(content, headers, tablefmt="psql"),"\n")
-                else:
-                    print("Notification: query command allows only for select statements. Use add, delete or edit command for other CRUD operations.\n")
+        if settings.global_config_array["active_sql_connection"]:
+            dbConnection = settings.global_config_array["active_sql_connection"]
+            print("Insert your query statement:")
+            query = str(input())
+            result = ""
+            if "select" in query:
+                cursor = dbConnection.cursor()
+                result = cursor.execute(query)
+                #dbConnection.add_output_converter(-155, handle_datetimeoffset)
+                columns = [column[0] for column in result.description]
+                headers = []
+                for c in columns:
+                    headers.append(c)
+                rows = result.fetchall()
+                content = []
+                for row in rows:
+                    r = None
+                    content.append(row)
+                print(tabulate(content, headers, tablefmt="psql"),"\n")
             else:
-                print("There is no active connection to the database. Redirecting to connect action...\n")
-                Connect()                        
+                print("Notification: query command allows only for select statements. Use add, delete or edit command for other CRUD operations.\n")
+        else:
+            print("There is no active connection to the database. Redirecting to connect action...\n")
+            Connect()      
+            Query()                  
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
@@ -403,6 +407,41 @@ def Query():
             print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
         print("Error:",e.args[0],"\n",e,"\n")
+def List(database = ""):
+    try:
+        if settings.global_config_array["active_sql_connection"] != None:
+            if database == "":
+                database = settings.global_config_array["database"]
+            elif database != "":
+                pass
+            dbConnection = settings.global_config_array["active_sql_connection"]
+            cursor = dbConnection.cursor()    
+            query = list("select table_name from " + database + ".information_schema.tables")
+            finalQuery = ''.join(query)
+            result = cursor.execute(finalQuery)
+            rows = result.fetchall()
+            table = []
+            for row in rows:
+                table.append(row)
+            print("List of tables in the database " + database)
+            print(tabulate(table, headers=["Table name"], tablefmt="psql"), "\n")
+        else:
+            print("There is no active connection to the database. Redirecting to connect action...\n")
+            Connect()
+            List(database)
+    except KeyboardInterrupt:
+        if dbConnection:
+            dbConnection.close()
+        print("Terminating command...\n")
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        if sqlstate == "42S02":
+            print("Table",table," does not exist in the",settings.global_config_array["database"],"database.\n")
+        else:
+            print("Error:",e.args[0],"\n",e,"\n")
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e,"\n")    
+    
 
 def handle_datetimeoffset(dto_value):
     # ref: https://github.com/mkleehammer/pyodbc/issues/134#issuecomment-281739794
@@ -419,7 +458,8 @@ commands = {
     "add": { "exec": Add, "descr": "Add new record to the selected table" },
     "delete": { "exec": Delete, "descr": "Remove the existing record from the selected table" },
     "edit": { "exec": Edit, "descr": "Modify the existing record in the selected table" },
-    "switch": { "exec": Switch, "descr": "Modify the current table's focus. If no new table name is provided, it removes focus entirely. Otherwise the focus is placed on the another table." },
+    "list": { "exec": List, "descr": "Display list of tables in the selected database" },
+    "switch": { "exec": Switch, "descr": "If no new table name is provided, remove focus from the current table, otherwise switch to the another table." },
     "help": { "exec": Help, "descr": "Displays all available commands" },
     "export": { "exec": Export, "descr": "Exports currently selected table to .csv file" },
     "clear": { "exec": Clear, "descr": "This command clears the console window" },
