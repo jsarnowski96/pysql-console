@@ -187,3 +187,4 @@ Result:<br />
             - Fixed bug in `Logout()` method related to `active_sql_session` field not being set to `None` upon method's callback.<br />
             - New `list` command added.<br />
             - Major upgrade of `InputHandler()` method's logic by applying mutable `*args` parameter, allowing for handling multiple scenarios with optional arguments being passed into the function or not.<br />
+            - Added `test_branch` as a staging environment for testing unverified changes.<br />
