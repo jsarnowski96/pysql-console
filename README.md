@@ -176,3 +176,6 @@ Result:<br />
             - Major changes in `commands` dictionary - migrated method calls from `pysqlconsole.py` directly into nested command's dictionaries with `exec` key. Added new `query` command which allows for writing and executing a personalized SQL select statement. Command's fallback is similar to `export` or `show` commands - in case of no active DB connection, user is redirected to `Connect()` action.<br />
 - <b>17/12/2019 changelog:</b><br />
             - Greatly improved table's output data format thanks to the application of `tabulate` library. Now tables' output is much more readable and organized.<br />
+            - Change in specific commands' fallback behaviour - upon filling the missing data in connect action, user is redirected back to the initial command while all previously obtained optional parameters were stored for later use and are fully accessible.<br />
+            - Added `KeyboardInterrupt` exception handle for `Delete()` method.<br />
+            - Fixed bug in `Logout()` method related to `active_sql_session` field not being set to `None` upon method's callback.<br />
