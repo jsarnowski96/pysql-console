@@ -19,7 +19,7 @@ def drawInitBoard():
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___| 
-                                                                            v.0.2.20
+                                                                            v.0.2.30
 
                                      +-----------------------------------+
                                      |      Welcome to PySQL Console     |
@@ -107,79 +107,37 @@ def UserAuthentication():
 def InputHandler(userInput):
     try:
         if userInput[0] in commands.commands:
-            if userInput[0] == "exit":
-                commands.commands[userInput[0]]["exec"]
-                sys.exit()
-            elif  userInput[0] == "connect":
-                try:
-                    if userInput[1] and userInput[2]:
-                        commands.commands[userInput[0]]["exec"](server = userInput[1], database = userInput[2])
-                    elif userInput[1]:
-                        commands.commands[userInput[0]]["exec"](server = userInput[1], database = "")
-                except IndexError:
-                    commands.commands[userInput[0]]["exec"]()
-            elif userInput[0] == "show":
-                try:
-                    if userInput[1]:
-                        commands.commands[userInput[0]]["exec"](table = userInput[1])
-                except IndexError:
-                    commands.commands[userInput[0]]["exec"] ()
-            elif userInput[0] == "export":
-                try:
-                    if userInput[1]:
-                        commands.commands[userInput[0]]["exec"](table = userInput[1])
-                    else:
-                        commands.commands[userInput[0]]["exec"]()
-                except IndexError:
-                    commands.commands[userInput[0]]["exec"]()
-            elif userInput[0] == "clear":
-                commands.commands[userInput[0]]["exec"]()
-                drawInitBoard()
-                print("\n" * 2)
-            elif userInput[0] == "logout":
-                commands.commands[userInput[0]]["exec"]()
-                global success
-                success = False
-                drawInitBoard()
-            elif userInput[0] == "delete":
-                try:
-                    commands.commands[userInput[0]]["exec"](table = userInput[1])
-                except IndexError:
-                    commands.commands[userInput[0]]["exec"]()
-            elif userInput[0] == "list":
-                try:
-                    commands.commands[userInput[0]]["exec"](database = userInput[1])
-                except IndexError:
-                    commands.commands[userInput[0]]["exec"]()
-            else:
-                commands.commands[userInput[0]]["exec"]()
-        elif userInput[0] in commands.commands["aliases"]:
-                if userInput[0] == "quit":
-                    commands.commands["aliases"][userInput[0]]["exec"]()
+            cmd = userInput[0]
+            try:
+                userInput.pop(0)
+                commands.commands[cmd]["exec"](*userInput)
+                if cmd == "exit":
                     sys.exit()
-                elif userInput[0] == "exp":
-                    try:
-                        if userInput[1]:
-                            commands.commands["aliases"][userInput[0]]["exec"](table = userInput[1])
-                        else:
-                            commands.commands["aliases"][userINput[0]]["exec"]()
-                    except IndexError:
-                        commands.commands["aliases"][userInput[0]]["exec"]()
-                elif userInput[0] == "cls":
-                    commands.commands["aliases"][userInput[0]]["exec"]()
+                elif cmd == "clear":
                     drawInitBoard()
                     print("\n" * 2)
-                elif userInput[0] == "del":
-                    try:
-                        commands.commands["aliases"][userInput[0]]["exec"](table = userInput[1])
-                    except IndexError:
-                        commands.commands["aliases"][userInput[0]]["exec"]()
-                else:
-                    commands.commands["aliases"][userInput[0]]["exec"]()
+                elif cmd == "logout":
+                    global success
+                    success = False
+                    drawInitBoard()
+            except IndexError:
+                commands.commands[cmd]["exec"]()
+        elif userInput[0] in commands.commands["aliases"]:
+            cmd = userInput[0]
+            try:    
+                userInput.pop(0)
+                commands.commands[cmd]["aliases"]["exec"](*userInput)
+                if cmd == "quit":
+                    sys.exit()
+                elif cmd == "cls":
+                    drawInitBoard()
+                    print("\n" * 2)
+            except:
+                commands.commands["aliases"][cmd]["exec"]()
         else:
             print("Syntax error - " + userInput[0] + " command was not recognized.\n")
     except KeyError:
-        print("Syntax error - " + userInput[0] + " command was not recognized.\n")
+        print("Error:",e.args[0],"\n",e,"\n")
     except AttributeError as e:
         print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:

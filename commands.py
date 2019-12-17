@@ -33,29 +33,22 @@ def Connect(server = "", database = ""):
             if dbConnection == None:
                 if server == "" and database == "":
                     server = str(input("Server name: "))
-                    database = str(input("Database: "))
-                elif server != "" and database == "":
-                    database = str(input("Database: "))
-                elif server == "" and database != "":
-                    server = str(input("Server name: "))
-                elif server != "" and database != "":
-                    pass
-                settings.global_config_array["server"] = server
-                settings.global_config_array["database"] = database
-                if server != "":
-                    if database != "":
+                    if server == "":
+                        print("You did not enter server name.\n")
+                    database = str(input("Database name: "))
+                    if database == "":
+                        print("You did not enter database name.\n")
+                    if server != "" and database != "":
+                        settings.global_config_array["server"] = server
+                        settings.global_config_array["database"] = database
                         dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
-                                              'Server='+server+';'
-                                              'Database='+database+';'
-                                              'uid='+username+';'
-                                              'pwd='+password+';'
-                                              'Trusted_Connection=no;', timeout = 1) 
+                                                     'Server='+server+';'
+                                                     'Database='+database+';'
+                                                     'uid='+username+';'
+                                                     'pwd='+password+';'
+                                                     'Trusted_Connection=no;', timeout = 1) 
                         print("Successfully connected to the %s->%s.\n" % (server, database))
-                    else:
-                        print("You did not enter database name.")
-                else:
-                    print("You did not enter server name.")
-            settings.global_config_array["active_sql_connection"] = dbConnection
+                        settings.global_config_array["active_sql_connection"] = dbConnection
         elif settings.global_config_array["active_sql_connection"]:
             print("Connection is already established.\n")
     except pyodbc.Warning as w:
@@ -278,6 +271,7 @@ def Switch(table = ""):
         print("Switched focus to table " + table + ".\n")
         
 def Add():
+    '''
     try:
         if settings.global_config_array["active_sql_connection"] != None:
             dbConnection = settings.global_config_array["active_sql_connection"]
@@ -317,9 +311,10 @@ def Add():
             print("Error:",e.args[0],"\n",e)
     except Exception as e:
         print("Error:",e.args[0],"\n",e)
+    '''
     pass
 
-def Delete(table = ""):
+def Delete(table = "", quantity = 1):
     try:
         if settings.global_config_array["active_sql_connection"] != None:
             dbConnection = settings.global_config_array["active_sql_connection"]
@@ -331,19 +326,20 @@ def Delete(table = ""):
                 pass
             elif settings.global_config_array["table"] == None and table == "":
                 table = str(input("Please insert the table's name: "))
-            recordId = int(input("Record ID: "))
-            cursor = dbConnection.cursor()
-            queryAppend = list("delete from " + table + " where id = ?")
-            query = ''.join(queryAppend)
-            print("Are you sure you want to delete the following record? [Y/n]: ", end='')
-            confirmation = str(input())
-            if confirmation == 'Y' or confirmation == 'y':
-                delete = cursor.execute(query, str(recordId))
-                dbConnection.commit()
-                print("Record ID " + str(recordId) + " removed from the table " + table + ".\n")
-            elif confirmation == "N" or confirmation == "n":
-                dbConnection.rollback()
-                print("Transaction cancelled.\n")
+            for i in range(quantity):
+                recordId = int(input("Record ID: "))
+                cursor = dbConnection.cursor()
+                queryAppend = list("delete from " + table + " where id = ?")
+                query = ''.join(queryAppend)
+                print("Are you sure you want to delete the following record? [Y/n]: ", end='')
+                confirmation = str(input())
+                if confirmation == 'Y' or confirmation == 'y':
+                    delete = cursor.execute(query, str(recordId))
+                    dbConnection.commit()
+                    print("Record ID " + str(recordId) + " removed from the table " + table + ".\n")
+                elif confirmation == "N" or confirmation == "n":
+                    dbConnection.rollback()
+                    print("Transaction cancelled.\n")
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
             Connect()
