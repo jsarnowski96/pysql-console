@@ -19,7 +19,7 @@ def drawInitBoard():
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___| 
-                                                                             v.0.2.0
+                                                                            v.0.2.10
 
                                      +-----------------------------------+
                                      |      Welcome to PySQL Console     |
@@ -115,7 +115,7 @@ def InputHandler(userInput):
                     if userInput[1] and userInput[2]:
                         commands.commands[userInput[0]]["exec"](server = userInput[1], database = userInput[2])
                     elif userInput[1]:
-                        commands.commands[userInput[0]]["exec"](server = userInput[1])
+                        commands.commands[userInput[0]]["exec"](server = userInput[1], database = "")
                 except IndexError:
                     commands.commands[userInput[0]]["exec"]()
             elif userInput[0] == "show":

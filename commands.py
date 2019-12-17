@@ -31,14 +31,19 @@ def Connect(server = "", database = ""):
         if settings.global_config_array["active_sql_connection"] == None:
             dbConnection = None
             if dbConnection == None:
-                if server == "":
+                if server == "" and database == "":
                     server = str(input("Server name: "))
-                if database == "":
                     database = str(input("Database: "))
+                elif server != "" and database == "":
+                    database = str(input("Database: "))
+                elif server == "" and database != "":
+                    server = str(input("Server name: "))
+                elif server != "" and database != "":
+                    pass
                 settings.global_config_array["server"] = server
                 settings.global_config_array["database"] = database
-                if server:
-                    if database:
+                if server != "":
+                    if database != "":
                         dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
                                               'Server='+server+';'
                                               'Database='+database+';'
@@ -110,14 +115,8 @@ def Close():
         
 def Logout():
     global success
-    if settings.global_config_array["user_sql_session"] != None:
-        if settings.global_config_array["user_sql_session"]:
-            settings.global_config_array["user_sql_session"].close()
-            settings.global_config_array["user_sql_session"] = None
-    if settings.global_config_array["username"] != None:
-        settings.global_config_array["username"] = None
-    if settings.global_config_array["password"] != None:
-        settings.global_config_array["password"] = None
+    for k, v in settings.global_config_array.items():
+        settings.global_config_array[k] = None
     print("User logged out...\n")
     Clear()
         
@@ -126,10 +125,14 @@ def Show(table = ""):
         result = ""
         if settings.global_config_array["active_sql_connection"]:
             dbConnection = settings.global_config_array["active_sql_connection"]
-            if settings.global_config_array["table"] != None:
+            if settings.global_config_array["table"] != None and table == "":
                 table = settings.global_config_array["table"]
-            if table == "":
-                    table = str(input("Table name: "))
+            elif settings.global_config_array["table"] != None and table != "":
+                pass
+            elif settings.global_config_array["table"] == None and table == "":
+                table = str(input("Table name: "))
+            elif settings.global_config_array["table"] == None and table != "":
+                pass
             queryAppend = list("select * from ")
             for t in table:
                 queryAppend.append(t)
@@ -261,21 +264,48 @@ def Switch(table = ""):
         settings.global_config_array["table"] = None
     if table != "":
         settings.global_config_array["table"] = table
+        print("Switched focus to table " + table + ".\n")
         
 def Add():
+    '''
     try:
         if settings.global_config_array["active_sql_connection"] != None:
+            dbConnection = settings.global_config_array["active_sql_connection"]
             if settings.global_config_array["table"] != None:
-                pass
+                table = settings.global_config_array["table"]
+            else:
+                table = str(input("Please insert the table's name: "))
+            cursor = dbConnection.cursor()
+            #column_data = cursor.columns(table=settings.global_config_array["table"], catalog=settings.global_config_array["database"], schema='dbo').fetchall()
+            columns = cursor.execute("SELECT COLUMN_NAME,* FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = " + "'"+ table + "'").fetchall()
+            query = list("insert into " + table + " values(")
+            values = []
+            for i, col in enumerate(columns):
+                if i < len(columns) - 1:
+                    query.append("?, ")
+                else:
+                    query.append("?)")
+                values.append(input(str(col[0]) + ":"))                    
+            finalQuery = ''.join(query)
+            insert = cursor.execute(finalQuery, values)
+            dbConnection.commit()
+            dbConnection.close()
+            print("New row has been added to table " + table + ".\n")
+        else:
+            print("There is no active connection to the database. Redirecting to connect action...\n")
+            Connect()
+        
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == '42S02':
-            print("No active connection to the database detected. Redirecting to connect action...\n")
+            print("There is no active connection to the database detected. Redirecting to connect action...\n")
             Connect()
         else:
             print("Error:",e.args[0],"\n",e)
     except Exception as e:
         print("Error:",e.args[0],"\n",e)
+    '''
+    pass
     
 def Delete():
     pass

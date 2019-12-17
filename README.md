@@ -3,7 +3,7 @@
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___|
-                                                                             v.0.2.0
+                                                                            v.0.2.10
 ```
 
 # PySql-Console (under development)
@@ -147,7 +147,8 @@ Result:<br />
 - ~~problem with exiting the app due to credential variables not being removed from the memory. Ctrl+c forced exit required.~~ <- <i>problem applied exclusively to Spyder environment and IPython console.</i>
 - `pyodbc` library's limitations prevents some of the tables from being processed (throws `DataError` exception) - most likely caused by boolean data type fields.
 - ~~export does its job only partially since it replicates a single row N times instead of processing next rows.~~ fixed
-- problem with using aliases
+- ~~ problem with using aliases~~<br />
+- problem with multiline cells' formatting which breaks whole table's view<br/>
 
 ## Release notes:
 - <b>13/12/2019 changelog:</b><br />
