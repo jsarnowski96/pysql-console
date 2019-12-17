@@ -141,6 +141,11 @@ def InputHandler(userInput):
                 global success
                 success = False
                 drawInitBoard()
+            elif userInput[0] == "delete":
+                try:
+                    commands.commands[userInput[0]]["exec"](table = userInput[1])
+                except IndexError:
+                    commands.commands[userInput[0]]["exec"]()
             else:
                 commands.commands[userInput[0]]["exec"]()
         elif userInput[0] in commands.commands["aliases"]:

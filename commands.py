@@ -154,6 +154,10 @@ def Show(table = ""):
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
             Connect()
+            if table != "":
+                Show(table)
+            else:
+                Show()
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
@@ -222,6 +226,10 @@ def Export(table = ""):
         else:
             print("There is no connection established. Redirecting to connect action...\n")
             Connect()
+            if table != "":
+                Export(table)
+            else:
+                Export()
     except KeyboardInterrupt:
         print("\nTerminating command...\n")
     except AttributeError as e:
@@ -267,7 +275,6 @@ def Switch(table = ""):
         print("Switched focus to table " + table + ".\n")
         
 def Add():
-    '''
     try:
         if settings.global_config_array["active_sql_connection"] != None:
             dbConnection = settings.global_config_array["active_sql_connection"]
@@ -278,7 +285,7 @@ def Add():
             cursor = dbConnection.cursor()
             #column_data = cursor.columns(table=settings.global_config_array["table"], catalog=settings.global_config_array["database"], schema='dbo').fetchall()
             columns = cursor.execute("SELECT COLUMN_NAME,* FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = " + "'"+ table + "'").fetchall()
-            query = list("insert into " + table + " values(")
+            queryAppend = list("insert into " + table + " values(")
             values = []
             for i, col in enumerate(columns):
                 if i < len(columns) - 1:
@@ -294,7 +301,7 @@ def Add():
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
             Connect()
-        
+            Add()
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == '42S02':
@@ -304,11 +311,49 @@ def Add():
             print("Error:",e.args[0],"\n",e)
     except Exception as e:
         print("Error:",e.args[0],"\n",e)
-    '''
     pass
-    
-def Delete():
-    pass
+
+def Delete(table = ""):
+    try:
+        if settings.global_config_array["active_sql_connection"] != None:
+            dbConnection = settings.global_config_array["active_sql_connection"]
+            if settings.global_config_array["table"] != None and table == "":
+                table = settings.global_config_array["table"]
+            elif settings.global_config_array["table"] == None and table != "":
+                pass
+            elif settings.global_config_array["table"] != None and table != "":
+                pass
+            elif settings.global_config_array["table"] == None and table == "":
+                table = str(input("Please insert the table's name: "))
+            recordId = int(input("Record ID: "))
+            cursor = dbConnection.cursor()
+            queryAppend = list("delete from " + table + " where id = ?")
+            query = ''.join(queryAppend)
+            print("Are you sure you want to delete the following record? [Y/n]: ", end='')
+            confirmation = str(input())
+            if confirmation == 'Y' or confirmation == 'y':
+                delete = cursor.execute(query, str(recordId))
+                dbConnection.commit()
+                print("Record ID " + str(recordId) + " removed from the table " + table + ".\n")
+            elif confirmation == "N" or confirmation == "n":
+                dbConnection.rollback()
+                print("Transaction cancelled.\n")
+        else:
+            print("There is no active connection to the database. Redirecting to connect action...\n")
+            Connect()
+            if table == "":
+                Delete()
+            else:
+                Delete(table)
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        if sqlstate == '42S02':
+            print("There is no active connection to the database detected. Redirecting to connect action...\n")
+            Connect()
+        else:
+            print("Error:",e.args[0],"\n",e)
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e)
 
 def Edit():
     pass
