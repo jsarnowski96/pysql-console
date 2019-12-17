@@ -7,6 +7,7 @@ Created on Thu Dec 12 01:11:41 2019
 
 import pyodbc
 import os
+from tabulate import tabulate
 import settings
 
 path = os.getcwd()
@@ -109,10 +110,10 @@ def Close():
         
 def Logout():
     global success
-    if settings.global_config_array["secure_sql_user_session"] != None:
-        if settings.global_config_array["secure_sql_user_session"]:
-            settings.global_config_array["secure_sql_user_session"].close()
-            settings.global_config_array["secure_sql_user_session"] = None
+    if settings.global_config_array["user_sql_session"] != None:
+        if settings.global_config_array["user_sql_session"]:
+            settings.global_config_array["user_sql_session"].close()
+            settings.global_config_array["user_sql_session"] = None
     if settings.global_config_array["username"] != None:
         settings.global_config_array["username"] = None
     if settings.global_config_array["password"] != None:
@@ -135,25 +136,17 @@ def Show(table = ""):
             query = ''.join(queryAppend)
             cursor = dbConnection.cursor()
             result = cursor.execute(query)
-            dbConnection.add_output_converter(-155, handle_datetimeoffset)
-            #print(str(result.count()) + " records detected")
+            #dbConnection.add_output_converter(-155, handle_datetimeoffset)
             columns = [column[0] for column in result.description]
-            print("\nContents of table " + table + ":")
-            print("-" * sum(len(i) for i in columns) * 2)
-            for i, c in enumerate(columns):
-                if i == 0 :
-                    print(c,"\t|\t", end = '')
-                elif i == len(columns) - 1:
-                    print(c,"\t|")
-                else:
-                    print(c,"\t|\t", end = '')
-            print("-" * sum(len(i) for i in columns) * 2)
+            headers = []
+            for c in columns:
+                headers.append(c)
             rows = result.fetchall()
+            content = []
             for row in rows:
-                print("-" * 100)
-                print(row)
-                print("-" * 100)
-            print()
+                r = None
+                content.append(row)
+            print(tabulate(content, headers, tablefmt="psql"),"\n")
             settings.global_config_array["table"] = table
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
@@ -249,29 +242,17 @@ def Help():
     print("---------------------------")
     for k, v in commands.items():
         if k != "aliases":
-            print(k,":", v)
+            print(k,":", v["descr"])
     print("\nList of aliases:")
     print("----------------")
     for k, v in commands["aliases"].items():
-        print(k,":", v)
+        print(k,":", v["descr"])
         
 def Status():
-    i = 0
-    print("+" + "-" * 100 + "+")
+    table = []
     for k, v in settings.global_config_array.items():
-        if v != None and i < len(settings.global_config_array) - 2:
-            print("|",k,"\t\t\t|",v,"\t\t\t\t\t\t\t     |")
-        elif v == None and i < len(settings.global_config_array) - 2:
-            print("|",k,"\t\t\t|",v,"\t\t\t\t\t\t\t\t     |")
-        if k == "secure_sql_user_session" or k == "active_sql_connection":
-            if v == None:
-                print("|",k,"\t|",v,"\t\t\t\t\t\t\t\t     |")
-            else:
-                print("|",k,"\t|",v,"\t\t     |")
-        if i < len(settings.global_config_array) - 1:
-            print("|" + "-" * 100 + "|")
-        i += 1
-    print("+" + "-" * 100 + "+\n")
+        table.append([k, v])
+    print(tabulate(table, tablefmt="psql"),"\n")
     
 def Switch(table = ""):
     if table == "":
@@ -281,7 +262,6 @@ def Switch(table = ""):
     if table != "":
         settings.global_config_array["table"] = table
         
-
 def Add():
     try:
         if settings.global_config_array["active_sql_connection"] != None:
@@ -314,23 +294,16 @@ def Query():
                     cursor = dbConnection.cursor()
                     result = cursor.execute(query)
                     #dbConnection.add_output_converter(-155, handle_datetimeoffset)
-                    #print(str(result.count()) + " records detected")
                     columns = [column[0] for column in result.description]
-                    print("-" * sum(len(i) for i in columns) * 2)
-                    for i, c in enumerate(columns):
-                        if i == 0 :
-                            print(c,"\t|\t", end = '')
-                        elif i == len(columns) - 1:
-                            print(c,"\t|")
-                        else:
-                            print(c,"\t|\t", end = '')
-                    print("-" * sum(len(i) for i in columns) * 2)
+                    headers = []
+                    for c in columns:
+                        headers.append(c)
                     rows = result.fetchall()
+                    content = []
                     for row in rows:
-                        print("-" * 100)
-                        print(row)
-                        print("-" * 100)
-                    print()
+                        r = None
+                        content.append(row)
+                    print(tabulate(content, headers, tablefmt="psql"),"\n")
                 else:
                     print("query command allows only for select statement. Use add, delete or edit for other CRUD operations.\n")
             else:

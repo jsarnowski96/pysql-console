@@ -16,6 +16,6 @@ def init():
             "server": None,
             "table": None,
             "exportPath": "exports",
-            "secure_sql_user_session": None,
+            "user_sql_session": None,
             "active_sql_connection": None
     }

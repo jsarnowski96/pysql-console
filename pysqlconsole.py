@@ -42,9 +42,9 @@ def UserAuthentication():
         settings.global_config_array["password"] = password
         dbConnection = ""
         
-        if settings.global_config_array["secure_sql_user_session"] != None:
-            settings.global_config_array["secure_sql_user_session"].close()
-            settings.global_config_array["secure_sql_user_session"] = None
+        if settings.global_config_array["user_sql_session"] != None:
+            settings.global_config_array["user_sql_session"].close()
+            settings.global_config_array["user_sql_session"] = None
         dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
                                           'Server=localhost;'
                                           'Database=master;'
@@ -64,7 +64,7 @@ def UserAuthentication():
         #    print("Authentication failed. Incorrect username or password.\n")
         if dbConnection:
             success = True
-            settings.global_config_array["secure_sql_user_session"] = dbConnection
+            settings.global_config_array["user_sql_session"] = dbConnection
             print("Welcome back,", username,"\n")
     except pyodbc.Warning as w:
         print("Warning:",w.args[0],"\n",w,"\n")
@@ -143,27 +143,28 @@ def InputHandler(userInput):
                 drawInitBoard()
             else:
                 commands.commands[userInput[0]]["exec"]()
-        if userInput[0] in commands.commands["aliases"]:
-            if userInput[0] == "quit":
-                commands.commands["aliases"][userInput[0]]["exec"]()
-                sys.exit()
-            elif userInput[0] == "exp":
-                try:
-                    if userInput[1]:
-                        commands.commands["aliases"][userInput[0]]["exec"](table = userInput[1])
-                    else:
-                        commands.commands["aliases"][userINput[0]]["exec"]()
-                except IndexError:
+        elif userInput[0] in commands.commands["aliases"]:
+                if userInput[0] == "quit":
                     commands.commands["aliases"][userInput[0]]["exec"]()
-            elif userInput[0] == "cls":
-                commands.commands["aliases"][userInput[0]]["exec"]()
-                drawInitBoard()
-                print("\n" * 2)
-            else:
-                commands.commands["aliases"][userInput[0]]["exec"]()
-            
+                    sys.exit()
+                elif userInput[0] == "exp":
+                    try:
+                        if userInput[1]:
+                            commands.commands["aliases"][userInput[0]]["exec"](table = userInput[1])
+                        else:
+                            commands.commands["aliases"][userINput[0]]["exec"]()
+                    except IndexError:
+                        commands.commands["aliases"][userInput[0]]["exec"]()
+                elif userInput[0] == "cls":
+                    commands.commands["aliases"][userInput[0]]["exec"]()
+                    drawInitBoard()
+                    print("\n" * 2)
+                else:
+                    commands.commands["aliases"][userInput[0]]["exec"]()
+        else:
+            print("Syntax error - " + userInput[0] + " command was not recognized.\n")
     except KeyError:
-        print("\nSyntax error - " + userInput[0] + " command was not recognized.\n")
+        print("Syntax error - " + userInput[0] + " command was not recognized.\n")
     except AttributeError as e:
         print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
@@ -184,9 +185,9 @@ def Startup():
         print("\n" * 25)
         drawInitBoard()
         while True:
-            if settings.global_config_array["secure_sql_user_session"] == None and success == False:
+            if settings.global_config_array["user_sql_session"] == None and success == False:
                 UserAuthentication()
-            elif settings.global_config_array["secure_sql_user_session"] and success == True:
+            elif settings.global_config_array["user_sql_session"] and success == True:
                 MainActivity()
     except KeyboardInterrupt:
         sys.exit()
