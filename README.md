@@ -133,13 +133,13 @@ Result:<br />
 - [ ] implementation of commands' functionalities:
   - [x] `close`
   - [ ] `add`
-  - [ ] `delete`
+  - [x] `delete`
   - [ ] `edit`
   - [ ] `drop`
   - [x] `status`
   - [x] `list`
   - [x] `query`
-  - [ ] `file <read>|<write> <file_name>`
+  - [ ] `file`
   - [x] `help`
 - [x] migration of `commands.py` method calls coming from `pysqlconsole.py` to the nested dictionaries binded with command's keys.<br />
 - [ ] all SQL-related commands binded with one specific command as optional parameters<br />
