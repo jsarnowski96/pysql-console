@@ -56,6 +56,8 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
   - `Connect()`<br />
   - `Close()`<br />
   - `Logout()`<br />
+  - `List()`<br />
+  - `Delete()`<br />
   - `Show()`<br />
   - `Query()`<br />
   - `Export()`<br />
@@ -83,7 +85,7 @@ dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
 
 ## List of available commands:
 ```
-exit: exits the program (eventually)
+exit: exits the program
 close: close the active MS SQL connection
 connect <server> <database>: create an active connection to the target MS SQL database
 show <table>: displays the content of the selected table
@@ -91,9 +93,10 @@ add <value 1> <value 2> ... <value n>: append new row to the selected table - in
 edit <row_id>: modify the specified row in the selected table - in development
 query: allows for direct SQL select statement's execution
 status: returns the current user's session data.
+list: display all tables in the selected database.
 switch <table>: switches current focus to another table.
 help: displays the list of available commands and aliases
-delete <row_id>: delete the specified row ID in the selected table - in development
+delete <row_id>: delete the specified row ID in the selected table
 drop <table>|<database>: drop the target table or database (destructive) - in development
 export <table>: exports the selected table to .csv file (otherwise prompt for table's name)
 logout: releases pseudo user credentials and returns to login screen
@@ -134,6 +137,7 @@ Result:<br />
   - [ ] `edit`
   - [ ] `drop`
   - [x] `status`
+  - [x] `list`
   - [x] `query`
   - [ ] `file <read>|<write> <file_name>`
   - [x] `help`
@@ -181,3 +185,4 @@ Result:<br />
             - Change in specific commands' fallback behaviour - upon filling the missing data in `connect` action, user is redirected back to the initial command while all previously obtained optional parameters were stored for later use and are fully accessible.<br />
             - Added `KeyboardInterrupt` exception handle for `Delete()` method.<br />
             - Fixed bug in `Logout()` method related to `active_sql_session` field not being set to `None` upon method's callback.<br />
+            - New `list` command added.<br />
