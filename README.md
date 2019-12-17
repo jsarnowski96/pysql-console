@@ -149,6 +149,7 @@ Result:<br />
 - ~~export does its job only partially since it replicates a single row N times instead of processing next rows.~~ fixed
 - ~~ problem with using aliases~~<br />
 - problem with multiline cells' formatting which breaks whole table's view<br/>
+- MS SQL Server throws error `23000` upon inserting a foreign key ID into the selected table. Implementation of `Add()` method postponed until further notice<br />
 
 ## Release notes:
 - <b>13/12/2019 changelog:</b><br />
