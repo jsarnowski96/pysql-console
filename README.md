@@ -23,7 +23,7 @@ Command line emulator written in Python 3.x
 [Release notes](#release-notes)<br />
 
 ## Introduction
-PySql-Console is a simple program emulating the command line interface, designed to interact mostly with MS SQL environment. Due to Python's limitations related to internal command execution, some of the features introduced in this program are a sort of workarounds (for example user authentication system or multiple `input()` parameters treated as a separate strings kept in `list()` object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development process I'm going to polish some things up.
+PySql-Console is a simple program emulating the command line interface, designed to interact with MS SQL environment. Due to Python's limitations related to internal command execution, some of the features introduced in this program are a sort of workarounds (for example user authentication system or multiple `input()` parameters treated as a separate strings kept in `list()` object). Thus the code might look a bit groggy and unsophisticated in some places, but during the development process I'm going to polish some things up.
 
 PySql-Console allows user to interact with MS SQL database and its content. In future I'm going to implement other features like SQL-XML converter, text editor or even system-wide operations' support.<br /><br />
 
@@ -67,7 +67,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 
 ## Requirements:
 - Python 3.x
-- `pyodbc` library
+- `pyodbc` and `tabulate` libraries
 - configured account on local/remote MS SQL server with `SQL Server and Windows Authentication mode` enabled
 - before you can use the program, you have to adjust server's name/IP and default database in `UserAuthentication()` method to your personal needs. Although using `master` as a default database might be sufficient, I highly recommend testing some of these settings beforehand. If you wish to connect with a certain server instance or you are using a non-standard port, you can use `Server=server_name\instance_name`<br />or `Server=server_name,port_number`, respectively. Use below template as a general reference point:
 ```
@@ -172,3 +172,5 @@ Result:<br />
             - Changes in exception handling mechanism - now it is more accurate, specific and covers a wider range of errors.<br />
             - Added new exception handle for error `08001` in case of connection failure to non-existing or not DNS-mapped SQL server.<br />
             - Major changes in `commands` dictionary - migrated method calls from `pysqlconsole.py` directly into nested command's dictionaries with `exec` key. Added new `query` command which allows for writing and executing a personalized SQL select statement. Command's fallback is similar to `export` or `show` commands - in case of no active DB connection, user is redirected to `Connect()` action.<br />
+- <b>17/12/2019 changelog:</><br />
+            - Greatly improved table's output data format thanks to the application of `tabulate` library. Now tables' output is much more readable and organized.<br />
