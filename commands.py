@@ -31,14 +31,11 @@ def Connect(server = "", database = ""):
         if settings.global_config_array["active_sql_connection"] == None:
             dbConnection = None
             if dbConnection == None:
-                if server == "" and database == "":
+                while server == "":
                     server = str(input("Server name: "))
                     if server == "":
                         print("You did not enter server name.\n")
-                    database = str(input("Database name: "))
-                    if database == "":
-                        print("You did not enter database name.\n")
-                elif server != "" and database == "":
+                while database == "":
                     database = str(input("Database name: "))
                     if database == "":
                         print("You did not enter database name.\n")
