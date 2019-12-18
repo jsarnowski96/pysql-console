@@ -174,4 +174,3 @@ def Startup():
     except KeyboardInterrupt:
         sys.exit()
     except Exception as e: print("Error:",e.args[0],"\n",e,"\n")
-Startup()
