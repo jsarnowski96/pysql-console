@@ -122,12 +122,11 @@ def Show(table = ""):
             dbConnection = settings.global_config_array["active_sql_connection"]
             if settings.global_config_array["table"] != None and table == "":
                 table = settings.global_config_array["table"]
-            elif settings.global_config_array["table"] != None and table != "":
-                pass
-            elif settings.global_config_array["table"] == None and table == "":
-                table = str(input("Table name: "))
-            elif settings.global_config_array["table"] == None and table != "":
-                pass
+            if settings.global_config_array["table"] == None and table == "":
+                while table == "":
+                    table = str(input("Table name: "))
+                    if table == "":
+                        print("You did not enter table name.\n")
             queryAppend = list("select * from ")
             for t in table:
                 queryAppend.append(t)
@@ -176,14 +175,13 @@ def Export(table = ""):
             else:
                 os.mkdir(exportPath)
                 print("Creating /exports directory.\n")
-            if settings.global_config_array["table"] != None:
-                if table == "":
-                    table = settings.global_config_array["table"]
-                else: pass
-            else:
-                if table == "":
+            if settings.global_config_array["table"] != None and table == "":
+                table = settings.global_config_array["table"]
+            elif settings.global_config_array["table"] == None and table == "":
+                while table == "":    
                     table = str(input("Table name: "))
-                else: pass
+                    if table == "":
+                        print("You did not enter table name.\n")
             fileName = table + ".csv"
             queryAppend = list("select * from ")
             for t in table:
@@ -266,10 +264,12 @@ def Switch(table = ""):
     if table == "":
         print("Removed focus from the",settings.global_config_array["table"],"table.\n")
     if settings.global_config_array["table"] != None:
-        settings.global_config_array["table"] = None
-    if table != "":
-        settings.global_config_array["table"] = table
-        print("Switched focus to table " + table + ".\n")
+        if table != "":
+            settings.global_config_array["table"] = table
+            print("Switched focus to table " + table + ".\n")
+        else:
+            print("Removed focus from table " + settings.global_config_array["table"])
+            settings.global_config_array["table"] = None
         
 def Add():
     '''
@@ -321,12 +321,11 @@ def Delete(table = ""):
             dbConnection = settings.global_config_array["active_sql_connection"]
             if settings.global_config_array["table"] != None and table == "":
                 table = settings.global_config_array["table"]
-            elif settings.global_config_array["table"] == None and table != "":
-                pass
-            elif settings.global_config_array["table"] != None and table != "":
-                pass
             elif settings.global_config_array["table"] == None and table == "":
-                table = str(input("Please insert the table's name: "))
+                while table == "":
+                    table = str(input("Please insert the table's name: "))
+                    if table == "":
+                        print("You did not enter table name.\n")
             recordId = int(input("Record ID: "))
             cursor = dbConnection.cursor()
             queryAppend = list("delete from " + table + " where id = ?")
@@ -424,7 +423,10 @@ def List(database = ""):
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
             Connect()
-            List(database)
+            if database == "":
+                List()
+            else:
+                List(database)
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
