@@ -5,8 +5,6 @@ Created on Sat Dec 14 20:56:04 2019
 @author: Jakub Sarnowski
 """
 
-import os
-
 def init():
     global global_config_array
     global_config_array = {
