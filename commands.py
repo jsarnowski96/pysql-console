@@ -38,17 +38,21 @@ def Connect(server = "", database = ""):
                     database = str(input("Database name: "))
                     if database == "":
                         print("You did not enter database name.\n")
-                    if server != "" and database != "":
-                        settings.global_config_array["server"] = server
-                        settings.global_config_array["database"] = database
-                        dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
-                                                     'Server='+server+';'
-                                                     'Database='+database+';'
-                                                     'uid='+username+';'
-                                                     'pwd='+password+';'
-                                                     'Trusted_Connection=no;', timeout = 1) 
-                        print("Successfully connected to the %s->%s.\n" % (server, database))
-                        settings.global_config_array["active_sql_connection"] = dbConnection
+                elif server != "" and database == "":
+                    database = str(input("Database name: "))
+                    if database == "":
+                        print("You did not enter database name.\n")
+                if server != "" and database != "":
+                    settings.global_config_array["server"] = server
+                    settings.global_config_array["database"] = database
+                    dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
+                                                  'Server='+server+';'
+                                                  'Database='+database+';'
+                                                  'uid='+username+';'
+                                                  'pwd='+password+';'
+                                                  'Trusted_Connection=no;', timeout = 1) 
+                    print("Successfully connected to the %s->%s.\n" % (server, database))
+                    settings.global_config_array["active_sql_connection"] = dbConnection
         elif settings.global_config_array["active_sql_connection"]:
             print("Connection is already established.\n")
     except pyodbc.Warning as w:
@@ -81,7 +85,7 @@ def Connect(server = "", database = ""):
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
-        print("Terminating command...\n")
+        print("\nTerminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == '28000':
@@ -155,7 +159,7 @@ def Show(table = ""):
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
-        print("Terminating command...\n")
+        print("\nTerminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == "42S02":
@@ -227,7 +231,7 @@ def Export(table = ""):
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
-        print("Terminating command...\n")
+        print("\nTerminating command...\n")
     except AttributeError as e:
         print("Error:",e.args[0],"\n",e,"\n")
     except pyodbc.DataError as e:
