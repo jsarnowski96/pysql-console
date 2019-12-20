@@ -434,7 +434,7 @@ def List(database = ""):
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == "42S02":
-            print("Table",table," does not exist in the",settings.global_config_array["database"],"database.\n")
+            print("Database " + database + " does not exist on the server " + settings.global_config_array["server"] + ".\n")
         else:
             print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:

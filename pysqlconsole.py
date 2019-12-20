@@ -135,7 +135,7 @@ def InputHandler(userInput):
                 if len(methodInspect.parameters) >= 1:
                     commands.commands["aliases"][cmd]["exec"](*userInput)
                 else:
-                    commands.command["aliases"][cmd]["exec"](*userInput)
+                    commands.commands["aliases"][cmd]["exec"](*userInput)
                 if cmd == "quit":
                     sys.exit()
                 elif cmd == "cls":
