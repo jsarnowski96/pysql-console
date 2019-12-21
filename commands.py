@@ -159,7 +159,7 @@ def Show(table = ""):
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == "42S02":
-            print("Table",table," does not exist in the",settings.global_config_array["database"],"database.\n")
+            print("Table",table,"does not exist in the",settings.global_config_array["database"],"database.\n")
         else:
             print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
@@ -411,7 +411,7 @@ def List(database = ""):
                 pass
             dbConnection = settings.global_config_array["active_sql_connection"]
             cursor = dbConnection.cursor()    
-            query = list("select table_name from " + database + ".information_schema.tables")
+            query = list("select table_name from " + database + ".information_schema.tables order by table_name")
             finalQuery = ''.join(query)
             result = cursor.execute(finalQuery)
             rows = result.fetchall()
