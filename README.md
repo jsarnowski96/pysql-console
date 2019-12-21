@@ -3,7 +3,7 @@
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___|
-                                                                            v.0.2.33
+                                                                            v.0.2.37
 ```
 
 # PySql-Console (under development)
@@ -187,4 +187,8 @@ Result:<br />
             - Fixed bug in `Logout()` method related to `active_sql_session` field not being set to `None` upon method's callback.<br />
             - New `list` command added.<br />
             - Major upgrade of `InputHandler()` method's logic by applying mutable `*args` parameter, allowing for handling multiple scenarios with optional arguments being passed into the function or not.<br />
+<<<<<<< HEAD
             - Added `test_branch` as a staging environment for testing unverified changes.<br />
+=======
+            - Added `test_branch` as a staging environment for testing unverified changes.<br />
+>>>>>>> master

@@ -9,6 +9,7 @@ import pyodbc
 import sys
 from getpass import getpass
 import commands as commands
+from inspect import signature
 import settings
 
 success = False
@@ -19,7 +20,7 @@ def drawInitBoard():
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___| 
-                                                                            v.0.2.33
+                                                                            v.0.2.37
 
                                      +-----------------------------------+
                                      |      Welcome to PySQL Console     |
@@ -110,7 +111,11 @@ def InputHandler(userInput):
             cmd = userInput[0]
             try:
                 userInput.pop(0)
-                commands.commands[cmd]["exec"](*userInput)
+                methodInspect = signature(commands.commands[cmd]["exec"])
+                if len(methodInspect.parameters) >= 1:
+                    commands.commands[cmd]["exec"](*userInput)
+                else:
+                    commands.commands[cmd]["exec"]()
                 if cmd == "exit":
                     sys.exit()
                 elif cmd == "clear":
@@ -126,7 +131,11 @@ def InputHandler(userInput):
             cmd = userInput[0]
             try:    
                 userInput.pop(0)
-                commands.commands[cmd]["aliases"]["exec"](*userInput)
+                methodInspect = signature(commands.commands["aliases"][cmd]["exec"])
+                if len(methodInspect.parameters) >= 1:
+                    commands.commands["aliases"][cmd]["exec"](*userInput)
+                else:
+                    commands.commands["aliases"][cmd]["exec"](*userInput)
                 if cmd == "quit":
                     sys.exit()
                 elif cmd == "cls":
@@ -165,4 +174,3 @@ def Startup():
     except KeyboardInterrupt:
         sys.exit()
     except Exception as e: print("Error:",e.args[0],"\n",e,"\n")
-Startup()
