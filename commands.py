@@ -411,7 +411,7 @@ def List(database = ""):
                 pass
             dbConnection = settings.global_config_array["active_sql_connection"]
             cursor = dbConnection.cursor()    
-            query = list("select table_name from " + database + ".information_schema.tables order by table_name")
+            query = list("select table_schema, table_name from " + database + ".information_schema.tables order by table_schema, table_name")
             finalQuery = ''.join(query)
             result = cursor.execute(finalQuery)
             rows = result.fetchall()
@@ -419,7 +419,7 @@ def List(database = ""):
             for row in rows:
                 table.append(row)
             print("List of tables in the database " + database)
-            print(tabulate(table, headers=["Table name"], tablefmt="psql"), "\n")
+            print(tabulate(table, headers=["Table schema","Table name"], tablefmt="psql"), "\n")
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
             Connect()
