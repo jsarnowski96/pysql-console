@@ -189,6 +189,5 @@ Result:<br />
             - Major upgrade of `InputHandler()` method's logic by applying mutable `*args` parameter, allowing for handling multiple scenarios with optional arguments being passed into the function or not.<br />
 <<<<<<< HEAD
             - Added `test_branch` as a staging environment for testing unverified changes.<br />
-=======
-            - Added `test_branch` as a staging environment for testing unverified changes.<br />
->>>>>>> master
+- <b>20/12/2019 changelog:</b><br />
+            - Added `table_schema` column in `List()` for better tables' identification.<br />
