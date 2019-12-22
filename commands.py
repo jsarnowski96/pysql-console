@@ -7,7 +7,7 @@ Created on Thu Dec 12 01:11:41 2019
 
 import pyodbc
 import os
-import re
+import datetime
 from tabulate import tabulate
 import settings
 
@@ -378,26 +378,32 @@ def Edit(table = "", recordId = ""):
                     print("You did not enter record ID.\n")
             cursor = dbConnection.cursor()
             ListColumnNames = list("select column_name from information_schema.columns where table_name = '" + table + "'")
-            ListColumnNamesQuery = ''.join(ListColumnNames)
-            #column_data = cursor.columns(table=settings.global_config_array["table"], catalog=settings.global_config_array["database"], schema='dbo').fetchall()
+            ListColumnNamesQuery = ''.join(ListColumnNames)           
             getColumnNames = cursor.execute(ListColumnNamesQuery).fetchall()
-            columns = str(getColumnNames)[1:-1]
+            columns = list(str(g) for g in getColumnNames)
+            columnsFiltered = [c.replace('(','').replace(')','').replace(' ','').replace("'",'').replace(',','').strip() for c in columns]
             getRowIdValues = list("select * from " + table + " where id = " + recordId)
             getRowIdValuesQuery = ''.join(getRowIdValues)
             rowValues = cursor.execute(getRowIdValuesQuery).fetchone()
+            rowValuesList = list(str(row) for row in rowValues)
             values = []
             updateQueryList = list("update " + table + " set ")
-            for i in range(len(columns) - 1):
-                if i < len(columns) - 1:
-                    value = (str(input(str(columns[i]) + "(Current value: " + str(rowValues[i]) + "): ")))
+            columnsFiltered.pop(0)
+            rowValuesList.pop(0)
+            for i in range(len(columnsFiltered) - 1):
+                if i < len(columnsFiltered) - 1:
+                    if "CreatedAt" in columnsFiltered[i]:
+                        i += 1
+                    value = (str(input("(" + str(columnsFiltered[i]) + ")(Current value: " + str(rowValuesList[i]) + "): ")))
                     if value == "":
-                        values.append(str(rowValues[i]))
+                        values.append(rowValuesList[i])
                     else:
                         values.append(value)
-                    if i < len(columns) - 2:
-                        updateQueryList.append(str(columns[i]) + " = '" + values[i] + "', ")
-                    elif i == len(columns) - 2:
-                        updateQueryList.append(str(columns[i]) + " = '" + values[i] + "'")
+                    if i < len(columnsFiltered) - 2:
+                        updateQueryList.append(str(columnsFiltered[i]) + " = '" + str(values[i]) + "', ")
+                    else:
+                        updateQueryList.append(str(columnsFiltered[i]) + " = '" + str(values[i]) + "'")
+            updateQueryList.append(" where id = " + recordId)
             updateQuery = ''.join(updateQueryList)
             cursor.execute(updateQuery)
             dbConnection.commit()
@@ -411,6 +417,10 @@ def Edit(table = "", recordId = ""):
                 Edit(table)
             elif table == "" and recordId == "":
                 Edit()
+    except KeyboardInterrupt:
+        if dbConnection:
+            dbConnection.close()
+        print("Terminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == '42S02':
@@ -430,7 +440,6 @@ def Query():
             if "select" in query:
                 cursor = dbConnection.cursor()
                 result = cursor.execute(query)
-                #dbConnection.add_output_converter(-155, handle_datetimeoffset)
                 columns = [column[0] for column in result.description]
                 headers = []
                 for c in columns:
@@ -500,13 +509,6 @@ def List(database = ""):
             print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
         print("Error:",e.args[0],"\n",e,"\n")    
-    
-
-def handle_datetimeoffset(dto_value):
-    # ref: https://github.com/mkleehammer/pyodbc/issues/134#issuecomment-281739794
-    tup = struct.unpack("<6hI2h", dto_value)  # e.g., (2017, 3, 16, 10, 35, 18, 0, -6, 0)
-    tweaked = [tup[i] // 100 if i == 6 else tup[i] for i in range(len(tup))]
-    return "{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}.{:07d} {:+03d}:{:02d}".format(*tweaked)
 
 commands = {
     "exit": { "exec": Exit, "descr": "Exit the program" },

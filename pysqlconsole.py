@@ -52,17 +52,9 @@ def UserAuthentication():
                                           'uid='+username+';'
                                           'pwd='+password+';'
                                           'Trusted_Connection=no;')   
-        #cursor = dbConnection.cursor()
-        #cursor.execute("select username, password from AuthUsers where username = ? and password = ?", username, password)            
         print("+-----------------------------------------------+")
         print("| User Authentication action has been completed |")
         print("+-----------------------------------------------+")
-        #if cursor.fetchone():
-        #    success = True
-        #    if success is True:        
-        #        print("Welcome back,", username,"\n")
-        #else:
-        #    print("Authentication failed. Incorrect username or password.\n")
         if dbConnection:
             success = True
             settings.global_config_array["user_sql_session"] = dbConnection
