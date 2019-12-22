@@ -7,6 +7,7 @@ Created on Thu Dec 12 01:11:41 2019
 
 import pyodbc
 import os
+import re
 from tabulate import tabulate
 import settings
 
@@ -360,8 +361,64 @@ def Delete(table = ""):
     except Exception as e:
         print("Error:",e.args[0],"\n",e)
 
-def Edit():
-    pass
+def Edit(table = "", recordId = ""):
+    try:
+        if settings.global_config_array["active_sql_connection"] != None:
+            dbConnection = settings.global_config_array["active_sql_connection"]
+            if settings.global_config_array["table"] != None:
+                table = settings.global_config_array["table"]
+            else:
+                while table == "":
+                    table = str(input("Please insert the table's name: "))
+                    if table == "":
+                        print("You did not enter table name.\n")
+            while recordId == "":
+                recordId = str(input("Please insert record ID: "))
+                if recordId == "":
+                    print("You did not enter record ID.\n")
+            cursor = dbConnection.cursor()
+            ListColumnNames = list("select column_name from information_schema.columns where table_name = '" + table + "'")
+            ListColumnNamesQuery = ''.join(ListColumnNames)
+            #column_data = cursor.columns(table=settings.global_config_array["table"], catalog=settings.global_config_array["database"], schema='dbo').fetchall()
+            getColumnNames = cursor.execute(ListColumnNamesQuery).fetchall()
+            columns = str(getColumnNames)[1:-1]
+            getRowIdValues = list("select * from " + table + " where id = " + recordId)
+            getRowIdValuesQuery = ''.join(getRowIdValues)
+            rowValues = cursor.execute(getRowIdValuesQuery).fetchone()
+            values = []
+            updateQueryList = list("update " + table + " set ")
+            for i in range(len(columns) - 1):
+                if i < len(columns) - 1:
+                    value = (str(input(str(columns[i]) + "(Current value: " + str(rowValues[i]) + "): ")))
+                    if value == "":
+                        values.append(str(rowValues[i]))
+                    else:
+                        values.append(value)
+                    if i < len(columns) - 2:
+                        updateQueryList.append(str(columns[i]) + " = '" + values[i] + "', ")
+                    elif i == len(columns) - 2:
+                        updateQueryList.append(str(columns[i]) + " = '" + values[i] + "'")
+            updateQuery = ''.join(updateQueryList)
+            cursor.execute(updateQuery)
+            dbConnection.commit()
+            print("Row ID " + recordId + " in table " + table + " has been updated.\n")
+        else:
+            print("There is no active connection to the database detected. Redirecting to connect action...\n")
+            Connect()
+            if table != "" and recordId != "":
+                Edit(table, recordId)
+            elif table != "" and recordId == "":
+                Edit(table)
+            elif table == "" and recordId == "":
+                Edit()
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        if sqlstate == '42S02':
+            print("There is no active connection to the database detected. Redirecting to connect action...\n")
+        else:
+            print("Error:",e.args[0],"\n",e,"\n")
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e,"\n")
 
 def Query():
     try:
@@ -405,10 +462,14 @@ def Query():
 def List(database = ""):
     try:
         if settings.global_config_array["active_sql_connection"] != None:
-            if database == "":
-                database = settings.global_config_array["database"]
-            elif database != "":
-                pass
+            if settings.global_config_array["database"] != None:
+                if database == "":
+                    database = settings.global_config_array["database"]
+            else:
+                while database == "":
+                    database = str(input("Enter database name: "))
+                    if database == "":
+                        print("You did not enter database name.\n")
             dbConnection = settings.global_config_array["active_sql_connection"]
             cursor = dbConnection.cursor()    
             query = list("select table_schema, table_name from " + database + ".information_schema.tables order by table_schema, table_name")
