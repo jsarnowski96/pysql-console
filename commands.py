@@ -8,6 +8,7 @@ Created on Thu Dec 12 01:11:41 2019
 import pyodbc
 import os
 import datetime
+import csv
 from tabulate import tabulate
 import settings
 
@@ -43,7 +44,7 @@ def Connect(server = "", database = ""):
                 if server != "" and database != "":
                     settings.global_config_array["server"] = server
                     settings.global_config_array["database"] = database
-                    dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
+                    dbConnection = pyodbc.connect('Driver={'+settings.global_config_array["driver"]+'};'
                                                   'Server='+server+';'
                                                   'Database='+database+';'
                                                   'uid='+username+';'
@@ -83,6 +84,7 @@ def Connect(server = "", database = ""):
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
+        dbConnection = None
         print("\nTerminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
@@ -112,7 +114,8 @@ def Close():
 def Logout():
     global success
     for k, v in settings.global_config_array.items():
-        settings.global_config_array[k] = None
+        if k != "driver" and k != "exportPath":
+            settings.global_config_array[k] = None
     print("User logged out...\n")
     Clear()
         
@@ -156,6 +159,7 @@ def Show(table = ""):
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
+        dbConnection = None
         print("\nTerminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
@@ -227,6 +231,7 @@ def Export(table = ""):
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
+        dbConnection = None
         print("\nTerminating command...\n")
     except AttributeError as e:
         print("Error:",e.args[0],"\n",e,"\n")
@@ -357,7 +362,8 @@ def Delete(table = ""):
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
-        print("Terminating command...\n")
+        dbConnection = None
+        print("\nTerminating command...\n")
     except Exception as e:
         print("Error:",e.args[0],"\n",e)
 
@@ -372,6 +378,8 @@ def Edit(table = "", recordId = ""):
                     table = str(input("Please insert the table's name: "))
                     if table == "":
                         print("You did not enter table name.\n")
+            print("Target table's content:\n")
+            Show(table)
             while recordId == "":
                 recordId = str(input("Please insert record ID: "))
                 if recordId == "":
@@ -381,31 +389,23 @@ def Edit(table = "", recordId = ""):
             ListColumnNamesQuery = ''.join(ListColumnNames)           
             getColumnNames = cursor.execute(ListColumnNamesQuery).fetchall()
             columns = list(str(g) for g in getColumnNames)
-            columnsFiltered = [c.replace('(','').replace(')','').replace(' ','').replace("'",'').replace(',','').strip() for c in columns]
+            columns = list([c.replace('(','').replace(')','').replace(' ','').replace("'",'').replace(',','').strip() for c in columns])
             getRowIdValues = list("select * from " + table + " where id = " + recordId)
             getRowIdValuesQuery = ''.join(getRowIdValues)
             rowValues = cursor.execute(getRowIdValuesQuery).fetchone()
             rowValuesList = list(str(row) for row in rowValues)
             values = []
-            updateQueryList = list("update " + table + " set ")
-            columnsFiltered.pop(0)
-            rowValuesList.pop(0)
-            for i in range(len(columnsFiltered) - 1):
-                if i < len(columnsFiltered) - 1:
-                    if "CreatedAt" in columnsFiltered[i]:
-                        i += 1
-                    value = (str(input("(" + str(columnsFiltered[i]) + ")(Current value: " + str(rowValuesList[i]) + "): ")))
+            updateQuery = "update " + table + " set ({0}) = ({1})"
+            for i in range(1, len(columns) - 1):
+                if i < len(columns) - 1:
+                    value = (str(input("(" + str(columns[i]) + ")(Current value: '" + str(rowValuesList[i]) + "'): ")))
                     if value == "":
-                        values.append(rowValuesList[i])
+                        continue
                     else:
-                        values.append(value)
-                    if i < len(columnsFiltered) - 2:
-                        updateQueryList.append(str(columnsFiltered[i]) + " = '" + str(values[i]) + "', ")
-                    else:
-                        updateQueryList.append(str(columnsFiltered[i]) + " = '" + str(values[i]) + "'")
-            updateQueryList.append(" where id = " + recordId)
-            updateQuery = ''.join(updateQueryList)
-            cursor.execute(updateQuery)
+                        values.append(str(value))                        
+                        updateQuery = updateQuery.format(','.join(columns[i]).join('?'))
+            updateQuery = updateQuery.join(" where id = " + str(recordId))
+            cursor.execute(updateQuery, values)
             dbConnection.commit()
             print("Row ID " + recordId + " in table " + table + " has been updated.\n")
         else:
@@ -420,15 +420,25 @@ def Edit(table = "", recordId = ""):
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
-        print("Terminating command...\n")
+        dbConnection = None
+        print("\nTerminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == '42S02':
-            print("There is no active connection to the database detected. Redirecting to connect action...\n")
+            print("Error" + e.args[0] + ": Table " + table + " does not exist.\n")
         else:
             print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
         print("Error:",e.args[0],"\n",e,"\n")
+        #DEBUG
+        print(updateQuery)
+        for v in values:
+            print(v, end='\t')
+        print()
+        for c in columns:
+            print(c, end='\t')
+        print()
+        #DEBUG
 
 def Query():
     try:
@@ -459,7 +469,8 @@ def Query():
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
-        print("Terminating command...\n")
+        dbConnection = None
+        print("\nTerminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == "42S02":
@@ -468,6 +479,7 @@ def Query():
             print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
         print("Error:",e.args[0],"\n",e,"\n")
+        
 def List(database = ""):
     try:
         if settings.global_config_array["active_sql_connection"] != None:
@@ -500,7 +512,8 @@ def List(database = ""):
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
-        print("Terminating command...\n")
+        dbConnection = None
+        print("\nTerminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == "42S02":
@@ -508,22 +521,106 @@ def List(database = ""):
         else:
             print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
-        print("Error:",e.args[0],"\n",e,"\n")    
-
+        print("Error:",e.args[0],"\n",e,"\n")   
+        
+def Import(table = "", fileName = ""):
+    try:
+        if settings.global_config_array["active_sql_connection"] != None:
+            while fileName == "" or not os.path.exists(filePath):
+                fileName = str(input("Please insert the CSV filename for import: "))
+                if fileName == "":
+                    print("You did not enter the filename.\n")
+                else:
+                    filePath = "exports/" + fileName + ".csv"
+                if os.path.exists(filePath):
+                    print("File " + fileName + ".csv found.\n")
+                else:
+                    print("File " + fileName + ".csv not found.\n")
+            with open(filePath, 'r') as file:
+                dbConnection = settings.global_config_array["active_sql_connection"]
+                reader = csv.reader(file)
+                columns = next(reader)
+                if table != "":
+                    createTempTableQuery = "SELECT * INTO schema." + table + " FROM schema." + fileName + " WHERE 1 = 0"
+                    cursor = dbConnection.cursor()
+                    cursor.execute(createTempTableQuery)
+                    cursor.commit()
+                    print("Temporary table " + table + " has been created.\n")
+                    query = "insert into " + table + "({0}) values ({1})"
+                    cursor = dbConnection.cursor()
+                    for r in reader:
+                        cursor.execute(query, r)
+                        cursor.commit()
+                else:
+                    query = "insert into " + fileName + "({0}) values ({1})"
+                    query = query.format(','.join(columns), ','.join('?' * len(columns)))
+                    cursor = dbConnection.cursor()
+                    for r in reader:
+                        cursor.execute(query, r)
+                        cursor.commit()
+                print("File " + fileName + " has been successfully imported to the destination table " + table)
+                print("Import finished successfully.\n")
+        else:
+            print("There is no active connection to the database. Redirecting to connect action...\n")
+            Connect()
+            if table != "" and fileName == "":
+                Import(tabl)
+            elif table != "" and fileName != "":
+                Import(table, fileName)
+            else:
+                Import()
+    except KeyboardInterrupt:
+        print("\nTerminating command...\n")
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        if sqlstate == "42S02":
+            print("Error " + e.args[0] + ": Cannot create a temporal table - referenced object does not exist in the selected database.\n")
+        else:
+            print("Error",e.args[0] + ":\n",e,"\n")
+            
+def Drop(table = ""):
+    try:
+        if settings.global_config_array["active_sql_connection"] != None:
+            while table == "":
+                table = str(input("Insert name of the table selected for drop: "))
+                if table == "":
+                    print("You did not enter the table name.\n")
+            dbConnection = settings.global_config_array["active_sql_connection"]
+            cursor = dbConnection.cursor()
+            query = "drop table " + table
+            cursor.execute(query)
+            cursor.commit()
+            print("Table " + table + " has been dropped successfully.\n")
+        else:
+            print("There is no active connection to the database. Redirecting to connect action...\n")
+            Connect()
+            if table != "":
+                Drop(table)
+            else:
+                Drop()
+    except KeyboardInterrupt:
+        print("\nTerminating command...\n")
+    except pyodbc.Error as e:
+        print("Error " + e.args[0] + ":\n" + e + "\n")
+    except Exception as e:
+        print("Error " + e.args[0] + ":\n" + e + "\n")
+        
 commands = {
     "exit": { "exec": Exit, "descr": "Exit the program" },
-    "connect": { "exec": Connect, "descr": "Open new connection to the target database" },
+    "connect": { "exec": Connect, "descr": "<server> <database> - Open new connection to the target database" },
     "close": { "exec": Close, "descr": "Close active connection to the database" },
     "logout": { "exec": Logout, "descr": "Return to splash screen" },
-    "show": { "exec": Show, "descr": "List all rows in the selected table" },
-    "add": { "exec": Add, "descr": "Add new record to the selected table" },
-    "delete": { "exec": Delete, "descr": "Remove the existing record from the selected table" },
-    "edit": { "exec": Edit, "descr": "Modify the existing record in the selected table" },
+    "show": { "exec": Show, "descr": "<table> - List all rows in the selected table" },
+    "add": { "exec": Add, "descr": "<table> <rowId> - Add new record to the selected table" },
+    "delete": { "exec": Delete, "descr": "<table> <rowId> - Remove the existing record from the selected table" },
+    "edit": { "exec": Edit, "descr": "<table> <rowId> - Modify the existing record in the selected table" },
+    "import": { "exec": Import, "descr": "<destination_table> <file_name> - Import existing CSV file into the selected database" },
     "list": { "exec": List, "descr": "Display list of tables in the selected database" },
-    "switch": { "exec": Switch, "descr": "If no new table name is provided, remove focus from the current table, otherwise switch to the another table." },
-    "help": { "exec": Help, "descr": "Displays all available commands" },
-    "export": { "exec": Export, "descr": "Exports currently selected table to .csv file" },
+    "switch": { "exec": Switch, "descr": "<table> - If no new table name is provided, remove focus from the current table, otherwise switch to the another table." },
+    "help": { "exec": Help, "descr": "Displays this commands' overview" },
+    "export": { "exec": Export, "descr": "<table> - Exports currently selected table to .csv file" },
     "clear": { "exec": Clear, "descr": "This command clears the console window" },
+    "drop": { "exec": Drop, "descr": "<table> - Drop the selected table" },
     "status": { "exec": Status, "descr": "Displays current session's data" },
     "query": { "exec": Query, "descr": "Run a specific query in the database" },
     "aliases": {

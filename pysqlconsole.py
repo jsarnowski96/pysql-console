@@ -20,7 +20,7 @@ def drawInitBoard():
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___| 
-                                                                            v.0.2.44
+                                                                            v.0.2.63
 
                                      +-----------------------------------+
                                      |      Welcome to PySQL Console     |
@@ -46,7 +46,7 @@ def UserAuthentication():
         if settings.global_config_array["user_sql_session"] != None:
             settings.global_config_array["user_sql_session"].close()
             settings.global_config_array["user_sql_session"] = None
-        dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
+        dbConnection = pyodbc.connect('Driver={'+settings.global_config_array["driver"]+'};'
                                           'Server=localhost;'
                                           'Database=master;'
                                           'uid='+username+';'

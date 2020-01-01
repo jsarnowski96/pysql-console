@@ -3,7 +3,7 @@
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___|
-                                                                            v.0.2.44
+                                                                            v.0.2.63
 ```
 
 # PySql-Console (under development)
@@ -190,3 +190,8 @@ Result:<br />
             - Added `test_branch` as a staging environment for testing unverified changes.<br />
 - <b>20/12/2019 changelog:</b><br />
             - Added `table_schema` column in `List()` for better tables' identification.<br />
+- <b>1/1/2020 changelog:</b><br />
+            - Adjusted commands' behaviour on Ctrl+C event.<br />
+            - `import` command, allowing user to import data from CSV file directly into the selected table/database.<br />
+            - `drop` command, allowing user to drop selected table from the database.<br />
+            

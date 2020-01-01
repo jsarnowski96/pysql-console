@@ -10,6 +10,7 @@ def init():
     global_config_array = {
             "username": None,
             "password": None,
+            "driver": 'ODBC Driver 17 for SQL Server',
             "database": None,
             "server": None,
             "table": None,
