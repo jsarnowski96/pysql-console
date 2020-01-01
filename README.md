@@ -42,7 +42,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 ## Planned features:
 - full CRUD integration
 - read data from .csv file and display it on the screen
-- importing data from .csv file into the selected database/table
+- importing data from .csv file into the selected database/table - done
 - SQL-XML converter and vice-versa
 - integration with other database engines, such as MariaDB, MySQL, PostgreSQL etc.
 - system-wide commands
@@ -140,18 +140,18 @@ Result:<br />
 ## To do:
 - [ ] implementation of commands' functionalities:
   - [x] `close`
-  - [ ] `add`
+  - [x] `add` - partially implemented
   - [x] `delete`
-  - [ ] `edit`
-  - [ ] `drop`
+  - [x] `edit` - partially implemented
+  - [x] `drop`
   - [x] `status`
   - [x] `list`
   - [x] `query`
-  - [ ] `file`
+  - [ ] `read`
   - [x] `help`
 - [x] migration of `commands.py` method calls coming from `pysqlconsole.py` to the nested dictionaries binded with command's keys.<br />
 - [ ] all SQL-related commands binded with one specific command as optional parameters<br />
-(for example `sql connect`, `sql show`, `sql export`, `sql edit`, etc.)
+(for example `sql connect`, `sql show`, `sql export`, `sql edit`, etc.) - postponed
 - [x] fix bug in `Exit()` method
 - [x] fix bug in `Export()` method
 - [x] better format of table's listed content
@@ -202,4 +202,3 @@ Result:<br />
             - Adjusted commands' behaviour on Ctrl+C event.<br />
             - `import` command, allowing user to import data from CSV file directly into the selected table/database.<br />
             - `drop` command, allowing user to drop selected table from the database.<br />
-            
