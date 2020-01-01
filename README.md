@@ -31,6 +31,10 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 - create a connection with local or external MS SQL database
 - display contents of the selected table (currently in raw, unformatted form)
 - export selected table to .csv file
+- import data from .csv file into the selected table
+- list tables within the selected database, including different schemas
+- execute a customized select query directly from the command line
+- drop selected table
 - implementation of user authentication mechanism based on Windows SQL Server Authentication
 - executing commands directly or via aliases
 <br />
