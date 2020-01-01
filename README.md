@@ -58,6 +58,8 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
   - `Logout()`<br />
   - `List()`<br />
   - `Delete()`<br />
+  - `Drop()`<br />
+  - `Import()`<br />
   - `Show()`<br />
   - `Query()`<br />
   - `Export()`<br />
@@ -85,21 +87,23 @@ dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
 
 ## List of available commands:
 ```
-exit: exits the program
-close: close the active MS SQL connection
-connect <server> <database>: create an active connection to the target MS SQL database
-show <table>: displays the content of the selected table
-add <value 1> <value 2> ... <value n>: append new row to the selected table - in development
-edit <row_id>: modify the specified row in the selected table - in development
-query: allows for direct SQL select statement's execution
-status: returns the current user's session data.
-list: display all tables in the selected database.
-switch <table>: switches current focus to another table.
-help: displays the list of available commands and aliases
-delete <source_table>: delete a single row in the selected table
-drop <table>|<database>: drop the target table or database (destructive) - in development
-export <table>: exports the selected table to .csv file (otherwise prompt for table's name)
-logout: releases pseudo user credentials and returns to login screen
+exit - Exit the program
+connect <server> <database>: Open new connection to the target database
+close: Close active connection to the database
+logout: Return to splash screen
+show: List all rows in the selected table
+add <table> <rowId>: Add new record to the selected table
+delete <table> <rowId>: Remove the existing record from the selected table
+edit <table> <rowId>: Modify the existing record in the selected table
+import <destination_table> <file_name>: Import existing CSV file into the selected database
+list: Display list of tables in the selected database
+switch <table>: If no new table name is provided, remove focus from the current table, otherwise switch to the another table
+help: Displays the list of available commands
+export <table>: Exports currently selected table to .csv file
+clear: This command clears the console window
+drop <table>: Drop the selected table
+status: Displays current session's data
+query: Run a specific query in the database
 ```
 <br />
 
