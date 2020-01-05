@@ -91,23 +91,23 @@ dbConnection = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
 
 ## List of available commands:
 ```
-exit - Exit the program
-connect <server> <database>: Open new connection to the target database
+add <table>: Add new record to the selected table
+clear: This command clears the console window
 close: Close active connection to the database
-logout: Return to splash screen
-show: List all rows in the selected table
-add <table> <rowId>: Add new record to the selected table
+connect <server> <database>: Open new connection to the target database
 delete <table> <rowId>: Remove the existing record from the selected table
+drop <table>: Drop the selected table
 edit <table> <rowId>: Modify the existing record in the selected table
+exit - Exit the program
+export <table>: Exports currently selected table to .csv file
+help: Displays the list of available commands
 import <destination_table> <file_name>: Import existing CSV file into the selected database
 list: Display list of tables in the selected database
-switch <table>: If no new table name is provided, remove focus from the current table, otherwise switch to the another table
-help: Displays the list of available commands
-export <table>: Exports currently selected table to .csv file
-clear: This command clears the console window
-drop <table>: Drop the selected table
-status: Displays current session's data
+logout: Return to splash screen
 query: Run a specific query in the database
+show: List all rows in the selected table
+status: Displays current session's data
+switch <table>: If no new table name is provided, remove focus from the current table, otherwise switch to the another table
 ```
 <br />
 
