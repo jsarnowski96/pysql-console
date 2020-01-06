@@ -109,7 +109,10 @@ query: Run a specific query in the database
 show: List all rows in the selected table
 status: Displays current session's data
 switch <table>: If no new table name is provided, remove focus from the current table, otherwise switch to the another table
+<<<<<<< HEAD
 xml <table>: Export selected table into the pre-formatted XML file
+=======
+>>>>>>> 89fa319de367c0489bd22f95101f3abe435a9d3f
 ```
 <br />
 
@@ -204,7 +207,10 @@ Result:<br />
             - Adjusted commands' behaviour on Ctrl+C event.<br />
             - `import` command, allowing user to import data from CSV file directly into the selected table/database.<br />
             - `drop` command, allowing user to drop selected table from the database.<br />
+<<<<<<< HEAD
 <b>6/1/2020 changelog:</b></br>
             - `xml` command allowing user to export a selected table into pre-formatted XML file
             - added `ConvertToXml()` method handling the above operation
             - minor changes in exception handlers
+=======
+>>>>>>> 89fa319de367c0489bd22f95101f3abe435a9d3f
