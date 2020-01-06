@@ -205,6 +205,6 @@ Result:<br />
             - `import` command, allowing user to import data from CSV file directly into the selected table/database.<br />
             - `drop` command, allowing user to drop selected table from the database.<br />
 <b>6/1/2020 changelog:</b></br>
-            - `xml` command allowing user to export a selected table into pre-formatted XML file
-            - added `ConvertToXml()` method handling the above operation
-            - minor changes in exception handlers
+            - `xml` command allowing user to export a selected table into pre-formatted XML file<br />
+            - added `ConvertToXml()` method handling the above operation<br />
+            - minor changes in exception handlers<br />
