@@ -661,7 +661,7 @@ def ConvertToXml(table = ""):
                 pass
             else:
                 os.mkdir(xmlPath)
-                print("Creating /xml directory.\n")
+                print("/xml directory not found, creating...")
             fileName = table + ".xml"
             finalPath = os.path.join(path, xmlPath, fileName)
             indent_count = 1
