@@ -684,6 +684,7 @@ def ConvertToXml(table = ""):
                             xmlFile.write("\t</field>\n")
                         xmlFile.write("</%s>\n" % table)
                         print("SQL-XML conversion task finished successfully. File",fileName,"has been created.\n")
+                        xmlFile.close()
                 elif confirmAction == "N" or confirmAction == "n":
                     print("Aborting...\n")
             else:
@@ -702,7 +703,7 @@ def ConvertToXml(table = ""):
                             xmlFile.write("\t</field>\n")
                         xmlFile.write("</%s>\n" % table)
                         print("SQL-XML conversion task finished successfully. File",fileName,"has been created.\n")
-            xmlFile.close()
+                        xmlFile.close()
         else:
              print("There is no active connection to the database. Redirecting to connect action...\n")
              try:
