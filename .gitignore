@@ -130,4 +130,6 @@ dmypy.json
 
 # CSV Exports
 exports/
+xml/
+*.xml
 *.csv
