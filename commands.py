@@ -33,14 +33,20 @@ def Connect(server = "", database = ""):
         if settings.global_config_array["active_sql_connection"] == None:
             dbConnection = None
             if dbConnection == None:
-                while server == "":
-                    server = str(input("Server name: "))
-                    if server == "":
-                        print("You did not enter server name.\n")
-                while database == "":
-                    database = str(input("Database name: "))
-                    if database == "":
-                        print("You did not enter database name.\n")
+                try:
+                    while server == "":
+                        server = str(input("Server name: "))
+                        if server == "":
+                            print("You did not enter server name.\n")
+                except KeyboardInterrupt:
+                    print("\nTerminating command...\n")
+                try:
+                    while database == "":
+                        database = str(input("Database name: "))
+                        if database == "":
+                            print("You did not enter database name.\n")
+                except KeyboardInterrupt:
+                    print("\nTerminating command...\n")
                 if server != "" and database != "":
                     settings.global_config_array["server"] = server
                     settings.global_config_array["database"] = database
@@ -151,11 +157,14 @@ def Show(table = ""):
             settings.global_config_array["table"] = table
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
-            Connect()
-            if table != "":
-                Show(table)
-            else:
-                Show()
+            try:
+                Connect()
+                if table != "":
+                    Show(table)
+                else:
+                    Show()
+            except KeyboardInterrupt:
+                print("\nTerminating command...\n")
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
@@ -208,7 +217,7 @@ def Export(table = ""):
                         for row in rows:
                             writer.writerow(row)
                         csvfile.close()
-                        print("Export of file",fileName,"finished successfully.\n")
+                        print(fileName,"has been created.\nExport task finished successfully.\n")
                 elif confirmAction == "N" or confirmAction == "n":
                     print("Aborting...\n")
             else:
@@ -220,14 +229,17 @@ def Export(table = ""):
                     for row in rows:
                         writer.writerow(row)
                 csvfile.close()
-                print(fileName,"export task finished successfully.\n")
+                print(fileName,"has been created.\nExport task finished successfully.\n")
         else:
             print("There is no connection established. Redirecting to connect action...\n")
-            Connect()
-            if table != "":
-                Export(table)
-            else:
-                Export()
+            try:
+                Connect()
+                if table != "":
+                    Export(table)
+                else:
+                    Export()
+            except KeyboardInterrupt:
+                print("\nTerminating command...\n")
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
@@ -252,13 +264,14 @@ def Clear():
 def Help():
     print("\nList of available commands:")
     print("---------------------------")
-    for k, v in commands.items():
+    for k, v in sorted(commands.items()):
         if k != "aliases":
             print(k,":", v["descr"])
     print("\nList of aliases:")
     print("----------------")
-    for k, v in commands["aliases"].items():
+    for k, v in sorted(commands["aliases"].items()):
         print(k,":", v["descr"])
+    print()
         
 def Status():
     table = []
@@ -347,11 +360,14 @@ def Delete(table = ""):
                 print("Transaction cancelled.\n")
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
-            Connect()
-            if table == "":
-                Delete()
-            else:
-                Delete(table)
+            try:
+                Connect()
+                if table == "":
+                    Delete()
+                else:
+                    Delete(table)
+            except KeyboardInterrupt:
+                print("\nTerminating command...\n")
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == '42S02':
@@ -410,13 +426,16 @@ def Edit(table = "", recordId = ""):
             print("Row ID " + recordId + " in table " + table + " has been updated.\n")
         else:
             print("There is no active connection to the database detected. Redirecting to connect action...\n")
-            Connect()
-            if table != "" and recordId != "":
-                Edit(table, recordId)
-            elif table != "" and recordId == "":
-                Edit(table)
-            elif table == "" and recordId == "":
-                Edit()
+            try:
+                Connect()
+                if table != "" and recordId != "":
+                    Edit(table, recordId)
+                elif table != "" and recordId == "":
+                    Edit(table)
+                elif table == "" and recordId == "":
+                    Edit()
+            except KeyboardInterrupt:
+                print("\nTerminating command...\n")
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
@@ -464,8 +483,11 @@ def Query():
                 print("Notification: query command allows only for select statements. Use add, delete or edit command for other CRUD operations.\n")
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
-            Connect()      
-            Query()                  
+            try:
+                Connect()      
+                Query()                  
+            except KeyboardInterrupt:
+                print("\nTerminating command...\n")
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
@@ -504,11 +526,14 @@ def List(database = ""):
             print(tabulate(table, headers=["Table schema","Table name"], tablefmt="psql"), "\n")
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
-            Connect()
-            if database == "":
-                List()
-            else:
-                List(database)
+            try:
+                Connect()
+                if database == "":
+                    List()
+                else:
+                    List(database)
+            except KeyboardInteerrupt:
+                print("\nTerminating command...\n")
     except KeyboardInterrupt:
         if dbConnection:
             dbConnection.close()
@@ -562,13 +587,16 @@ def Import(table = "", fileName = ""):
                 print("Import finished successfully.\n")
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
-            Connect()
-            if table != "" and fileName == "":
-                Import(tabl)
-            elif table != "" and fileName != "":
-                Import(table, fileName)
-            else:
-                Import()
+            try:
+                Connect()
+                if table != "" and fileName == "":
+                    Import(tabl)
+                elif table != "" and fileName != "":
+                    Import(table, fileName)
+                else:
+                    Import()
+            except KeyboardInterrupt:
+                print("\nTerminating command...\n")        
     except KeyboardInterrupt:
         print("\nTerminating command...\n")
     except pyodbc.Error as e:
@@ -593,11 +621,14 @@ def Drop(table = ""):
             print("Table " + table + " has been dropped successfully.\n")
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
-            Connect()
-            if table != "":
-                Drop(table)
-            else:
-                Drop()
+            try:
+                Connect()
+                if table != "":
+                    Drop(table)
+                else:
+                    Drop()           
+            except KeyboardInterrupt:
+                print("\nTerminating command...\n")
     except KeyboardInterrupt:
         print("\nTerminating command...\n")
     except pyodbc.Error as e:
@@ -605,11 +636,107 @@ def Drop(table = ""):
     except Exception as e:
         print("Error " + e.args[0] + ":\n" + e + "\n")
         
+def ConvertToXml(table = ""):
+    try:
+        if settings.global_config_array["active_sql_connection"] != None:
+            if settings.global_config_array["table"] != None and table == "":
+                table = settings.global_config_array["table"]
+            elif settings.global_config_array["table"] == None and table == "":
+                while table == "":    
+                    table = str(input("Table name: "))
+                    if table == "":
+                        print("You did not enter table name.\n")
+            dbConnection = settings.global_config_array["active_sql_connection"]
+            cursor = dbConnection.cursor()
+            selectQuery = list("select * from " + table)
+            selectQuery = ''.join(selectQuery)
+            columnsQuery = list("select column_name from information_schema.columns where table_name = '" + table + "'")
+            columnsQuery = ''.join(columnsQuery)
+            cols = cursor.execute(columnsQuery).fetchall()
+            columns = list(str(c) for c in cols)
+            columns = list([c.replace('(','').replace(')','').replace(' ','').replace("'",'').replace(',','').strip() for c in columns])
+            rows = cursor.execute(selectQuery).fetchall()
+            xmlPath = settings.global_config_array["xmlPath"]
+            if os.path.exists(xmlPath):
+                pass
+            else:
+                os.mkdir(xmlPath)
+                print("Creating /xml directory.\n")
+            fileName = table + ".xml"
+            finalPath = os.path.join(path, xmlPath, fileName)
+            indent_count = 1
+            if os.path.exists(finalPath):
+                print("File",fileName,"already exists. Do you want to overwrite it? [Y/n]", end='')
+                confirmAction = str(input())
+                if confirmAction == "Y" or confirmAction == "y":
+                    with open(finalPath, "w+", newline='') as xmlFile:
+                        xmlFile.write("<?xml version='1.0' ?>\n")
+                        xmlFile.write("<%s>\n" % table)
+                        for row in rows:
+                            xmlFile.write("\t<field>\n")
+                            indent_count += 1
+                            for j in range(len(row)):
+                                xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))  # column headers
+                                xmlFile.write("\t" * (indent_count + 1) + "%s\n" % str(row[j]))
+                                xmlFile.write("\t" * indent_count)
+                                xmlFile.write("</%s>\n" % str(columns[j]))  # column headers
+                            indent_count = 1
+                            xmlFile.write("\t</field>\n")
+                        xmlFile.write("</%s>\n" % table)
+                        print("SQL-XML conversion task finished successfully. File",fileName,"has been created.\n")
+                elif confirmAction == "N" or confirmAction == "n":
+                    print("Aborting...\n")
+            else:
+                with open(finalPath, "w+", newline='') as xmlFile:
+                        xmlFile.write("<?xml version='1.0' ?>\n")
+                        xmlFile.write("<%s>\n" % table)
+                        for row in rows:
+                            xmlFile.write("\t<field>\n")
+                            indent_count += 1
+                            for j in range(len(row)):
+                                xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))  # column headers
+                                xmlFile.write("\t" * (indent_count + 1) + "%s\n" % str(row[j]))
+                                xmlFile.write("\t" * indent_count)
+                                xmlFile.write("</%s>\n" % str(columns[j]))  # column headers
+                            indent_count = 1
+                            xmlFile.write("\t</field>\n")
+                        xmlFile.write("</%s>\n" % table)
+                        print("SQL-XML conversion task finished successfully. File",fileName,"has been created.\n")
+            xmlFile.close()
+        else:
+             print("There is no active connection to the database. Redirecting to connect action...\n")
+             try:
+                 Connect()
+                 if table != "":
+                     ConvertToXml(table)
+                 else:
+                     ConvertToXml()           
+             except KeyboardInterrupt:
+                print("\nTerminating command...\n")
+    except KeyboardInterrupt:
+        if dbConnection:
+            dbConnection.close()
+        dbConnection = None
+        print("\nTerminating command...\n")
+    except AttributeError as e:
+        print("Error:",e.args[0],"\n",e,"\n")
+    except pyodbc.DataError as e:
+        print("Error:",e.args[0],"\n",e,"\n")
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        if sqlstate == '42S02':
+            print("Table",table,"not found.\n")
+        else: print("Error:",e.args[0],"\n",e,"\n")
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e,"\n")
+    except: print("Could not save file",fileName,"to specified location.\n")
+        
 commands = {
     "exit": { "exec": Exit, "descr": "Exit the program" },
     "connect": { "exec": Connect, "descr": "<server> <database> - Open new connection to the target database" },
     "close": { "exec": Close, "descr": "Close active connection to the database" },
     "logout": { "exec": Logout, "descr": "Return to splash screen" },
+    "xml": { "exec": ConvertToXml, "descr": "Exports target table into XML file" },
     "show": { "exec": Show, "descr": "<table> - List all rows in the selected table" },
     "add": { "exec": Add, "descr": "<table> <rowId> - Add new record to the selected table" },
     "delete": { "exec": Delete, "descr": "<table> <rowId> - Remove the existing record from the selected table" },
