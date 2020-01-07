@@ -105,7 +105,11 @@ def InputHandler(userInput):
                 userInput.pop(0)
                 methodInspect = signature(commands.commands[cmd]["exec"])
                 if len(methodInspect.parameters) >= 1:
-                    commands.commands[cmd]["exec"](*userInput)
+                    if cmd == "query":
+                        userInput = ' '.join(userInput)
+                        commands.commands[cmd]["exec"](userInput)
+                    else:
+                        commands.commands[cmd]["exec"](*userInput)
                 else:
                     commands.commands[cmd]["exec"]()
                 if cmd == "exit":
@@ -127,7 +131,7 @@ def InputHandler(userInput):
                 if len(methodInspect.parameters) >= 1:
                     commands.commands["aliases"][cmd]["exec"](*userInput)
                 else:
-                    commands.commands["aliases"][cmd]["exec"](*userInput)
+                    commands.commands["aliases"][cmd]["exec"]()
                 if cmd == "quit":
                     sys.exit()
                 elif cmd == "cls":

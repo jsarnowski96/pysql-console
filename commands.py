@@ -459,12 +459,16 @@ def Edit(table = "", recordId = ""):
         print()
         #DEBUG
 
-def Query():
+def Query(query = ""):
     try:
         if settings.global_config_array["active_sql_connection"]:
             dbConnection = settings.global_config_array["active_sql_connection"]
-            print("Insert your query statement:")
-            query = str(input())
+            if query == "":
+                while query == "":
+                    print("Insert your query statement:")
+                    query = str(input())
+                    if query == "":
+                        print("You did not enter query.\n")
             result = ""
             if "select" in query:
                 cursor = dbConnection.cursor()
@@ -694,7 +698,7 @@ def ConvertToXml(table = ""):
                         for row in rows:
                             xmlFile.write("\t<field>\n")
                             indent_count += 1
-                            for j in range(len(row)):
+                            for j in range(len(row)):                                    
                                 xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))  # column headers
                                 xmlFile.write("\t" * (indent_count + 1) + "%s\n" % str(row[j]))
                                 xmlFile.write("\t" * indent_count)
