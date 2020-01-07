@@ -3,7 +3,7 @@
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___|
-                                                                            v.0.2.70
+                                                                            v.0.2.74
 ```
 
 # PySql-Console (under development)
@@ -208,3 +208,6 @@ Result:<br />
             - `xml` command allowing user to export a selected table into pre-formatted XML file<br />
             - added `ConvertToXml()` method handling the above operation<br />
             - minor changes in exception handlers<br />
+<b>7/1/2020 changelog:</b></br>
+            - adjustment of `InputHandler()` method for passing optional parameter to `Query()` method<br />
+            - added support of optional `query` parameter inside `Query()` method, allowing user to pass a query statement directly after command.<br />
