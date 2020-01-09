@@ -8,8 +8,8 @@ Created on Wed Dec 11 18:07:47 2019
 import pyodbc
 import sys
 from getpass import getpass
-import commands as commands
 from inspect import signature
+import commands as commands
 import settings
 
 success = False
@@ -20,7 +20,7 @@ def drawInitBoard():
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___| 
-                                                                            v.0.2.74
+                                                                            v.0.2.78
 
                                      +-----------------------------------+
                                      |      Welcome to PySQL Console     |

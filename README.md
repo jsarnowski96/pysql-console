@@ -3,7 +3,7 @@
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___|
-                                                                            v.0.2.74
+                                                                            v.0.2.78
 ```
 
 # PySql-Console (under development)
@@ -64,6 +64,8 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
   - `Delete()`<br />
   - `Drop()`<br />
   - `Import()`<br />
+  - `Metrics()`<br />
+  - `Databases()`<br />
   - `ConvertToXml()`<br />
   - `Show()`<br />
   - `Query()`<br />
@@ -96,6 +98,7 @@ add <table>: Add new record to the selected table
 clear: This command clears the console window
 close: Close active connection to the database
 connect <server> <database>: Open new connection to the target database
+databases: Display list of all databases within an MS SQL Server instance
 delete <table> <rowId>: Remove the existing record from the selected table
 drop <table>: Drop the selected table
 edit <table> <rowId>: Modify the existing record in the selected table
@@ -105,6 +108,7 @@ help: Displays the list of available commands
 import <destination_table> <file_name>: Import existing CSV file into the selected database
 list: Display list of tables in the selected database
 logout: Return to splash screen
+metrics: Display CPU/Memory usage of MS SQL Server
 query: Run a specific query in the database
 show: List all rows in the selected table
 status: Displays current session's data
@@ -157,6 +161,7 @@ Result:<br />
 - [x] fix bug in `Exit()` method
 - [x] fix bug in `Export()` method
 - [x] better format of table's listed content
+- [ ] implementation of basic MS SQL Server monitoring features
 <br />
 
 ## Known issues:
@@ -211,3 +216,6 @@ Result:<br />
 <b>7/1/2020 changelog:</b></br>
             - adjustment of `InputHandler()` method for passing optional parameter to `Query()` method<br />
             - added support of optional `query` parameter inside `Query()` method, allowing user to pass a query statement directly after command.<br />
+<b>9/1/2020 changelog:</b></br>
+            - new test `metrics` command implemented, allowing for checking CPU and memory usage by MS SQL Server.<br />
+            - new test `databases` command implemented, which lists all databases within a specific instance of MS SQL Server.<br />
