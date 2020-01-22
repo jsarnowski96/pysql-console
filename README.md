@@ -219,3 +219,5 @@ Result:<br />
 <b>9/1/2020 changelog:</b></br>
             - new test `metrics` command implemented, allowing for checking CPU and memory usage by MS SQL Server.<br />
             - new test `databases` command implemented, which lists all databases within a specific instance of MS SQL Server.<br />
+<b>22/1/2020 changelog:</b></br>
+            - fixed problem with AW2012 tables not being processed correctly during XML export job.<br />

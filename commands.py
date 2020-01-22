@@ -658,7 +658,7 @@ def ConvertToXml(table = ""):
             cursor = dbConnection.cursor()
             selectQuery = list("select * from " + table)
             selectQuery = ''.join(selectQuery)
-            columnsQuery = list("select column_name from information_schema.columns where table_name = '" + table + "'")
+            columnsQuery = list("SELECT name FROM sys.columns WHERE OBJECT_ID = OBJECT_ID('" + table + "')")
             columnsQuery = ''.join(columnsQuery)
             cols = cursor.execute(columnsQuery).fetchall()
             columns = list(str(c) for c in cols)
@@ -680,16 +680,17 @@ def ConvertToXml(table = ""):
                     with open(finalPath, "w+", newline='') as xmlFile:
                         xmlFile.write("<?xml version='1.0' ?>\n")
                         xmlFile.write("<%s>\n" % table)
+                        indent_count = 1
                         for row in rows:
                             xmlFile.write("\t<field>\n")
                             indent_count += 1
                             for j in range(len(row)):
-                                xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))  # column headers
+                                xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))
                                 xmlFile.write("\t" * (indent_count + 1) + "%s\n" % str(row[j]))
                                 xmlFile.write("\t" * indent_count)
-                                xmlFile.write("</%s>\n" % str(columns[j]))  # column headers
-                            indent_count = 1
+                                xmlFile.write("</%s>\n" % str(columns[j]))
                             xmlFile.write("\t</field>\n")
+                            indent_count = 1
                         xmlFile.write("</%s>\n" % table)
                         print("SQL-XML conversion task finished successfully. File",fileName,"has been created.\n")
                         xmlFile.close()
@@ -697,21 +698,22 @@ def ConvertToXml(table = ""):
                     print("Aborting...\n")
             else:
                 with open(finalPath, "w+", newline='') as xmlFile:
-                        xmlFile.write("<?xml version='1.0' ?>\n")
-                        xmlFile.write("<%s>\n" % table)
-                        for row in rows:
-                            xmlFile.write("\t<field>\n")
-                            indent_count += 1
-                            for j in range(len(row)):                                    
-                                xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))  # column headers
-                                xmlFile.write("\t" * (indent_count + 1) + "%s\n" % str(row[j]))
-                                xmlFile.write("\t" * indent_count)
-                                xmlFile.write("</%s>\n" % str(columns[j]))  # column headers
-                            indent_count = 1
-                            xmlFile.write("\t</field>\n")
-                        xmlFile.write("</%s>\n" % table)
-                        print("SQL-XML conversion task finished successfully. File",fileName,"has been created.\n")
-                        xmlFile.close()
+                    xmlFile.write("<?xml version='1.0' ?>\n")
+                    xmlFile.write("<%s>\n" % table)
+                    indent_count = 1
+                    for row in rows:
+                        xmlFile.write("\t<field>\n")
+                        indent_count += 1
+                        for j in range(len(row)):
+                            xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))
+                            xmlFile.write("\t" * (indent_count + 1) + "%s\n" % str(row[j]))
+                            xmlFile.write("\t" * indent_count)
+                            xmlFile.write("</%s>\n" % str(columns[j]))
+                        xmlFile.write("\t</field>\n")
+                        indent_count = 1
+                    xmlFile.write("</%s>\n" % table)
+                    print("SQL-XML conversion task finished successfully. File",fileName,"has been created.\n")
+                    xmlFile.close()
         else:
              print("There is no active connection to the database. Redirecting to connect action...\n")
              try:
