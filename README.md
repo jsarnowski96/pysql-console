@@ -35,6 +35,7 @@ PySql-Console allows user to interact with MS SQL database and its content. In f
 - list tables within the selected database, including different schemas
 - execute a customized select query directly from the command line
 - drop selected table
+- list databases in the selected MS SQL Server instance
 - implementation of user authentication mechanism based on Windows SQL Server Authentication
 - executing commands directly or via aliases
 <br />
@@ -98,7 +99,7 @@ add <table>: Add new record to the selected table
 clear: This command clears the console window
 close: Close active connection to the database
 connect <server> <database>: Open new connection to the target database
-databases: Display list of all databases within an MS SQL Server instance
+databases: Display list of all databases within the selected MS SQL Server instance
 delete <table> <rowId>: Remove the existing record from the selected table
 drop <table>: Drop the selected table
 edit <table> <rowId>: Modify the existing record in the selected table
@@ -155,6 +156,8 @@ Result:<br />
   - [x] `query`
   - [ ] `read`
   - [x] `help`
+  - [x] `xml`
+  - [x] `export`
 - [x] migration of `commands.py` method calls coming from `pysqlconsole.py` to the nested dictionaries binded with command's keys.<br />
 - [ ] all SQL-related commands binded with one specific command as optional parameters<br />
 (for example `sql connect`, `sql show`, `sql export`, `sql edit`, etc.) - postponed
