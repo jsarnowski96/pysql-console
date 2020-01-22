@@ -8,6 +8,7 @@ Created on Thu Dec 12 01:11:41 2019
 import pyodbc
 import os
 import datetime
+import time
 import csv
 from tabulate import tabulate
 import settings
@@ -267,6 +268,9 @@ def Help():
     for k, v in sorted(commands.items()):
         if k != "aliases":
             print(k,":", v["descr"])
+            if k == "server":
+                for k, v in commands["server"].items():
+                    print("\t",k,":", v["descr"])        
     print("\nList of aliases:")
     print("----------------")
     for k, v in sorted(commands["aliases"].items()):
@@ -654,7 +658,7 @@ def ConvertToXml(table = ""):
             cursor = dbConnection.cursor()
             selectQuery = list("select * from " + table)
             selectQuery = ''.join(selectQuery)
-            columnsQuery = list("select column_name from information_schema.columns where table_name = '" + table + "'")
+            columnsQuery = list("SELECT name FROM sys.columns WHERE OBJECT_ID = OBJECT_ID('" + table + "')")
             columnsQuery = ''.join(columnsQuery)
             cols = cursor.execute(columnsQuery).fetchall()
             columns = list(str(c) for c in cols)
@@ -676,16 +680,17 @@ def ConvertToXml(table = ""):
                     with open(finalPath, "w+", newline='') as xmlFile:
                         xmlFile.write("<?xml version='1.0' ?>\n")
                         xmlFile.write("<%s>\n" % table)
+                        indent_count = 1
                         for row in rows:
                             xmlFile.write("\t<field>\n")
                             indent_count += 1
                             for j in range(len(row)):
-                                xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))  # column headers
+                                xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))
                                 xmlFile.write("\t" * (indent_count + 1) + "%s\n" % str(row[j]))
                                 xmlFile.write("\t" * indent_count)
-                                xmlFile.write("</%s>\n" % str(columns[j]))  # column headers
-                            indent_count = 1
+                                xmlFile.write("</%s>\n" % str(columns[j]))
                             xmlFile.write("\t</field>\n")
+                            indent_count = 1
                         xmlFile.write("</%s>\n" % table)
                         print("SQL-XML conversion task finished successfully. File",fileName,"has been created.\n")
                         xmlFile.close()
@@ -693,21 +698,22 @@ def ConvertToXml(table = ""):
                     print("Aborting...\n")
             else:
                 with open(finalPath, "w+", newline='') as xmlFile:
-                        xmlFile.write("<?xml version='1.0' ?>\n")
-                        xmlFile.write("<%s>\n" % table)
-                        for row in rows:
-                            xmlFile.write("\t<field>\n")
-                            indent_count += 1
-                            for j in range(len(row)):                                    
-                                xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))  # column headers
-                                xmlFile.write("\t" * (indent_count + 1) + "%s\n" % str(row[j]))
-                                xmlFile.write("\t" * indent_count)
-                                xmlFile.write("</%s>\n" % str(columns[j]))  # column headers
-                            indent_count = 1
-                            xmlFile.write("\t</field>\n")
-                        xmlFile.write("</%s>\n" % table)
-                        print("SQL-XML conversion task finished successfully. File",fileName,"has been created.\n")
-                        xmlFile.close()
+                    xmlFile.write("<?xml version='1.0' ?>\n")
+                    xmlFile.write("<%s>\n" % table)
+                    indent_count = 1
+                    for row in rows:
+                        xmlFile.write("\t<field>\n")
+                        indent_count += 1
+                        for j in range(len(row)):
+                            xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))
+                            xmlFile.write("\t" * (indent_count + 1) + "%s\n" % str(row[j]))
+                            xmlFile.write("\t" * indent_count)
+                            xmlFile.write("</%s>\n" % str(columns[j]))
+                        xmlFile.write("\t</field>\n")
+                        indent_count = 1
+                    xmlFile.write("</%s>\n" % table)
+                    print("SQL-XML conversion task finished successfully. File",fileName,"has been created.\n")
+                    xmlFile.close()
         else:
              print("There is no active connection to the database. Redirecting to connect action...\n")
              try:
@@ -735,7 +741,75 @@ def ConvertToXml(table = ""):
     except Exception as e:
         print("Error:",e.args[0],"\n",e,"\n")
     except: print("Could not save file",fileName,"to specified location.\n")
+    
+def Databases():
+    try:
+        dbConnection = settings.global_config_array["user_sql_session"]
+        cursor = dbConnection.cursor()
+        query = "select name, database_id, create_date, collation_name from sys.databases"
+        result = cursor.execute(query)
+        rows = result.fetchall()
+        databases = []
+        for row in rows:
+            databases.append(row)
+        columns = [column[0] for column in result.description]
+        #databases = ''.join(str(databases))
+        print(tabulate(databases, columns, tablefmt="psql"), "\n")
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e,"\n")
+    except pyodbc.Error as e:
+        print("Error:",e.args[0],"\n",e,"\n")
         
+def Metrics():
+    try:
+        dbConnection = settings.global_config_array["user_sql_session"]
+        cursor = dbConnection.cursor()
+        cpuUsageQuery = """
+            -- Get CPU Utilization History for last 30 minutes (SQL 2008)
+            DECLARE @ts_now bigint = (SELECT cpu_ticks/(cpu_ticks/ms_ticks)FROM sys.dm_os_sys_info); 
+            
+            SELECT TOP(30) SQLProcessUtilization AS [SQL Server Process CPU Utilization], 
+                           SystemIdle AS [System Idle Process], 
+                           100 - SystemIdle - SQLProcessUtilization AS [Other Process CPU Utilization], 
+                           DATEADD(ms, -1 * (@ts_now - [timestamp]), GETDATE()) AS [Event Time] 
+            FROM ( 
+            	  SELECT record.value('(./Record/@id)[1]', 'int') AS record_id, 
+            			record.value('(./Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') 
+            			AS [SystemIdle], 
+            			record.value('(./Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 
+            			'int') 
+            			AS [SQLProcessUtilization], [timestamp] 
+            	  FROM ( 
+            			SELECT [timestamp], CONVERT(xml, record) AS [record] 
+            			FROM sys.dm_os_ring_buffers 
+            			WHERE ring_buffer_type = N'RING_BUFFER_SCHEDULER_MONITOR' 
+            			AND record LIKE '%<SystemHealth>%') AS x 
+            	  ) AS y 
+            ORDER BY record_id DESC;
+        """
+        memUsageQuery = """
+            select (physical_memory_in_use_kb/1024)Phy_Memory_usedby_Sqlserver_MB,
+            (locked_page_allocations_kb/1024 )Locked_pages_used_Sqlserver_MB,
+            (virtual_address_space_committed_kb/1024 )Total_Memory_UsedBySQLServer_MB,
+            process_physical_memory_low,
+            process_virtual_memory_low
+            from sys. dm_os_process_memory
+        """
+        # Memory metrics
+        result = cursor.execute(memUsageQuery)
+        memUsage = result.fetchall()
+        columns = [column[0] for column in result.description]
+        print(tabulate(memUsage, columns, tablefmt="psql"),"\n")
+        # CPU metrics
+        result = cursor.execute(cpuUsageQuery)
+        cpuUsage = result.fetchall()
+        columns = [column[0] for column in result.description]
+        print(tabulate(cpuUsage, columns, tablefmt="psql"),"\n")
+    except Exception as e:
+        print("Error:",e.args[0],"\n",e,"\n")
+    except pyodbc.Error as e:
+        print("Error:",e.args[0],"\n",e,"\n")
+
 commands = {
     "exit": { "exec": Exit, "descr": "Exit the program" },
     "connect": { "exec": Connect, "descr": "<server> <database> - Open new connection to the target database" },
@@ -746,12 +820,14 @@ commands = {
     "add": { "exec": Add, "descr": "<table> <rowId> - Add new record to the selected table" },
     "delete": { "exec": Delete, "descr": "<table> <rowId> - Remove the existing record from the selected table" },
     "edit": { "exec": Edit, "descr": "<table> <rowId> - Modify the existing record in the selected table" },
+    "databases": { "exec": Databases, "descr": "Display all the databases in the MS SQL Server instance"},
     "import": { "exec": Import, "descr": "<destination_table> <file_name> - Import existing CSV file into the selected database" },
     "list": { "exec": List, "descr": "Display list of tables in the selected database" },
     "switch": { "exec": Switch, "descr": "<table> - If no new table name is provided, remove focus from the current table, otherwise switch to the another table." },
     "help": { "exec": Help, "descr": "Displays this commands' overview" },
     "export": { "exec": Export, "descr": "<table> - Exports currently selected table to .csv file" },
     "clear": { "exec": Clear, "descr": "This command clears the console window" },
+    "metrics": { "exec": Metrics, "descr": "Display MS SQL Server metrics - CPU usage, memory usage, etc." },
     "drop": { "exec": Drop, "descr": "<table> - Drop the selected table" },
     "status": { "exec": Status, "descr": "Displays current session's data" },
     "query": { "exec": Query, "descr": "Run a specific query in the database" },
