@@ -209,15 +209,15 @@ Result:<br />
             - Adjusted commands' behaviour on Ctrl+C event.<br />
             - `import` command, allowing user to import data from CSV file directly into the selected table/database.<br />
             - `drop` command, allowing user to drop selected table from the database.<br />
-<b>6/1/2020 changelog:</b></br>
+-<b>6/1/2020 changelog:</b></br>
             - `xml` command allowing user to export a selected table into pre-formatted XML file<br />
             - added `ConvertToXml()` method handling the above operation<br />
             - minor changes in exception handlers<br />
-<b>7/1/2020 changelog:</b></br>
+-<b>7/1/2020 changelog:</b></br>
             - adjustment of `InputHandler()` method for passing optional parameter to `Query()` method<br />
             - added support of optional `query` parameter inside `Query()` method, allowing user to pass a query statement directly after command.<br />
-<b>9/1/2020 changelog:</b></br>
+-<b>9/1/2020 changelog:</b></br>
             - new test `metrics` command implemented, allowing for checking CPU and memory usage by MS SQL Server.<br />
             - new test `databases` command implemented, which lists all databases within a specific instance of MS SQL Server.<br />
-<b>22/1/2020 changelog:</b></br>
+-<b>22/1/2020 changelog:</b></br>
             - fixed problem with AW2012 tables not being processed correctly during XML export job.<br />
