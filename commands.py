@@ -888,7 +888,7 @@ commands = {
     "databases": { "exec": Databases, "descr": "Display all the databases in the MS SQL Server instance"},
     "import": { "exec": Import, "descr": "<destination_table> <file_name> - Import existing CSV file into the selected database" },
     "list": { "exec": List, "descr": "Display list of tables in the selected database" },
-    "switch": { "exec": Switch, "descr": "<table> - If no new table name is provided, remove focus from the current table, otherwise switch to the another table." },
+    "switch": { "exec": Switch, "descr": "<table> - If <table> is not provided, remove focus from the current table, otherwise switch it to another table." },
     "help": { "exec": Help, "descr": "Displays this commands' overview" },
     "export": { "exec": Export, "descr": "<table> - Exports currently selected table to .csv file" },
     "clear": { "exec": Clear, "descr": "This command clears the console window" },
@@ -896,7 +896,7 @@ commands = {
     "drop": { "exec": Drop, "descr": "<table> - Drop the selected table" },
     "status": { "exec": Status, "descr": "Displays current session's data" },
     "query": { "exec": Query, "descr": "Run a specific query in the database" },
-    "da": { "exec": DataAnalysis, "descr": "Perform a Data Analysis task on the given CSV file"},
+    "da": { "exec": DataAnalysis, "descr": "<file_name> <param> - Perform a Data Analysis task on the given CSV file"},
     "aliases": {
         "cls": { "exec": Clear, "descr": "This command clears the console window" },
         "exp": { "exec": Export, "descr": "Exports currently selected table to .csv file" },
