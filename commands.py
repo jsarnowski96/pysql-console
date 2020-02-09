@@ -8,8 +8,9 @@ Created on Thu Dec 12 01:11:41 2019
 import pyodbc
 import os
 import csv
-import numpy as np
+from functools import partial
 import pandas as pd
+import statsmodels.formula.api as smf
 from tabulate import tabulate
 import settings
 
@@ -808,7 +809,7 @@ def Metrics():
     except pyodbc.Error as e:
         print("Error:",e.args[0],"\n",e,"\n")
         
-def DataAnalysis(fileName = "", param = ""):
+def DataAnalysis(fileName = "", param = "", num=""):
     try:
         filePath = ""
         if settings.global_config_array["sourceCsvFile"] != None:
@@ -841,34 +842,60 @@ def DataAnalysis(fileName = "", param = ""):
                 if settings.global_config_array["sourceCsvFile"] != None:
                     filePath = settings.global_config_array["sourceCsvFile"]
                     if os.path.exists(filePath):
+                        num = param
                         param = fileName
         elif fileName != "" and settings.global_config_array["sourceCsvFile"] == None:
             filePath = "exports/" + fileName + ".csv"
             if os.path.exists(filePath):
                 print("File " + fileName + ".csv found.\n")
-                settings.global_config_array["sourceCsvFile"] = filePath        
-        def switch_params(param):
+                settings.global_config_array["sourceCsvFile"] = filePath      
+        def switch_params(param, num):
             result = None
             dataframe = pd.read_csv(filePath)
+            columns = []
+            for col in dataframe.columns:
+                columns.append(col)
             allowed_params = {
                 "describe": dataframe.describe,
                 "info": dataframe.info,
                 "explode": dataframe.explode,
                 "hist": dataframe.hist,
+                "cols": dataframe.columns,
+                "summary": smf.ols,
+                "mean": dataframe.mean,
+                "dtypes": dataframe.dtypes,
+                "attrs": dataframe.attrs,
+                "index": dataframe.index,
+                "shape": dataframe.shape,
+                "values": dataframe.values,
                 "free": None
             }
             
             if param in allowed_params and param == "free":
+                print("Releasing file " + settings.global_config_array["sourceCsvFile"] + ".\n")
                 settings.global_config_array["sourceCsvFile"] = allowed_params["free"]
             elif param in allowed_params and param != "free":
                 result = allowed_params[param]
-                print(result,"\n")
+                print("\n",result,"\n")
+            elif param == "head":
+                if num == "":
+                    num = input("Insert the amount of rows to display in 'head' statement: ")
+                while int(num) > len(dataframe) or int(num) == 0:
+                    if int(num) == 0:
+                        num = input("Number 0 is not allowed. Please try again: ")
+                    else:
+                        num = input("Provided number exceeds the size of the dataframe. Please try again: ")
+                result = dataframe.head(int(num))
+                print("\n",result,"\n")
+            elif param in allowed_params and param == "summary":
+                result = allowed_params[param](columns, dataframe).fit()
+                print(result.summary())
             elif param == "":
                 result = allowed_params["describe"]
-                print(result,"\n")
+                print("\n",result,"\n")
             else:
-                print("Incorrect parameter inserted.")
-        switch_params(param)
+                print("Incorrect parameter inserted.\n")
+        switch_params(param, num)
     except KeyboardInterrupt:
         print("\nTerminating command...\n")
     except IOError:
