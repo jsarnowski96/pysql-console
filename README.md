@@ -3,7 +3,7 @@
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___|
-                                                                            v.0.2.78
+                                                                            v.0.3.0
 ```
 
 # PySql-Console (under development)
@@ -99,6 +99,7 @@ add <table>: Add new record to the selected table
 clear: This command clears the console window
 close: Close active connection to the database
 connect <server> <database>: Open new connection to the target database
+da <file_name> <param>: Execute a Data Analysis over the given CSV file - optional parameter determines the exact method - if it is not provided, the default method describe() weill be executed.
 databases: Display list of all databases within the selected MS SQL Server instance
 delete <table> <rowId>: Remove the existing record from the selected table
 drop <table>: Drop the selected table
@@ -212,15 +213,22 @@ Result:<br />
             - Adjusted commands' behaviour on Ctrl+C event.<br />
             - `import` command, allowing user to import data from CSV file directly into the selected table/database.<br />
             - `drop` command, allowing user to drop selected table from the database.<br />
--<b>6/1/2020 changelog:</b></br>
+- <b>6/1/2020 changelog:</b></br>
             - `xml` command allowing user to export a selected table into pre-formatted XML file<br />
             - added `ConvertToXml()` method handling the above operation<br />
             - minor changes in exception handlers<br />
--<b>7/1/2020 changelog:</b></br>
+- <b>7/1/2020 changelog:</b></br>
             - adjustment of `InputHandler()` method for passing optional parameter to `Query()` method<br />
             - added support of optional `query` parameter inside `Query()` method, allowing user to pass a query statement directly after command.<br />
--<b>9/1/2020 changelog:</b></br>
+- <b>9/1/2020 changelog:</b></br>
             - new test `metrics` command implemented, allowing for checking CPU and memory usage by MS SQL Server.<br />
             - new test `databases` command implemented, which lists all databases within a specific instance of MS SQL Server.<br />
--<b>22/1/2020 changelog:</b></br>
+- <b>22/1/2020 changelog:</b></br>
             - fixed problem with AW2012 tables not being processed correctly during XML export job.<br />
+- <b>8/2/2020 changelog:</b></br>
+            - major changes in code:<br />
+                - added new `DataAnalysis()` method and command `da` related to it, for analysing data from CSV files (WIP).<br />
+                - adjustment of user prompt - now instead of `user $` it is displayed as `user@servername $`, as well as some display tweaks of monits.<br />
+                - display of current date and time upon successfull login.<br />
+                - new field in `settings.global_config_array` "sourceCsvFile" added in order to store file path previously given by the user in `da` command<br />
+                

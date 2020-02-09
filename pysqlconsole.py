@@ -9,6 +9,7 @@ import pyodbc
 import sys
 from getpass import getpass
 from inspect import signature
+from datetime import datetime
 import commands as commands
 import settings
 
@@ -20,7 +21,7 @@ def drawInitBoard():
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___| 
-                                                                            v.0.2.78
+                                                                            v.0.3.0
 
                                      +-----------------------------------+
                                      |      Welcome to PySQL Console     |
@@ -52,13 +53,14 @@ def UserAuthentication():
                                           'uid='+username+';'
                                           'pwd='+password+';'
                                           'Trusted_Connection=no;')   
-        print("+-----------------------------------------------+")
-        print("| User Authentication action has been completed |")
-        print("+-----------------------------------------------+")
         if dbConnection:
             success = True
             settings.global_config_array["user_sql_session"] = dbConnection
-            print("Welcome back,", username,"\n")
+            print("+--------------------------------+")
+            print("| User Authentication successful |")
+            print("+--------------------------------+")
+            now = datetime.now()
+            print("\nWelcome back, " + username + "\nToday is " + now.strftime("%Y-%m-%d %H:%M:%S") + "\n")
     except pyodbc.Warning as w:
         print("Warning:",w.args[0],"\n",w,"\n")
         print("Warning: - possible data truncation.\n")
@@ -88,14 +90,16 @@ def UserAuthentication():
         sys.exit()
     except pyodbc.Error as e:
         sqlstate = e.args[0]
-        print("+-----------------------------------------------+")
-        print("| User Authentication action has been completed |")
-        print("+-----------------------------------------------+")
         if sqlstate == '28000':
-            print("Authentication failed. Incorrect username or password.\n")
+            print("+----------------------------+")
+            print("| User Authentication failed |")
+            print("+----------------------------+\n")
+            #print("Authentication failed. Incorrect username or password.\n")
         else:
             print("Error:",e.args[0],"\n",e,"\n")
-    except: print("UserAuthentication(): Unknown error occured during connecting to the database.\n")
+    except Exception as e:
+        print(e)            
+    except: print("User Authentication: Unknown error occured during connecting to the database.\n")
 
 def InputHandler(userInput):
     try:
@@ -150,7 +154,7 @@ def InputHandler(userInput):
 
 def MainActivity():
     try:
-        userInput = list(map(str,input(settings.global_config_array["username"] + " $ ").split()))
+        userInput = list(map(str,input(settings.global_config_array["username"] + "@" + settings.global_config_array["user_sql_session"].getinfo(pyodbc.SQL_SERVER_NAME) + " $ ").split()))
         InputHandler(userInput)
     except KeyboardInterrupt:
         print("\nExiting program...")

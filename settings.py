@@ -15,6 +15,7 @@ def init():
             "server": None,
             "table": None,
             "exportPath": "exports",
+            "sourceCsvFile": None,
             "xmlPath": "xml",
             "user_sql_session": None,
             "active_sql_connection": None

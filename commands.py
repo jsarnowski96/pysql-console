@@ -7,9 +7,9 @@ Created on Thu Dec 12 01:11:41 2019
 
 import pyodbc
 import os
-import datetime
-import time
 import csv
+import numpy as np
+import pandas as pd
 from tabulate import tabulate
 import settings
 
@@ -152,7 +152,6 @@ def Show(table = ""):
             rows = result.fetchall()
             content = []
             for row in rows:
-                r = None
                 content.append(row)
             print(tabulate(content, headers, tablefmt="psql"),"\n")
             settings.global_config_array["table"] = table
@@ -356,7 +355,7 @@ def Delete(table = ""):
             print("Are you sure you want to delete the following record? [Y/n]: ", end='')
             confirmation = str(input())
             if confirmation == 'Y' or confirmation == 'y':
-                delete = cursor.execute(query, str(recordId))
+                cursor.execute(query, str(recordId))
                 dbConnection.commit()
                 print("Record ID " + str(recordId) + " removed from the table " + table + ".\n")
             elif confirmation == "N" or confirmation == "n":
@@ -484,7 +483,6 @@ def Query(query = ""):
                 rows = result.fetchall()
                 content = []
                 for row in rows:
-                    r = None
                     content.append(row)
                 print(tabulate(content, headers, tablefmt="psql"),"\n")
             else:
@@ -504,7 +502,7 @@ def Query(query = ""):
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == "42S02":
-            print("Table",table," does not exist in the",settings.global_config_array["database"],"database.\n")
+            print("Table X does not exist in the",settings.global_config_array["database"],"database.\n")
         else:
             print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
@@ -540,7 +538,7 @@ def List(database = ""):
                     List()
                 else:
                     List(database)
-            except KeyboardInteerrupt:
+            except KeyboardInterrupt:
                 print("\nTerminating command...\n")
     except KeyboardInterrupt:
         if dbConnection:
@@ -559,7 +557,7 @@ def List(database = ""):
 def Import(table = "", fileName = ""):
     try:
         if settings.global_config_array["active_sql_connection"] != None:
-            while fileName == "" or not os.path.exists(filePath):
+            while fileName == "" or not os.path.exists(fileName):
                 fileName = str(input("Please insert the CSV filename for import: "))
                 if fileName == "":
                     print("You did not enter the filename.\n")
@@ -598,7 +596,7 @@ def Import(table = "", fileName = ""):
             try:
                 Connect()
                 if table != "" and fileName == "":
-                    Import(tabl)
+                    Import(table)
                 elif table != "" and fileName != "":
                     Import(table, fileName)
                 else:
@@ -809,6 +807,73 @@ def Metrics():
         print("Error:",e.args[0],"\n",e,"\n")
     except pyodbc.Error as e:
         print("Error:",e.args[0],"\n",e,"\n")
+        
+def DataAnalysis(fileName = "", param = ""):
+    try:
+        filePath = ""
+        if settings.global_config_array["sourceCsvFile"] != None:
+            filePath = settings.global_config_array["sourceCsvFile"]
+        if fileName == "" and settings.global_config_array["sourceCsvFile"] == None:
+            print("You did not enter CSV file name.")
+            while fileName == "" or not os.path.exists(fileName):
+                fileName = str(input("Please insert the CSV filename for data analysis: "))
+                if fileName == "":
+                    print("You did not enter the filename.\n")
+                else:
+                    filePath = "exports/" + fileName + ".csv"
+                    settings.global_config_array["sourceCsvFile"] = filePath
+                if os.path.exists(filePath):
+                    print("File " + fileName + ".csv found.\n")
+                    break
+                else:
+                    print("File " + fileName + ".csv not found.\n")
+        elif fileName == "" and settings.global_config_array["sourceCsvFile"] != None:
+            if os.path.exists(settings.global_config_array["sourceCsvFile"]):
+                filePath = settings.global_config_array["sourceCsvFile"]
+        elif fileName != "" and settings.global_config_array["sourceCsvFile"] != None:
+            filePath = "exports/" + fileName + ".csv"
+            if os.path.exists(filePath):
+                print("File " + fileName + ".csv found.\n")
+                settings.global_config_array["sourceCsvFile"] = filePath   
+        elif fileName != "" and settings.global_config_array["sourceCsvFile"] == None:
+            filePath = "exports/" + fileName + ".csv"
+            if os.path.exists(filePath):
+                print("File " + fileName + ".csv found.\n")
+                settings.global_config_array["sourceCsvFile"] = filePath        
+        def switch_params(param):
+            result = None
+            dataframe = pd.read_csv(filePath)
+            allowed_params = {
+                "describe": dataframe.describe,
+                "info": dataframe.info,
+                "explode": dataframe.explode,
+                "hist": dataframe.hist,
+                "free": None
+            }
+            
+            if param in allowed_params and param == "free":
+                settings.global_config_array["sourceCsvFile"] = allowed_params["free"]
+            elif param in allowed_params and param != "free":
+                result = allowed_params[param]
+                print(result,"\n")
+            elif param == "":
+                result = allowed_params["describe"]
+                print(result,"\n")
+            else:
+                print("Incorrect parameter inserted.")
+        switch_params(param)
+    except KeyboardInterrupt:
+        print("\nTerminating command...\n")
+    except IOError:
+        print("File " + fileName + ".csv " + "does not exist.\n")
+    except Exception as e:
+        print(e,"\n")
+    except pyodbc.Error as e:
+        sqlstate = e.args[0]
+        if sqlstate == "42S02":
+            print("Error " + e.args[0] + ": Cannot create a temporal table - referenced object does not exist in the selected database.\n")
+        else:
+            print("Error",e.args[0] + ":\n",e,"\n")
 
 commands = {
     "exit": { "exec": Exit, "descr": "Exit the program" },
@@ -831,6 +896,7 @@ commands = {
     "drop": { "exec": Drop, "descr": "<table> - Drop the selected table" },
     "status": { "exec": Status, "descr": "Displays current session's data" },
     "query": { "exec": Query, "descr": "Run a specific query in the database" },
+    "da": { "exec": DataAnalysis, "descr": "Perform a Data Analysis task on the given CSV file"},
     "aliases": {
         "cls": { "exec": Clear, "descr": "This command clears the console window" },
         "exp": { "exec": Export, "descr": "Exports currently selected table to .csv file" },
