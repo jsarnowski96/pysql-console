@@ -824,6 +824,8 @@ def DataAnalysis(fileName = "", param = ""):
                     settings.global_config_array["sourceCsvFile"] = filePath
                 if os.path.exists(filePath):
                     print("File " + fileName + ".csv found.\n")
+                    if param == "":
+                        param = str(input("Insert the parameter: "))
                     break
                 else:
                     print("File " + fileName + ".csv not found.\n")
@@ -834,7 +836,12 @@ def DataAnalysis(fileName = "", param = ""):
             filePath = "exports/" + fileName + ".csv"
             if os.path.exists(filePath):
                 print("File " + fileName + ".csv found.\n")
-                settings.global_config_array["sourceCsvFile"] = filePath   
+                settings.global_config_array["sourceCsvFile"] = filePath  
+            else:
+                if settings.global_config_array["sourceCsvFile"] != None:
+                    filePath = settings.global_config_array["sourceCsvFile"]
+                    if os.path.exists(filePath):
+                        param = fileName
         elif fileName != "" and settings.global_config_array["sourceCsvFile"] == None:
             filePath = "exports/" + fileName + ".csv"
             if os.path.exists(filePath):
