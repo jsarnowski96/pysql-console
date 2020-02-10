@@ -9,7 +9,6 @@ import pyodbc
 import os
 import csv
 import pandas as pd
-import statsmodels.formula.api as smf
 from tabulate import tabulate
 import settings
 
