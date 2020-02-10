@@ -112,6 +112,29 @@ def InputHandler(userInput):
                     if cmd == "query":
                         userInput = ' '.join(userInput)
                         commands.commands[cmd]["exec"](userInput)
+                    elif cmd == "da":
+                        if userInput[0] == "usage":
+                            allowed_params = {
+                                "describe": "Print the dataframe.describe output",
+                                "info": "Print the dataframe.info output",
+                                "explode": "Print the dataframe.explode output based on the provided column name",
+                                "hist": "Print the histogram of the dataframe",
+                                "cols": "Print the dataframe columns",
+                                "mean": "Print the dataframe.mean output",
+                                "dtypes": "Print the dataframe.dtypes output",
+                                "index": "Print the dataframe.index output",
+                                "shape": "Print the dimensional shape of the dataframe",
+                                "values": "Print the values in the dataframe",
+                                "free": "Removes focus from the CSV file"
+                            }
+                            print("\nData Analysis command usage:\n---------------------------")
+                            for k, v in allowed_params.items():
+                                print(k,":",v)
+                            print()
+                        elif settings.global_config_array["sourceCsvFile"] != None:
+                            commands.commands[cmd]["exec"]("", *userInput)
+                        else:
+                            commands.commands[cmd]["exec"](*userInput)
                     else:
                         commands.commands[cmd]["exec"](*userInput)
                 else:

@@ -8,7 +8,6 @@ Created on Thu Dec 12 01:11:41 2019
 import pyodbc
 import os
 import csv
-from functools import partial
 import pandas as pd
 import statsmodels.formula.api as smf
 from tabulate import tabulate
@@ -809,7 +808,7 @@ def Metrics():
     except pyodbc.Error as e:
         print("Error:",e.args[0],"\n",e,"\n")
         
-def DataAnalysis(fileName = "", param = "", num=""):
+def DataAnalysis(fileName = "", param1 = "", param2=""):
     try:
         filePath = ""
         if settings.global_config_array["sourceCsvFile"] != None:
@@ -825,8 +824,8 @@ def DataAnalysis(fileName = "", param = "", num=""):
                     settings.global_config_array["sourceCsvFile"] = filePath
                 if os.path.exists(filePath):
                     print("File " + fileName + ".csv found.\n")
-                    if param == "":
-                        param = str(input("Insert the parameter: "))
+                    if param1 == "":
+                        param1 = str(input("Insert the parameter: "))
                     break
                 else:
                     print("File " + fileName + ".csv not found.\n")
@@ -839,17 +838,13 @@ def DataAnalysis(fileName = "", param = "", num=""):
                 print("File " + fileName + ".csv found.\n")
                 settings.global_config_array["sourceCsvFile"] = filePath  
             else:
-                if settings.global_config_array["sourceCsvFile"] != None:
-                    filePath = settings.global_config_array["sourceCsvFile"]
-                    if os.path.exists(filePath):
-                        num = param
-                        param = fileName
+                filePath = settings.global_config_array["sourceCsvFile"]
         elif fileName != "" and settings.global_config_array["sourceCsvFile"] == None:
             filePath = "exports/" + fileName + ".csv"
             if os.path.exists(filePath):
                 print("File " + fileName + ".csv found.\n")
-                settings.global_config_array["sourceCsvFile"] = filePath      
-        def switch_params(param, num):
+                settings.global_config_array["sourceCsvFile"] = filePath     
+        def switch_params(param1, param2):
             result = None
             dataframe = pd.read_csv(filePath)
             columns = []
@@ -861,41 +856,60 @@ def DataAnalysis(fileName = "", param = "", num=""):
                 "explode": dataframe.explode,
                 "hist": dataframe.hist,
                 "cols": dataframe.columns,
-                "summary": smf.ols,
                 "mean": dataframe.mean,
                 "dtypes": dataframe.dtypes,
-                "attrs": dataframe.attrs,
                 "index": dataframe.index,
                 "shape": dataframe.shape,
                 "values": dataframe.values,
                 "free": None
             }
-            
-            if param in allowed_params and param == "free":
+            if param1 in allowed_params and param1 == "free":
                 print("Releasing file " + settings.global_config_array["sourceCsvFile"] + ".\n")
                 settings.global_config_array["sourceCsvFile"] = allowed_params["free"]
-            elif param in allowed_params and param != "free":
-                result = allowed_params[param]
-                print("\n",result,"\n")
-            elif param == "head":
-                if num == "":
-                    num = input("Insert the amount of rows to display in 'head' statement: ")
-                while int(num) > len(dataframe) or int(num) == 0:
-                    if int(num) == 0:
-                        num = input("Number 0 is not allowed. Please try again: ")
+            elif param1 in allowed_params and param1 != "free":
+                if param1 == "info":
+                    result = allowed_params[param1](verbose = True)
+                    print("\n",result,"\n")
+                elif param1 == "describe" or param1 == "hist":
+                    result = allowed_params[param1]()
+                    print("\n",result,"\n")
+                elif param1 == "explode":
+                    if param2 == "":
+                        while param2 == "":
+                            param2 = str(input("Insert name of the target column: "))
+                            if param2 not in columns:
+                                print("Column " + str(param2) + "does not exist.\n")
+                    result = allowed_params[param1](param2)
+                    print("\n",result,"\n")
+                elif param1 == "mean":
+                    if param2 == "":
+                        param2 = input("Insert the axis number: ")
+                    if int(param2) > 1 or int(param2) < 0:
+                        param2 = input("You have entered a wrong axis number. Please try again: ")
+                    if param2 == "":
+                        param2 = 0
+                    result = allowed_params[param1](int(param2))
+                    print("\n",result,"\n")
+                else:
+                    result = allowed_params[param1]
+                    print("\n",result,"\n")
+            elif param1 == "head":
+                if param2 == "":
+                    param2 = input("Insert the amount of rows to display in 'head' statement: ")
+                while int(param2) > len(dataframe) or int(param2) == 0:
+                    if int(param2) == 0:
+                        param2 = input("Number 0 is not allowed. Please try again: ")
+                    elif int(param2) > len(dataframe):
+                        param2 = input("Provided number exceeds the size of the dataframe. Please try again: ")
                     else:
-                        num = input("Provided number exceeds the size of the dataframe. Please try again: ")
-                result = dataframe.head(int(num))
+                        result = dataframe.head(int(param2))
+                        break
                 print("\n",result,"\n")
-            elif param in allowed_params and param == "summary":
-                result = allowed_params[param](columns, dataframe).fit()
-                print(result.summary())
-            elif param == "":
-                result = allowed_params["describe"]
-                print("\n",result,"\n")
+            elif param1 == "":
+                print("\n",dataframe,"\n")
             else:
                 print("Incorrect parameter inserted.\n")
-        switch_params(param, num)
+        switch_params(param1, param2)
     except KeyboardInterrupt:
         print("\nTerminating command...\n")
     except IOError:
@@ -930,7 +944,7 @@ commands = {
     "drop": { "exec": Drop, "descr": "<table> - Drop the selected table" },
     "status": { "exec": Status, "descr": "Displays current session's data" },
     "query": { "exec": Query, "descr": "Run a specific query in the database" },
-    "da": { "exec": DataAnalysis, "descr": "<file_name> <param> - Perform a Data Analysis task on the given CSV file"},
+    "da": { "exec": DataAnalysis, "descr": "<file_name> <param> <num> - Perform a Data Analysis task on the given CSV file"},
     "aliases": {
         "cls": { "exec": Clear, "descr": "This command clears the console window" },
         "exp": { "exec": Export, "descr": "Exports currently selected table to .csv file" },
