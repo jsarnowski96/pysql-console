@@ -26,47 +26,68 @@ def Exit():
             settings.global_config_array["active_sql_connection"].close()
             settings.global_config_array["active_sql_connection"] = None
 
-def Connect(server = "", database = ""):
-    try:                
+def Connect(server = "", database = "", unit_test = "false"):
+    try:      
         username = settings.global_config_array["username"]
-        password = settings.global_config_array["password"]
-        if settings.global_config_array["active_sql_connection"] == None:
-            dbConnection = None
-            if dbConnection == None:
-                try:
-                    while server == "":
-                        server = str(input("Server name: "))
-                        if server == "":
-                            print("You did not enter server name.\n")
-                except KeyboardInterrupt:
-                    print("\nTerminating command...\n")
-                try:
-                    while database == "":
-                        database = str(input("Database name: "))
-                        if database == "":
-                            print("You did not enter database name.\n")
-                except KeyboardInterrupt:
-                    print("\nTerminating command...\n")
-                if server != "" and database != "":
-                    settings.global_config_array["server"] = server
-                    settings.global_config_array["database"] = database
-                    dbConnection = pyodbc.connect('Driver={'+settings.global_config_array["driver"]+'};'
-                                                  'Server='+server+';'
-                                                  'Database='+database+';'
-                                                  'uid='+username+';'
-                                                  'pwd='+password+';'
-                                                  'Trusted_Connection=no;', timeout = 1) 
-                    print("Successfully connected to the %s->%s.\n" % (server, database))
-                    settings.global_config_array["active_sql_connection"] = dbConnection
-        elif settings.global_config_array["active_sql_connection"]:
-            print("Connection is already established.\n")
+        password = settings.global_config_array["password"]          
+        
+        if unit_test == "true":
+            if settings.global_config_array["active_sql_connection"] == None:
+                dbConnection = None
+                if dbConnection == None:
+                    if server != "" and database != "":
+                        settings.global_config_array["server"] = server
+                        settings.global_config_array["database"] = database
+                        dbConnection = pyodbc.connect('Driver={'+settings.global_config_array["driver"]+'};'
+                                                      'Server='+server+';'
+                                                      'Database='+database+';'
+                                                      'uid='+username+';'
+                                                      'pwd='+password+';'
+                                                      'Trusted_Connection=no;', timeout = 1) 
+                        settings.global_config_array["active_sql_connection"] = dbConnection
+        else:            
+            if settings.global_config_array["active_sql_connection"] == None:
+                dbConnection = None
+                if dbConnection == None:
+                    try:
+                        while server == "":
+                            server = str(input("Server name: "))
+                            if server == "":
+                                print("You did not enter server name.\n")
+                    except KeyboardInterrupt:
+                        print("\nTerminating command...\n")
+                    try:
+                        while database == "":
+                            database = str(input("Database name: "))
+                            if database == "":
+                                print("You did not enter database name.\n")
+                    except KeyboardInterrupt:
+                        print("\nTerminating command...\n")
+                    if server != "" and database != "":
+                        settings.global_config_array["server"] = server
+                        settings.global_config_array["database"] = database
+                        dbConnection = pyodbc.connect('Driver={'+settings.global_config_array["driver"]+'};'
+                                                      'Server='+server+';'
+                                                      'Database='+database+';'
+                                                      'uid='+username+';'
+                                                      'pwd='+password+';'
+                                                      'Trusted_Connection=no;', timeout = 1) 
+                        print("Successfully connected to the %s->%s.\n" % (server, database))
+                        settings.global_config_array["active_sql_connection"] = dbConnection
+            elif settings.global_config_array["active_sql_connection"]:
+                print("Connection is already established.\n")
     except pyodbc.Warning as w:
         print("Warning:",w.args[0],"\n",w,"\n")
         print("Warning: possible data truncation.\n")
     except pyodbc.DatabaseError as e:
         sqlstate = e.args[0]
         if sqlstate == '08001':
+<<<<<<< Updated upstream
             print("Connection timeout - could not connect to the SQL server.\n")
+=======
+            if unit_test == "false":
+                print("Error:",e.args[0],"Connection timeout - could not connect to the SQL server.\n")
+>>>>>>> Stashed changes
         else:
             print("Error:",e.args[0],"\n",e,"\n")
     except pyodbc.DataError as e:
@@ -95,37 +116,41 @@ def Connect(server = "", database = ""):
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == '28000':
-            print("Database",database,"not found.\n")
+            if unit_test == "false":
+                print("Database",database,"not found.\n")
         else: print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
         print("Error:",e.args[0],"\n",e,"\n")
     except:
         print("Connect: Unknown error occured during connecting to the database.\n")
 
-def Close():
+def Close(unit_test = "false"):
     if settings.global_config_array["table"] != None:
         settings.global_config_array["table"] = None
     if settings.global_config_array["active_sql_connection"] != None:
         if settings.global_config_array["active_sql_connection"]:
             settings.global_config_array["active_sql_connection"].close()
             settings.global_config_array["active_sql_connection"] = None
-            print("Connection to %s->%s closed.\n" % (settings.global_config_array["server"], settings.global_config_array["database"]))
+            if unit_test == "false":
+                print("Connection to %s->%s closed.\n" % (settings.global_config_array["server"], settings.global_config_array["database"]))
         if settings.global_config_array["server"] != None:
             settings.global_config_array["server"] = None
         if settings.global_config_array["database"] != None:
             settings.global_config_array["database"] = None
     else:
-        print("There is no active connection to any database\n")
+        if unit_test == "false":
+            print("There is no active connection to any database\n")
         
-def Logout():
+def Logout(unit_test = "false"):
     global success
     for k, v in settings.global_config_array.items():
         if k != "driver" and k != "exportPath":
             settings.global_config_array[k] = None
-    print("User logged out...\n")
-    Clear()
+    #print("User logged out...\n")
+    if unit_test == "false":
+        Clear()
         
-def Show(table = ""):
+def Show(table = "", unit_test = "false"):
     try:
         result = ""
         if settings.global_config_array["active_sql_connection"]:
@@ -143,17 +168,18 @@ def Show(table = ""):
             query = ''.join(queryAppend)
             cursor = dbConnection.cursor()
             result = cursor.execute(query)
-            #dbConnection.add_output_converter(-155, handle_datetimeoffset)
-            columns = [column[0] for column in result.description]
-            headers = []
-            for c in columns:
-                headers.append(c)
-            rows = result.fetchall()
-            content = []
-            for row in rows:
-                content.append(row)
-            print(tabulate(content, headers, tablefmt="psql"),"\n")
-            settings.global_config_array["table"] = table
+            if unit_test == "false":
+                #dbConnection.add_output_converter(-155, handle_datetimeoffset)
+                columns = [column[0] for column in result.description]
+                headers = []
+                for c in columns:
+                    headers.append(c)
+                rows = result.fetchall()
+                content = []
+                for row in rows:
+                    content.append(row)
+                print(tabulate(content, headers, tablefmt="psql"),"\n")
+                settings.global_config_array["table"] = table
         else:
             print("There is no active connection to the database. Redirecting to connect action...\n")
             try:
@@ -172,13 +198,14 @@ def Show(table = ""):
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == "42S02":
-            print("Table",table,"does not exist in the",settings.global_config_array["database"],"database.\n")
+            if unit_test == "false":
+                print("Table",table,"does not exist in the",settings.global_config_array["database"],"database.\n")
         else:
             print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
         print("Error:",e.args[0],"\n",e,"\n")
             
-def Export(table = ""):
+def Export(table = "", unit_test = "false", test_type=None):
     try:
         if settings.global_config_array["active_sql_connection"]:
             dbConnection = settings.global_config_array["active_sql_connection"]
@@ -203,7 +230,7 @@ def Export(table = ""):
             cursor = dbConnection.cursor()
             result = cursor.execute(query)
             finalPath = os.path.join(path, exportPath, fileName)
-            if os.path.exists(finalPath):
+            if os.path.exists(finalPath) and unit_test == "false":
                 print("File",fileName,"already exists. Do you want to overwrite it? [Y/n]", end='')
                 confirmAction = str(input())
                 if confirmAction == "Y" or confirmAction == "y":
@@ -220,15 +247,34 @@ def Export(table = ""):
                 elif confirmAction == "N" or confirmAction == "n":
                     print("Aborting...\n")
             else:
-                with open(finalPath, "a+", newline='') as csvfile:
-                    import csv
-                    writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-                    writer.writerow([x[0] for x in result.description])  # column headers
-                    rows = result.fetchall()
-                    for row in rows:
-                        writer.writerow(row)
-                csvfile.close()
-                print(fileName,"has been created.\nExport task finished successfully.\n")
+                if unit_test == "false":
+                    with open(finalPath, "a+", newline='') as csvfile:
+                        import csv
+                        writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                        writer.writerow([x[0] for x in result.description])  # column headers
+                        rows = result.fetchall()
+                        for row in rows:
+                            writer.writerow(row)
+                    csvfile.close()
+                    print(fileName,"has been created.\nExport task finished successfully.\n")
+                else:
+                    if test_type == 1:
+                        with open("exports/integrity_test_csv_file.csv", "a+", newline='') as csvfile:
+                            import csv
+                            writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                            writer.writerow([x[0] for x in result.description])  # column headers
+                            rows = result.fetchall()
+                            for row in rows:
+                                writer.writerow(row)
+                    elif test_type == 2:
+                        with open("exports/integrity_test_fail_csv_file.csv", "a+", newline='') as csvfile:
+                            import csv
+                            writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                            writer.writerow([x[0] for x in result.description])  # column headers
+                            rows = result.fetchall()
+                            for row in rows:
+                                writer.writerow(row)
+                    csvfile.close()
         else:
             print("There is no connection established. Redirecting to connect action...\n")
             try:
@@ -281,7 +327,7 @@ def Status():
         table.append([k, v])
     print(tabulate(table, tablefmt="psql"),"\n")
     
-def Switch(table = ""):
+def Switch(table = "", unit_test = "false"):
     if table == "":
         print("Removed focus from the",settings.global_config_array["table"],"table.\n")
     if settings.global_config_array["table"] != None:
@@ -292,7 +338,7 @@ def Switch(table = ""):
             print("Removed focus from table " + settings.global_config_array["table"])
             settings.global_config_array["table"] = None
         
-def Add():
+def Add(unit_test = "false"):
     '''
     try:
         if settings.global_config_array["active_sql_connection"] != None:
@@ -336,7 +382,7 @@ def Add():
     '''
     pass
 
-def Delete(table = ""):
+def Delete(table = "", unit_test = "false"):
     try:
         if settings.global_config_array["active_sql_connection"] != None:
             dbConnection = settings.global_config_array["active_sql_connection"]
@@ -385,7 +431,7 @@ def Delete(table = ""):
     except Exception as e:
         print("Error:",e.args[0],"\n",e)
 
-def Edit(table = "", recordId = ""):
+def Edit(table = "", recordId = "", unit_test = "false"):
     try:
         if settings.global_config_array["active_sql_connection"] != None:
             dbConnection = settings.global_config_array["active_sql_connection"]
@@ -461,7 +507,7 @@ def Edit(table = "", recordId = ""):
         print()
         #DEBUG
 
-def Query(query = ""):
+def Query(query = "", unit_test = "false"):
     try:
         if settings.global_config_array["active_sql_connection"]:
             dbConnection = settings.global_config_array["active_sql_connection"]
@@ -507,7 +553,7 @@ def Query(query = ""):
     except Exception as e:
         print("Error:",e.args[0],"\n",e,"\n")
         
-def List(database = ""):
+def List(database = "", unit_test = "false"):
     try:
         if settings.global_config_array["active_sql_connection"] != None:
             if settings.global_config_array["database"] != None:
@@ -553,7 +599,7 @@ def List(database = ""):
     except Exception as e:
         print("Error:",e.args[0],"\n",e,"\n")   
         
-def Import(table = "", fileName = ""):
+def Import(table = "", fileName = "", unit_test = "false"):
     try:
         if settings.global_config_array["active_sql_connection"] != None:
             while fileName == "" or not os.path.exists(fileName):
@@ -611,7 +657,7 @@ def Import(table = "", fileName = ""):
         else:
             print("Error",e.args[0] + ":\n",e,"\n")
             
-def Drop(table = ""):
+def Drop(table = "", unit_test = "false"):
     try:
         if settings.global_config_array["active_sql_connection"] != None:
             while table == "":
@@ -641,7 +687,7 @@ def Drop(table = ""):
     except Exception as e:
         print("Error " + e.args[0] + ":\n" + e + "\n")
         
-def ConvertToXml(table = ""):
+def ConvertToXml(table = "", unit_test = "false"):
     try:
         if settings.global_config_array["active_sql_connection"] != None:
             if settings.global_config_array["table"] != None and table == "":
@@ -679,14 +725,14 @@ def ConvertToXml(table = ""):
                         xmlFile.write("<%s>\n" % table)
                         indent_count = 1
                         for row in rows:
-                            xmlFile.write("\t<field>\n")
                             indent_count += 1
                             for j in range(len(row)):
+                                xmlFile.write("\t<field>\n")
                                 xmlFile.write("\t" * indent_count + "<%s>\n" % str(columns[j]))
                                 xmlFile.write("\t" * (indent_count + 1) + "%s\n" % str(row[j]))
                                 xmlFile.write("\t" * indent_count)
                                 xmlFile.write("</%s>\n" % str(columns[j]))
-                            xmlFile.write("\t</field>\n")
+                                xmlFile.write("\t</field>\n")
                             indent_count = 1
                         xmlFile.write("</%s>\n" % table)
                         print("SQL-XML conversion task finished successfully. File",fileName,"has been created.\n")
@@ -807,7 +853,7 @@ def Metrics():
     except pyodbc.Error as e:
         print("Error:",e.args[0],"\n",e,"\n")
         
-def DataAnalysis(fileName = "", param1 = "", param2=""):
+def DataAnalysis(fileName = "", param1 = "", param2="", unit_test = "false"):
     try:
         filePath = ""
         if settings.global_config_array["sourceCsvFile"] != None:

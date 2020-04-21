@@ -133,3 +133,6 @@ exports/
 xml/
 *.xml
 *.csv
+
+unit_tests.py
+integrity_tests.py

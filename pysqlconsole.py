@@ -32,15 +32,16 @@ def drawInitBoard():
                                      +-----------------------------------+
     """)
     
-def UserAuthentication():    
+def UserAuthentication(username = "", password = "", unit_test = "false"):    
     global success   
     try:
         if settings.global_config_array["username"] != None:
             settings.global_config_array["username"] = None
         if settings.global_config_array["password"] != None:
             settings.global_config_array["password"] = None
-        username = str(input("Username: "))
-        password = getpass()
+        if username == "" and password == "":
+            username = str(input("Username: "))
+            password = getpass()
         settings.global_config_array["username"] = username
         settings.global_config_array["password"] = password
         dbConnection = ""
@@ -57,12 +58,21 @@ def UserAuthentication():
         if dbConnection:
             success = True
             settings.global_config_array["user_sql_session"] = dbConnection
+<<<<<<< Updated upstream
             print("+--------------------------------+")
             print("| User Authentication successful |")
             print("+--------------------------------+")
             now = datetime.now()
             table = [["\nWelcome back, " + username + "!"], [" \nToday is " + now.strftime("%Y-%m-%d %H:%M:%S")]]
             print(tabulate(table, tablefmt="psql"), "\n")
+=======
+            if unit_test == "false":
+                print("+--------------------------------+")
+                print("| User Authentication successful |")
+                print("+--------------------------------+")
+                now = datetime.now()
+                print("\nWelcome back, " + username + "\nToday is " + now.strftime("%Y-%m-%d %H:%M:%S") + "\n")
+>>>>>>> Stashed changes
     except pyodbc.Warning as w:
         print("Warning:",w.args[0],"\n",w,"\n")
         print("Warning: - possible data truncation.\n")
@@ -93,10 +103,11 @@ def UserAuthentication():
     except pyodbc.Error as e:
         sqlstate = e.args[0]
         if sqlstate == '28000':
-            print("+----------------------------+")
-            print("| User Authentication failed |")
-            print("+----------------------------+\n")
-            #print("Authentication failed. Incorrect username or password.\n")
+            if unit_test == "false":
+                print("+----------------------------+")
+                print("| User Authentication failed |")
+                print("+----------------------------+\n")
+                #print("Authentication failed. Incorrect username or password.\n")
         else:
             print("Error:",e.args[0],"\n",e,"\n")
     except Exception as e:
