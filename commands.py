@@ -66,7 +66,7 @@ def Connect(server = "", database = ""):
     except pyodbc.DatabaseError as e:
         sqlstate = e.args[0]
         if sqlstate == '08001':
-            print("Error:",e.args[0],"Connection timeout - could not connect to the SQL server.\n")
+            print("Connection timeout - could not connect to the SQL server.\n")
         else:
             print("Error:",e.args[0],"\n",e,"\n")
     except pyodbc.DataError as e:

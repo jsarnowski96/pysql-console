@@ -3,7 +3,7 @@
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___|
-                                                                            v.0.3.0
+                                                                           v.0.3.0.1
 ```
 
 # PySql-Console (under development)
@@ -231,4 +231,6 @@ Result:<br />
                 - adjustment of user prompt - now instead of `user $` it is displayed as `user@servername $`, as well as some display tweaks of monits.<br />
                 - display of current date and time upon successfull login.<br />
                 - new field in `settings.global_config_array` "sourceCsvFile" added in order to store file path previously given by the user in `da` command<br />
-                
+- <b>21/4/2020 changelog:</b><br />
+            - added new `db_drivers` dictionary in `settings.py` for future app's development and enabling support for MySQL database engine<br />
+            - adjusted motd's text and formatting<br />

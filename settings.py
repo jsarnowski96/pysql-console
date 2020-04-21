@@ -7,10 +7,17 @@ Created on Sat Dec 14 20:56:04 2019
 
 def init():
     global global_config_array
+    global db_drivers
+
+    db_drivers = {
+        "MSSQL": "ODBC Driver 17 for SQL Server",
+        "MySQL": "MySQL ODBC 3.51 Driver"
+    }
+    
     global_config_array = {
             "username": None,
             "password": None,
-            "driver": 'ODBC Driver 17 for SQL Server',
+            "driver": db_drivers["MSSQL"],
             "database": None,
             "server": None,
             "table": None,

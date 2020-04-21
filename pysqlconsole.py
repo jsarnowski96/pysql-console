@@ -12,6 +12,7 @@ from inspect import signature
 from datetime import datetime
 import commands as commands
 import settings
+from tabulate import tabulate
 
 success = False
 
@@ -21,7 +22,7 @@ def drawInitBoard():
                         | _,\ `v' /' _/ /__\| | __ / _//__\|  \| |/' _/ /__\| | | __| 
                         | v_/`. .'`._`.| \/ | ||__| \_| \/ | | ' |`._`.| \/ | |_| _|  
                         |_|   !_! |___/ \_V_\___|  \__/\__/|_|\__||___/ \__/|___|___| 
-                                                                            v.0.3.0
+                                                                           v.0.3.0.1
 
                                      +-----------------------------------+
                                      |      Welcome to PySQL Console     |
@@ -60,7 +61,8 @@ def UserAuthentication():
             print("| User Authentication successful |")
             print("+--------------------------------+")
             now = datetime.now()
-            print("\nWelcome back, " + username + "\nToday is " + now.strftime("%Y-%m-%d %H:%M:%S") + "\n")
+            table = [["\nWelcome back, " + username + "!"], [" \nToday is " + now.strftime("%Y-%m-%d %H:%M:%S")]]
+            print(tabulate(table, tablefmt="psql"), "\n")
     except pyodbc.Warning as w:
         print("Warning:",w.args[0],"\n",w,"\n")
         print("Warning: - possible data truncation.\n")
@@ -168,7 +170,7 @@ def InputHandler(userInput):
                 commands.commands["aliases"][cmd]["exec"]()
         else:
             print("Syntax error - " + userInput[0] + " command was not recognized.\n")
-    except KeyError:
+    except KeyError as e:
         print("Error:",e.args[0],"\n",e,"\n")
     except AttributeError as e:
         print("Error:",e.args[0],"\n",e,"\n")
