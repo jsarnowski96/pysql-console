@@ -573,9 +573,32 @@ def List(database = "", unit_test = "false"):
             print("List of tables in the database " + database)
             print(tabulate(table, headers=["Table schema","Table name"], tablefmt="psql"), "\n")
         else:
-            print("Databases's name was no provided. Checking 'master' as a default database...\n")
             try:
-                List("master", "false")
+                print("Databases's name was not provided. Using 'master' as a default database...\n")
+                dbConnection = settings.global_config_array["user_sql_session"]
+                cursor = dbConnection.cursor()    
+                query = list("select table_schema, table_name from master.information_schema.tables order by table_schema, table_name")
+                finalQuery = ''.join(query)
+                result = cursor.execute(finalQuery)
+                rows = result.fetchall()
+                table = []
+                for row in rows:
+                    table.append(row)
+                print("List of tables in the database 'master':")
+                print(tabulate(table, headers=["Table schema","Table name"], tablefmt="psql"), "\n")
+            except KeyboardInterrupt:
+                if dbConnection:
+                    dbConnection.close()
+                dbConnection = None
+                print("\nTerminating command...\n")
+            except pyodbc.Error as e:
+                sqlstate = e.args[0]
+                if sqlstate == "42S02":
+                    print("Database " + database + " does not exist on the server " + settings.global_config_array["server"] + ".\n")
+                else:
+                    print("Error:",e.args[0],"\n",e,"\n")
+            except Exception as e:
+                print("Error:",e.args[0],"\n",e,"\n")
             except KeyboardInterrupt:
                 print("\nTerminating command...\n")
     except KeyboardInterrupt:
