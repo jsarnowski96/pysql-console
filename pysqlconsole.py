@@ -58,21 +58,13 @@ def UserAuthentication(username = "", password = "", unit_test = "false"):
         if dbConnection:
             success = True
             settings.global_config_array["user_sql_session"] = dbConnection
-<<<<<<< Updated upstream
-            print("+--------------------------------+")
-            print("| User Authentication successful |")
-            print("+--------------------------------+")
-            now = datetime.now()
-            table = [["\nWelcome back, " + username + "!"], [" \nToday is " + now.strftime("%Y-%m-%d %H:%M:%S")]]
-            print(tabulate(table, tablefmt="psql"), "\n")
-=======
             if unit_test == "false":
                 print("+--------------------------------+")
                 print("| User Authentication successful |")
                 print("+--------------------------------+")
                 now = datetime.now()
-                print("\nWelcome back, " + username + "\nToday is " + now.strftime("%Y-%m-%d %H:%M:%S") + "\n")
->>>>>>> Stashed changes
+                table = [["\nWelcome back, " + username + "!"], [" \nToday is " + now.strftime("%Y-%m-%d %H:%M:%S")]]
+                print(tabulate(table, tablefmt="psql"), "\n")
     except pyodbc.Warning as w:
         print("Warning:",w.args[0],"\n",w,"\n")
         print("Warning: - possible data truncation.\n")

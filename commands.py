@@ -82,12 +82,9 @@ def Connect(server = "", database = "", unit_test = "false"):
     except pyodbc.DatabaseError as e:
         sqlstate = e.args[0]
         if sqlstate == '08001':
-<<<<<<< Updated upstream
             print("Connection timeout - could not connect to the SQL server.\n")
-=======
             if unit_test == "false":
                 print("Error:",e.args[0],"Connection timeout - could not connect to the SQL server.\n")
->>>>>>> Stashed changes
         else:
             print("Error:",e.args[0],"\n",e,"\n")
     except pyodbc.DataError as e:
@@ -576,13 +573,9 @@ def List(database = "", unit_test = "false"):
             print("List of tables in the database " + database)
             print(tabulate(table, headers=["Table schema","Table name"], tablefmt="psql"), "\n")
         else:
-            print("There is no active connection to the database. Redirecting to connect action...\n")
+            print("Databases's name was no provided. Checking 'master' as a default database...\n")
             try:
-                Connect()
-                if database == "":
-                    List()
-                else:
-                    List(database)
+                List("master", "false")
             except KeyboardInterrupt:
                 print("\nTerminating command...\n")
     except KeyboardInterrupt:
@@ -980,7 +973,7 @@ commands = {
     "edit": { "exec": Edit, "descr": "<table> <rowId> - Modify the existing record in the selected table" },
     "databases": { "exec": Databases, "descr": "Display all the databases in the MS SQL Server instance"},
     "import": { "exec": Import, "descr": "<destination_table> <file_name> - Import existing CSV file into the selected database" },
-    "list": { "exec": List, "descr": "Display list of tables in the selected database" },
+    "list": { "exec": List, "descr": "<database> Display list of tables in the selected database. If no database name was provided, by default list 'master' database's content" },
     "switch": { "exec": Switch, "descr": "<table> - If <table> is not provided, remove focus from the current table, otherwise switch it to another table." },
     "help": { "exec": Help, "descr": "Displays this commands' overview" },
     "export": { "exec": Export, "descr": "<table> - Exports currently selected table to .csv file" },
