@@ -229,7 +229,7 @@ Result:<br />
             - major changes in code:<br />
                 - added new `DataAnalysis()` method and command `da` related to it, for analysing data from CSV files (WIP).<br />
                 - adjustment of user prompt - now instead of `user $` it is displayed as `user@servername $`, as well as some display tweaks of monits.<br />
-                - display of current date and time upon successfull login.<br />
+                - display of current date and time upon successful login.<br />
                 - new field in `settings.global_config_array` "sourceCsvFile" added in order to store file path previously given by the user in `da` command<br />
 - <b>21/4/2020 changelog:</b><br />
             - added new `db_drivers` dictionary in `settings.py` for future app's development and enabling support for MySQL database engine<br />
