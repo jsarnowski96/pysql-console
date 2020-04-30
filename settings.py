@@ -27,3 +27,5 @@ def init():
             "user_sql_session": None,
             "active_sql_connection": None
     }
+    
+    table = {}
