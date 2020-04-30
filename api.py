@@ -34,7 +34,7 @@ def EnableServerListeningMode(server):
                 print("Received data: " + str(data))
                 if data:
                     print("Sending back to " + str(client_address) + ".")
-                    sock.send(drawInitBoard())
+                    server.sock.send(drawInitBoard())
                     connection.sendall(data)
                     #connection.sendall(drawInitBoard())
                 else:
